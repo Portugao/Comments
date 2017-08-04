@@ -1,0 +1,120 @@
+{# purpose of this template: comments display view #}
+{% set baseTemplate = app.request.query.getBoolean('raw', false) ? 'raw' : (routeArea == 'admin' ? 'adminBase' : 'base') %}
+{% extends 'MUCommentsModule::' ~ baseTemplate ~ '.html.twig' %}
+{% block pageTitle %}{{ comment|mucommentsmodule_formattedTitle|default(__('Comment')) }}{% endblock %}
+{% block title %}
+    {% set templateTitle = comment|mucommentsmodule_formattedTitle|default(__('Comment')) %}
+    {{ templateTitle|notifyFilters('mucommentsmodule.filter_hooks.comments.filter')|safeHtml }}{% if routeArea == 'admin' %} <small>({{ comment.workflowState|mucommentsmodule_objectState(false)|lower }})</small>{% endif %}
+    {% set itemActions = knp_menu_get('MUCommentsModule:ItemActionsMenu:menu', [], {entity: comment, area: routeArea, context: 'display'}) %}
+    <div class="dropdown">
+        <a id="itemActions{{ comment.getKey() }}DropDownToggle" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> {{ __('Actions') }} <span class="caret"></span></a>
+        {{ knp_menu_render(itemActions, {template: 'ZikulaMenuModule:Override:actions.html.twig'}) }}
+    </div>
+{% endblock %}
+{% block admin_page_icon 'eye' %}
+{% block content %}
+    {% set isQuickView = app.request.query.getBoolean('raw', false) %}
+    <div class="mucommentsmodule-comment mucommentsmodule-display">
+
+    <div class="row">
+        <div class="col-sm-9">
+    <dl>
+        {% if comment.workflowState is not empty and routeArea == 'admin' %}
+            <dt>{{ __('State') }}</dt>
+            <dd>{{ comment.workflowState|mucommentsmodule_listEntry('comment', 'workflowState') }}</dd>
+        {% endif %}
+        {% if comment.title is not empty %}
+            <dt>{{ __('Title') }}</dt>
+            <dd>{{ comment.title }}</dd>
+        {% endif %}
+        {% if comment.name is not empty %}
+            <dt>{{ __('Name') }}</dt>
+            <dd>{{ comment.name }}</dd>
+        {% endif %}
+        {% if comment.yourMailAddress is not empty %}
+            <dt>{{ __('Your mail address') }}</dt>
+            <dd>{% if comment.yourMailAddress is not empty %}
+            {% if not isQuickView %}
+            <a href="mailto:{{ comment.yourMailAddress|protectMail }}" title="{{ __('Send an email') }}" class="fa fa-envelope"></a>
+            {% else %}
+                {{ comment.yourMailAddress|protectMail }}
+            {% endif %}
+            {% else %}&nbsp;{% endif %}
+            </dd>
+        {% endif %}
+        {% if comment.homepage is not empty %}
+            <dt>{{ __('Homepage') }}</dt>
+            <dd>{% if comment.homepage is not empty %}
+            {% if not isQuickView %}
+            <a href="{{ comment.homepage }}" title="{{ __('Visit this page') }}" class="fa fa-external-link-square"></a>
+            {% else %}
+                {{ comment.homepage }}
+            {% endif %}
+            {% else %}&nbsp;{% endif %}
+            </dd>
+        {% endif %}
+        {% if comment.text is not empty %}
+            <dt>{{ __('Text') }}</dt>
+            <dd>{{ comment.text|safeHtml }}</dd>
+        {% endif %}
+        {% if comment.parentid is not empty %}
+            <dt>{{ __('Parentid') }}</dt>
+            <dd>{{ comment.parentid }}</dd>
+        {% endif %}
+        {% if comment.mainId is not empty %}
+            <dt>{{ __('Main id') }}</dt>
+            <dd>{{ comment.mainId }}</dd>
+        {% endif %}
+        
+    </dl>
+
+    <h3 class="hook-assignments">{{ __('Hook assignments') }}</h3>
+        {% if hookAssignments|length > 0 %}
+            <p>{{ __('This comment is assigned to the following data objects:') }}</p>
+            <ul>
+            {% for assignment in hookAssignments %}
+            	<li><a href="{{ assignment.url|e('html_attr') }}" title="{{ __('View this object')|e('html_attr') }}">{{ assignment.date|localizeddate('medium', 'short') }} - {{ assignment.text }}</a></li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>{{ __('This comment is not assigned to any data objects yet.') }}</p>
+        {% endif %}
+    {{ include('@MUCommentsModule/Helper/includeStandardFieldsDisplay.html.twig', {obj: comment}) }}
+
+    {{ block('display_hooks') }}
+        </div>
+        <div class="col-sm-3">
+            {{ block('related_items') }}
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block related_items %}
+    {% if routeArea == 'admin' %}
+        <h4>{{ __('Comments') }}</h4>
+    {% else %}
+        <h3>{{ __('Comments') }}</h3>
+    {% endif %}
+    
+    {% if comment.comments|default %}
+        {{ include(
+            '@MUCommentsModule/Comment/includeDisplayItemListMany.html.twig',
+            {items: comment.comments, context: 'display'}
+        ) }}
+    {% endif %}
+    
+    {% set mayManage = hasPermission('MUCommentsModule:Comment:', '::', 'ACCESS_COMMENT') %}
+    {% if mayManage %}
+        <p class="managelink">
+            {% set createTitle = __('Create comment') %}
+            <a href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'edit', {comment: comment.getKey()}) }}" title="{{ createTitle|e('html_attr') }}" class="fa fa-plus">{{ createTitle }}</a>
+        </p>
+    {% endif %}
+{% endblock %}
+{% block display_hooks %}
+    {% set hooks = notifyDisplayHooks(eventName='mucommentsmodule.ui_hooks.comments.display_view', id=comment.getKey(), urlObject=currentUrlObject) %}
+    {% for providerArea, hook in hooks if providerArea != 'provider.scribite.ui_hooks.editor' %}
+        <h4>{{ providerArea }}</h4>
+        {{ hook }}
+    {% endfor %}
+{% endblock %}

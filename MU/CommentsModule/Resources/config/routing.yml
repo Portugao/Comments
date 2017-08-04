@@ -1,0 +1,5 @@
+mucommentsmodule:
+    # define routing support for these controllers
+    resource: "@MUCommentsModule/Controller"
+    # enable support for defining routes by annotations
+    type: annotation

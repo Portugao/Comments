@@ -1,0 +1,101 @@
+application "Comments" {
+    vendor "MU"
+    author "Michael Ueberschaer"
+    email "info@homepages-mit-zikula.de"
+    url "https://homepages-mit-zikula.de"
+    prefix "comments"
+    generatorSettings {
+        settingsContainer "Settings"
+        targetCoreVersion ZK15
+        generatePendingContentSupport false
+        generateExternalControllerAndFinder false
+        generateScribitePlugins false
+        generateTagSupport false
+        generateMultiHookNeedles false
+        generateAtomTemplates false
+        generateCsvTemplates false
+        generateXmlTemplates false
+        generateJsonTemplates false
+        generateKmlTemplates false
+        generateIcsTemplates false
+    }
+    entities {
+        entity "comment" leading {
+            nameMultiple "comments"
+            displayPattern "#title#"
+            slugUpdatable false
+            slugUnique false
+            workflow STANDARD
+            ownerPermission false
+            formAwareHookProvider ENABLED
+            uiHooksProvider ENABLED
+            fields {
+                string "title",
+                string "name" {
+                    mandatory false
+                },
+                email "yourMailAddress" {
+                    mandatory false
+                },
+                url "homepage" {
+                    mandatory false
+                },
+                text "text" {
+                    length 20000
+                },
+                integer "parentid" {
+                    defaultValue "0"
+                    mandatory false
+                    visible false
+                },
+                integer "mainId" {
+                    defaultValue "0"
+                    mandatory false
+                    visible false
+                }
+            }
+            actions {
+                mainAction "Index",
+                viewAction "View",
+                displayAction "Display",
+                editAction "Edit"
+            }
+        }
+    }
+    relations {
+        one2many {
+            source 
+            "comment"
+            sourceAlias "comment"
+            target "comment"
+            targetAlias "comments"
+            targetField "parentid"
+        }
+    }
+variables {
+        varContainer "generalSettings" {
+            vars {
+                boolVar "logIp",
+                listVar "orderComments" {
+                    documentation "Here you can decide, how to order main comments."
+                    items {
+                        listVarItem "ascending",
+                        listVarItem "descending"
+                    }
+                }
+            }
+        },
+        varContainer "spamHandling" {
+            sortOrder 2
+            vars {
+                listVar "spamProtector" {
+                    items {
+                        listVarItem "None",
+                        listVarItem "Intern",
+                        listVarItem "Captcha"
+                    }
+                }
+            }
+        }
+    }
+}

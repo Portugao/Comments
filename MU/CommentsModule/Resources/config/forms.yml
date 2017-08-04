@@ -1,0 +1,60 @@
+services:
+    # Form types
+    
+    mu_comments_module.form.type.commentquicknav:
+        class: MU\CommentsModule\Form\Type\QuickNavigation\CommentQuickNavType
+        arguments:
+            - "@translator.default"
+            - "@mu_comments_module.listentries_helper"
+        tags:
+            - { name: form.type }
+    
+    mu_comments_module.form.handler.comment:
+        class: MU\CommentsModule\Form\Handler\Comment\EditHandler
+        arguments:
+            - "@kernel"
+            - "@translator.default"
+            - "@form.factory"
+            - "@request_stack"
+            - "@router"
+            - "@logger"
+            - "@zikula_permissions_module.api.permission"
+            - "@zikula_extensions_module.api.variable"
+            - "@zikula_users_module.current_user"
+            - "@zikula_groups_module.group_application_repository"
+            - "@mu_comments_module.entity_factory"
+            - "@mu_comments_module.controller_helper"
+            - "@mu_comments_module.model_helper"
+            - "@mu_comments_module.workflow_helper"
+            - "@mu_comments_module.hook_helper"
+        calls:
+            - [setLockingApi, ["@?zikula_pagelock_module.api.locking"]]
+        tags:
+            - { name: form.type }
+    
+    mu_comments_module.form.type.comment:
+        class: MU\CommentsModule\Form\Type\CommentType
+        arguments:
+            - "@translator.default"
+            - "@mu_comments_module.entity_factory"
+            - "@mu_comments_module.collection_filter_helper"
+            - "@mu_comments_module.entity_display_helper"
+            - "@mu_comments_module.listentries_helper"
+        tags:
+            - { name: form.type }
+    
+    mu_comments_module.form.type.block.itemlist:
+        class: MU\CommentsModule\Block\Form\Type\ItemListBlockType
+        arguments:
+            - "@translator.default"
+        tags:
+            - { name: form.type }
+    
+    mu_comments_module.form.type.config:
+        class: MU\CommentsModule\Form\Type\ConfigType
+        arguments:
+            - "@translator.default"
+            - "@=service('zikula_extensions_module.api.variable').getAll('MUCommentsModule')"
+            - "@zikula_groups_module.group_repository"
+        tags:
+            - { name: form.type }

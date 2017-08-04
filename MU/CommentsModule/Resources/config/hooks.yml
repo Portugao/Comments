@@ -1,0 +1,41 @@
+services:
+    mu_comments_module.hook_subscriber.filter_hooks.comments:
+        class: MU\CommentsModule\HookSubscriber\CommentFilterHooksSubscriber
+        arguments:
+            - "@translator.default"
+        tags:
+            - { name: zikula.hook_subscriber, areaName: 'subscriber.mucommentsmodule.filter_hooks.comments' }
+
+    mu_comments_module.hook_subscriber.form_aware_hook.comments:
+        class: MU\CommentsModule\HookSubscriber\CommentFormAwareHookSubscriber
+        arguments:
+            - "@translator.default"
+        tags:
+            - { name: zikula.hook_subscriber, areaName: 'subscriber.mucommentsmodule.form_aware_hook.comments' }
+
+    mu_comments_module.hook_subscriber.ui_hooks.comments:
+        class: MU\CommentsModule\HookSubscriber\CommentUiHooksSubscriber
+        arguments:
+            - "@translator.default"
+        tags:
+            - { name: zikula.hook_subscriber, areaName: 'subscriber.mucommentsmodule.ui_hooks.comments' }
+
+    mu_comments_module.hook_provider.form_aware_hook.comments:
+        class: MU\CommentsModule\HookProvider\CommentFormAwareHookProvider
+        arguments:
+            - "@translator.default"
+            - "@session"
+            - "@form.factory"
+        tags:
+            - { name: zikula.hook_provider, areaName: 'provider.mucommentsmodule.form_aware_hook.comments' }
+
+    mu_comments_module.hook_provider.ui_hooks.comments:
+        class: MU\CommentsModule\HookProvider\CommentUiHooksProvider
+        arguments:
+            - "@translator.default"
+            - "@request_stack"
+            - "@mu_comments_module.entity_factory"
+            - "@twig"
+        tags:
+            - { name: zikula.hook_provider, areaName: 'provider.mucommentsmodule.ui_hooks.comments' }
+

@@ -1,0 +1,90 @@
+services:
+    # Helper services
+    mu_comments_module.collection_filter_helper:
+        class: MU\CommentsModule\Helper\CollectionFilterHelper
+        arguments:
+            - "@request_stack"
+            - "@zikula_users_module.current_user"
+            - "@=service('zikula_extensions_module.api.variable').get('MUCommentsModule', 'showOnlyOwnEntries', false)"
+    
+    mu_comments_module.controller_helper:
+        class: MU\CommentsModule\Helper\ControllerHelper
+        arguments:
+            - "@request_stack"
+            - "@router"
+            - "@form.factory"
+            - "@zikula_extensions_module.api.variable"
+            - "@mu_comments_module.entity_factory"
+            - "@mu_comments_module.collection_filter_helper"
+            - "@mu_comments_module.model_helper"
+    
+    mu_comments_module.entity_display_helper:
+        class: MU\CommentsModule\Helper\EntityDisplayHelper
+        arguments:
+            - "@translator.default"
+            - "@mu_comments_module.listentries_helper"
+    
+    mu_comments_module.hook_helper:
+        class: MU\CommentsModule\Helper\HookHelper
+        arguments:
+            - "@hook_dispatcher"
+    
+    mu_comments_module.listentries_helper:
+        class: MU\CommentsModule\Helper\ListEntriesHelper
+        arguments:
+            - "@translator.default"
+    
+    mu_comments_module.model_helper:
+        class: MU\CommentsModule\Helper\ModelHelper
+        arguments:
+            - "@mu_comments_module.entity_factory"
+    
+    mu_comments_module.notification_helper:
+        class: MU\CommentsModule\Helper\NotificationHelper
+        arguments:
+            - "@kernel"
+            - "@translator.default"
+            - "@session"
+            - "@router"
+            - "@request_stack"
+            - "@zikula_extensions_module.api.variable"
+            - "@twig"
+            - "@zikula_mailer_module.api.mailer"
+            - "@zikula_groups_module.group_repository"
+            - "@mu_comments_module.entity_display_helper"
+            - "@mu_comments_module.workflow_helper"
+    
+    mu_comments_module.search_helper:
+        class: MU\CommentsModule\Helper\SearchHelper
+        arguments:
+            - "@translator.default"
+            - "@zikula_permissions_module.api.permission"
+            - "@session"
+            - "@request_stack"
+            - "@mu_comments_module.entity_factory"
+            - "@mu_comments_module.controller_helper"
+            - "@mu_comments_module.entity_display_helper"
+        tags:
+            - { name: zikula.searchable_module, bundleName: MUCommentsModule }
+    
+    mu_comments_module.view_helper:
+        class: MU\CommentsModule\Helper\ViewHelper
+        arguments:
+            - "@twig"
+            - "@twig.loader"
+            - "@request_stack"
+            - "@zikula_permissions_module.api.permission"
+            - "@zikula_extensions_module.api.variable"
+            - "@zikula_core.common.theme.pagevars"
+            - "@mu_comments_module.controller_helper"
+    
+    mu_comments_module.workflow_helper:
+        class: MU\CommentsModule\Helper\WorkflowHelper
+        arguments:
+            - "@translator.default"
+            - "@workflow.registry"
+            - "@logger"
+            - "@zikula_permissions_module.api.permission"
+            - "@zikula_users_module.current_user"
+            - "@mu_comments_module.entity_factory"
+            - "@mu_comments_module.listentries_helper"

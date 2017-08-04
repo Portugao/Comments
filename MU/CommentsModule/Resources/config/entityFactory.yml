@@ -1,0 +1,12 @@
+services:
+    # Entity factory
+    mu_comments_module.entity_factory:
+        class: MU\CommentsModule\Entity\Factory\EntityFactory
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+            - "@mu_comments_module.entity_initialiser"
+            - "@mu_comments_module.collection_filter_helper"
+    
+    # Entity initialiser
+    mu_comments_module.entity_initialiser:
+        class: MU\CommentsModule\Entity\Factory\EntityInitialiser
