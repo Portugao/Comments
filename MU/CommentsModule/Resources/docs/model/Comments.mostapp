@@ -12,12 +12,15 @@ application "Comments" {
         generateScribitePlugins false
         generateTagSupport false
         generateMultiHookNeedles false
-        generateAtomTemplates false
+        generateAtomTemplates true
         generateCsvTemplates false
         generateXmlTemplates false
         generateJsonTemplates false
         generateKmlTemplates false
         generateIcsTemplates false
+    filterHookProvider ENABLED
+        versionAllGeneratedFiles false
+        generatePoweredByBacklinksIntoFooterTemplates false
     }
     entities {
         entity "comment" leading {
