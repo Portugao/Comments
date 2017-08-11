@@ -6,6 +6,7 @@
     {{ parent() }}
     {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.Validation.js'), 98) }}
     {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.EditFunctions.js'), 99) }}
+    {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.AutoCompletion.js'), 99) }}
 {% endblock %}
 {% block title mode == 'create' ? __('Create comment') : __('Edit comment') %}
 {% block admin_page_icon mode == 'create' ? 'plus' : 'pencil-square-o' %}
