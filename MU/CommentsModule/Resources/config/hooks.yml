@@ -20,6 +20,13 @@ services:
         tags:
             - { name: zikula.hook_subscriber, areaName: 'subscriber.mucommentsmodule.ui_hooks.comments' }
 
+    mu_comments_module.hook_provider.filter_hooks.provider:
+        class: MU\CommentsModule\HookProvider\FilterHooksProvider
+        arguments:
+            - "@translator.default"
+        tags:
+            - { name: zikula.hook_provider, areaName: 'provider.mucommentsmodule.filter_hooks.comments' }
+
     mu_comments_module.hook_provider.form_aware_hook.comments:
         class: MU\CommentsModule\HookProvider\CommentFormAwareHookProvider
         arguments:
