@@ -128,6 +128,7 @@ abstract class AbstractCollectionFilterHelper
             return $parameters;
         }
     
+        $parameters['comment'] = $this->request->query->get('comment', 0);
         $parameters['workflowState'] = $this->request->query->get('workflowState', '');
         $parameters['q'] = $this->request->query->get('q', '');
     

@@ -116,9 +116,22 @@ abstract class AbstractCommentEntity extends EntityAccess
     
     
     /**
-     * Unidirectional - One comment [comment] has many comments [comments] (INVERSE SIDE).
+     * Bidirectional - Many comments [comments] are linked by one comment [comment] (OWNING SIDE).
      *
-     * @ORM\ManyToMany(targetEntity="MU\CommentsModule\Entity\CommentEntity")
+     * @ORM\ManyToOne(targetEntity="MU\CommentsModule\Entity\CommentEntity", inversedBy="comments")
+     * @ORM\JoinTable(name="mu_comments_comment",
+     *      joinColumns={@ORM\JoinColumn(name="parentid", referencedColumnName="id" )},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="id", referencedColumnName="id" )}
+     * )
+     * @Assert\Type(type="MU\CommentsModule\Entity\CommentEntity")
+     * @var \MU\CommentsModule\Entity\CommentEntity $comment
+     */
+    protected $comment;
+    
+    /**
+     * Bidirectional - One comment [comment] has many comments [comments] (INVERSE SIDE).
+     *
+     * @ORM\OneToMany(targetEntity="MU\CommentsModule\Entity\CommentEntity", mappedBy="comment")
      * @ORM\JoinTable(name="mu_comments_commentcomments",
      *      joinColumns={@ORM\JoinColumn(name="id", referencedColumnName="id" )},
      *      inverseJoinColumns={@ORM\JoinColumn(name="parentid", referencedColumnName="id" )}
@@ -383,6 +396,28 @@ abstract class AbstractCommentEntity extends EntityAccess
     
     
     /**
+     * Returns the comment.
+     *
+     * @return \MU\CommentsModule\Entity\CommentEntity
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
+    
+    /**
+     * Sets the comment.
+     *
+     * @param \MU\CommentsModule\Entity\CommentEntity $comment
+     *
+     * @return void
+     */
+    public function setComment($comment = null)
+    {
+        $this->comment = $comment;
+    }
+    
+    /**
      * Returns the comments.
      *
      * @return \MU\CommentsModule\Entity\CommentEntity[]
@@ -419,6 +454,7 @@ abstract class AbstractCommentEntity extends EntityAccess
     public function addComments(\MU\CommentsModule\Entity\CommentEntity $comment)
     {
         $this->comments->add($comment);
+        $comment->setComment($this);
     }
     
     /**
@@ -431,6 +467,7 @@ abstract class AbstractCommentEntity extends EntityAccess
     public function removeComments(\MU\CommentsModule\Entity\CommentEntity $comment)
     {
         $this->comments->removeElement($comment);
+        $comment->setComment(null);
     }
     
     

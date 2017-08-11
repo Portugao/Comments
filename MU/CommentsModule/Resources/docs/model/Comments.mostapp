@@ -66,9 +66,8 @@ application "Comments" {
         }
     }
     relations {
-        one2many {
-            source 
-            "comment"
+        one2many bidirectional {
+            source "comment"
             sourceAlias "comment"
             target "comment"
             targetAlias "comments"
@@ -85,6 +84,11 @@ variables {
                         listVarItem "ascending",
                         listVarItem "descending"
                     }
+                }
+            ,
+                intVar "levelsOfComments" {
+                    documentation "Maximum of level is 5."
+                    value "2"
                 }
             }
         },

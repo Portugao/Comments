@@ -5,6 +5,8 @@ services:
         class: MU\CommentsModule\Form\Type\QuickNavigation\CommentQuickNavType
         arguments:
             - "@translator.default"
+            - "@request_stack"
+            - "@mu_comments_module.entity_display_helper"
             - "@mu_comments_module.listentries_helper"
         tags:
             - { name: form.type }

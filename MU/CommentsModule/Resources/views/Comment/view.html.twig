@@ -30,6 +30,7 @@
                 <col id="cText" />
                 <col id="cParentid" />
                 <col id="cMainId" />
+                <col id="cComment" />
             </colgroup>
             <thead>
             <tr>
@@ -64,6 +65,9 @@
                 </th>
                 <th id="hMainId" scope="col" class="text-right">
                     <a href="{{ sort.mainId.url }}" title="{{ __f('Sort by %s', {'%s': 'main id'}) }}" class="{{ sort.mainId.class }}">{{ __('Main id') }}</a>
+                </th>
+                <th id="hComment" scope="col" class="text-left">
+                    <a href="{{ sort.comment.url }}" title="{{ __f('Sort by %s', {'%s': 'comment'}) }}" class="{{ sort.comment.class }}">{{ __('Comment') }}</a>
                 </th>
             </tr>
             </thead>
@@ -111,10 +115,20 @@
                 <td headers="hMainId" class="text-right">
                     {{ comment.mainId }}
                 </td>
+                <td headers="hComment" class="text-left">
+                    {% if comment.comment|default %}
+                        <a href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'display', {'id': comment.comment.getId()}) }}">{% spaceless %}
+                          {{ comment.comment|mucommentsmodule_formattedTitle }}
+                        {% endspaceless %}</a>
+                        <a id="commentItem{{ comment.getKey() }}_rel_{{ comment.comment.getKey() }}Display" href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'display', {'id': comment.comment.getId(), raw: 1}) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="mucomments-inline-window hidden" data-modal-title="{{ comment.comment|mucommentsmodule_formattedTitle|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
+                    {% else %}
+                        {{ __('Not set.') }}
+                    {% endif %}
+                </td>
             </tr>
         {% else %}
             <tr class="z-{{ routeArea == 'admin' ? 'admin' : 'data' }}tableempty">
-                <td class="text-left" colspan="{% if routeArea == 'admin' %}10{% else %}9{% endif %}">
+                <td class="text-left" colspan="{% if routeArea == 'admin' %}11{% else %}10{% endif %}">
             {{ __('No comments found.') }}
               </td>
             </tr>

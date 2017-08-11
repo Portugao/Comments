@@ -651,7 +651,7 @@ abstract class AbstractCommentRepository extends EntityRepository
      */
     protected function addJoinsToSelection()
     {
-        $selection = ', tblComments';
+        $selection = ', tblComment, tblComments';
     
         return $selection;
     }
@@ -665,6 +665,7 @@ abstract class AbstractCommentRepository extends EntityRepository
      */
     protected function addJoinsToFrom(QueryBuilder $qb)
     {
+        $qb->leftJoin('tbl.comment', 'tblComment');
         $qb->leftJoin('tbl.comments', 'tblComments');
     
         return $qb;

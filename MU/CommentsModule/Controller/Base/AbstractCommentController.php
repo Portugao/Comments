@@ -150,6 +150,7 @@ abstract class AbstractCommentController extends AbstractController
             new Column('text'),
             new Column('parentid'),
             new Column('mainId'),
+            new Column('comment'),
             new Column('createdBy'),
             new Column('createdDate'),
             new Column('updatedBy'),

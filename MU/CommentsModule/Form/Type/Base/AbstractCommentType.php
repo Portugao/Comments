@@ -12,6 +12,7 @@
 
 namespace MU\CommentsModule\Form\Type\Base;
 
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -100,6 +101,7 @@ abstract class AbstractCommentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $this->addEntityFields($builder, $options);
+        $this->addIncomingRelationshipFields($builder, $options);
         $this->addAdditionalNotificationRemarksField($builder, $options);
         $this->addModerationFields($builder, $options);
         $this->addReturnControlField($builder, $options);
@@ -193,6 +195,37 @@ abstract class AbstractCommentType extends AbstractType
             ],
             'required' => false,
             'scale' => 0
+        ]);
+    }
+
+    /**
+     * Adds fields for incoming relationships.
+     *
+     * @param FormBuilderInterface $builder The form builder
+     * @param array                $options The options
+     */
+    public function addIncomingRelationshipFields(FormBuilderInterface $builder, array $options)
+    {
+        $queryBuilder = function(EntityRepository $er) {
+            // select without joins
+            return $er->getListQueryBuilder('', '', false);
+        };
+        $entityDisplayHelper = $this->entityDisplayHelper;
+        $choiceLabelClosure = function ($entity) use ($entityDisplayHelper) {
+            return $entityDisplayHelper->getFormattedTitle($entity);
+        };
+        $builder->add('comment', 'Symfony\Bridge\Doctrine\Form\Type\EntityType', [
+            'class' => 'MUCommentsModule:CommentEntity',
+            'choice_label' => $choiceLabelClosure,
+            'multiple' => false,
+            'expanded' => false,
+            'query_builder' => $queryBuilder,
+            'placeholder' => $this->__('Please choose an option'),
+            'required' => false,
+            'label' => $this->__('Comment'),
+            'attr' => [
+                'title' => $this->__('Choose the comment')
+            ]
         ]);
     }
 

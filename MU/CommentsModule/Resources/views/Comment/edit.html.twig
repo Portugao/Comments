@@ -33,6 +33,10 @@
             </div>
         </fieldset>
         
+        {{ include(
+            '@MUCommentsModule/Comment/includeSelectOne.html.twig',
+            {group: 'comment', alias: 'comment', aliasReverse: 'comments', mandatory: false, idPrefix: 'commentsComment_Comment', linkingItem: comment, displayMode: 'choices'}
+        ) }}
         {% if mode != 'create' %}
             {{ include('@MUCommentsModule/Helper/includeStandardFieldsEdit.html.twig', {obj: comment}) }}
         {% endif %}

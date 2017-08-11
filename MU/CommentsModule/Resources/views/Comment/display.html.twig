@@ -65,6 +65,19 @@
             <dt>{{ __('Main id') }}</dt>
             <dd>{{ comment.mainId }}</dd>
         {% endif %}
+        {% if comment.comment|default %}
+            <dt>{{ __('Comment') }}</dt>
+            <dd>
+              {% if not isQuickView %}
+                  <a href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'display', {'id': comment.comment.getId()}) }}">{% spaceless %}
+                    {{ comment.comment|mucommentsmodule_formattedTitle }}
+                  {% endspaceless %}</a>
+                  <a id="commentItem{{ comment.comment.getKey() }}Display" href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'display', {'id': comment.comment.getId(), raw: 1}) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="mucomments-inline-window hidden" data-modal-title="{{ comment.comment|mucommentsmodule_formattedTitle|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
+              {% else %}
+                  {{ comment.comment|mucommentsmodule_formattedTitle }}
+              {% endif %}
+            </dd>
+        {% endif %}
         
     </dl>
 
