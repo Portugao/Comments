@@ -12,6 +12,10 @@
     <h3>{{ __('Assigned comments') }}</h3>
     {% if context == 'hookDisplayView' and hasEditPermission %}
         {% set entityNameTranslated = __('comment') %}
+        {{ pageAddAsset('stylesheet', asset('jquery-ui/themes/base/jquery-ui.min.css')) }}
+        {{ pageAddAsset('stylesheet', asset('bootstrap-jqueryui/bootstrap-jqueryui.min.css')) }}
+        {{ pageAddAsset('javascript', asset('jquery-ui/jquery-ui.min.js')) }}
+        {{ pageAddAsset('javascript', asset('bootstrap-jqueryui/bootstrap-jqueryui.min.js')) }}
         {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.HookAssignment.js'), 99) }}
         {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.AutoCompletion.js'), 99) }}
     {% endif %}
