@@ -96,7 +96,8 @@ abstract class AbstractEditHandler extends EditHandler
             'mode' => $this->templateParameters['mode'],
             'actions' => $this->templateParameters['actions'],
             'has_moderate_permission' => $this->permissionApi->hasPermission($this->permissionComponent, $this->idValue . '::', ACCESS_MODERATE),
-            'filter_by_ownership' => !$this->permissionApi->hasPermission($this->permissionComponent, $this->idValue . '::', ACCESS_ADD)
+            'filter_by_ownership' => !$this->permissionApi->hasPermission($this->permissionComponent, $this->idValue . '::', ACCESS_ADD),
+            'inline_usage' => $this->templateParameters['inlineUsage']
         ];
     
         $workflowRoles = $this->prepareWorkflowAdditions(false);
@@ -274,6 +275,18 @@ abstract class AbstractEditHandler extends EditHandler
      */
     protected function getRedirectUrl($args)
     {
+        if (true === $this->templateParameters['inlineUsage']) {
+            $commandName = substr($args['commandName'], 0, 6) == 'submit' ? 'create' : $args['commandName'];
+            $urlArgs = [
+                'idPrefix' => $this->idPrefix,
+                'commandName' => $commandName,
+                'id' => $this->idValue
+            ];
+    
+            // inline usage, return to special function for closing the modal window instance
+            return $this->router->generate('mucommentsmodule_' . $this->objectTypeLower . '_handleinlineredirect', $urlArgs);
+        }
+    
         if ($this->repeatCreateAction) {
             return $this->repeatReturnUrl;
         }
