@@ -14,10 +14,46 @@ namespace MU\CommentsModule\HookProvider;
 
 use MU\CommentsModule\HookProvider\Base\AbstractCommentUiHooksProvider;
 
+use Zikula\Bundle\HookBundle\Hook\DisplayHookResponse;
+use Zikula\Bundle\HookBundle\Hook\Hook;
+
 /**
  * Implementation class for ui hooks provider.
  */
 class CommentUiHooksProvider extends AbstractCommentUiHooksProvider
 {
-    // feel free to add your own convenience methods here
+    /**
+     * Returns the response for a display hook of a given context.
+     *
+     * @param Hook   $hook
+     * @param string $context
+     *
+     * @return DisplayHookResponse
+     */
+    protected function renderDisplayHookResponse(Hook $hook, $context)
+    {
+        list ($assignments, $assignedEntities) = $this->selectAssignedEntities($hook);
+        $template = '@MUCommentsModule/Comment/includeDisplayItemListMany2.html.twig';
+
+        $templateParameters = [
+            'items' => $assignedEntities,
+            'context' => $context,
+            'routeArea' => ''
+        ];
+
+        if ($context == 'hookDisplayView') {
+            // add context information to template parameters in order to provide means
+            // for adding new assignments and removing existing assignments
+            $templateParameters['assignments'] = $assignments;
+            $templateParameters['subscriberOwner'] = $hook->getCaller();
+            $templateParameters['subscriberAreaId'] = $hook->getAreaId();
+            $templateParameters['subscriberObjectId'] = $hook->getId();
+            $url = $hook->getUrl();
+            $templateParameters['subscriberUrl'] = (null !== $url && is_object($url)) ? $url->serialize() : serialize([]);
+        }
+
+        $output = $this->templating->render($template, $templateParameters);
+
+        return new DisplayHookResponse($this->getAreaName(), $output);
+    }
 }
