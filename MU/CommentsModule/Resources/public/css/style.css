@@ -131,3 +131,19 @@ div.mucommentsmodule-view .avatar img {
     width: auto;
     max-height: 24px;
 }
+
+.comment-user {
+	border-right: 1px solid #eee;
+}
+
+.comment-avatar {
+	width: 40px;
+}
+
+.comment-header {
+	font-weight: bolder;
+}
+
+.comment-text {
+	border-top: 1px solid #eee;
+}
