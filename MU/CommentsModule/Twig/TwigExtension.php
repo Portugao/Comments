@@ -13,11 +13,35 @@
 namespace MU\CommentsModule\Twig;
 
 use MU\CommentsModule\Twig\Base\AbstractTwigExtension;
+use Symfony\Component\HttpKernel\Controller\ControllerReference;
+use ServiceUtil;
 
 /**
  * Twig extension implementation class.
  */
 class TwigExtension extends AbstractTwigExtension
 {
-    // feel free to add your own Twig extension methods here
+     /** Returns a list of custom Twig functions.
+     *
+     * @return array
+     */
+    public function getFunctions()
+    {
+    	$functions = parent::getFunctions();
+    	$functions[] = new \Twig_SimpleFunction('mucommentsmodule_showEditForm', [$this, 'showEditForm'], ['is_safe' => ['html']]);
+ 	
+    	return $functions;
+    }
+    
+    public function showEditForm()
+    {
+    	$request = \ServiceUtil::get('request_stack')->getMasterRequest();
+    	$request->attributes->set('_zkModule', 'MUCommentsModule');
+    
+    	$fragmentHandler = \ServiceUtil::get('fragment.handler');
+    
+    	$ref = new ControllerReference('MUCommentsModule:Comment:edit');
+    
+    	return $fragmentHandler->render($ref, 'inline', []);
+    }
 }
