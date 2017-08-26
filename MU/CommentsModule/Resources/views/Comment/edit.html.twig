@@ -63,7 +63,7 @@
                 </div>
             </fieldset>
         {% endif %}
-        
+        <div class="hidden">
         {# include return control #}
         {% if mode == 'create' %}
             <fieldset>
@@ -71,6 +71,7 @@
                 {{ form_row(form.repeatCreation) }}
             </fieldset>
         {% endif %}
+        </div>
         
         {# include possible submit actions #}
         <div class="form-group form-buttons">
@@ -84,14 +85,7 @@
         </div>
         {{ form_end(form) }}
         {% set hookId = mode != 'create' ? comment.id : null %}
-        {% set hooks = notifyDisplayHooks(eventName='mucommentsmodule.ui_hooks.comments.form_edit', id=hookId) %}
-        {% if hooks is iterable and hooks|length > 0 %}
-            <h3>{{ __('Hooks') }}</h3>
-            {% for providerArea, hook in hooks if providerArea != 'provider.scribite.ui_hooks.editor' %}
-                <h4>{{ providerArea }}</h4>
-                {{ hook }}
-            {% endfor %}
-        {% endif %}
+        {{ notifyDisplayHooks(eventName='mucommentsmodule.ui_hooks.comments.form_edit', id=hookId) }}
         
     </div>
 {% endblock %}
