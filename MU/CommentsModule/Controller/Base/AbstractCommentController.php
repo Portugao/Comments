@@ -431,7 +431,7 @@ abstract class AbstractCommentController extends AbstractController
             $repository = $this->get('mu_comments_module.entity_factory')->getRepository('comment');
             $comment = $repository->selectById($id);
             if (null !== $comment) {
-                $searchTerm = $comment->getWorkflowState();
+                $searchTerm = $comment->getTitle();
             }
         }
         

@@ -159,12 +159,18 @@ abstract class AbstractCommentUiHooksProvider implements HookProviderInterface
 
         // update url information for assignments of updated data object
         $qb = $this->entityFactory->getObjectManager()->createQueryBuilder();
-        $qb->update($this->getHookAssignmentEntity(), 'tbl')
-           ->set('tbl.subscriberUrl', $url->toArray());
+        $qb->select('tbl')
+           ->from($this->getHookAssignmentEntity(), 'tbl');
         $qb = $this->addContextFilters($qb, $hook);
 
         $query = $qb->getQuery();
-        $query->execute();
+        $assignments = $query->getResult();
+
+        foreach ($assignments as $assignment) {
+            $assignment->setSubscriberUrl($url->toArray());
+        }
+
+        $this->entityFactory->getObjectManager()->flush();
     }
 
     /**

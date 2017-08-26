@@ -11,8 +11,8 @@ services:
         tags:
             - { name: form.type }
     
-    mu_comments_module.form.handler.comment:
-        class: MU\CommentsModule\Form\Handler\Comment\EditHandler
+    mu_comments_module.form.handler.common:
+        abstract: true
         arguments:
             - "@kernel"
             - "@translator.default"
@@ -31,8 +31,11 @@ services:
             - "@mu_comments_module.hook_helper"
         calls:
             - [setLockingApi, ["@?zikula_pagelock_module.api.locking"]]
-        tags:
-            - { name: form.type }
+    
+    
+    mu_comments_module.form.handler.comment:
+        class: MU\CommentsModule\Form\Handler\Comment\EditHandler
+        parent: mu_comments_module.form.handler.common
     
     mu_comments_module.form.type.comment:
         class: MU\CommentsModule\Form\Type\CommentType

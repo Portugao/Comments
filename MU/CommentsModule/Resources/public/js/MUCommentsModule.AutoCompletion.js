@@ -195,7 +195,7 @@ function mUCommentsSelectRelatedItem(objectType, idPrefix, selectedListItem)
 function mUCommentsSelectHookItem(objectType, idPrefix, selectedListItem)
 {
     mUCommentsResetRelatedItemForm(idPrefix);
-    mUCommentsAttachHookObject(jQuery(idPrefix + 'AddLink'), selectedListItem.id);
+    mUCommentsAttachHookObject(jQuery('#' + idPrefix + 'AddLink'), selectedListItem.id);
 }
 
 /**

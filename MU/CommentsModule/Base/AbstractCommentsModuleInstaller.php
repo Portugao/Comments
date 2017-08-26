@@ -128,14 +128,8 @@ abstract class AbstractCommentsModuleInstaller extends AbstractExtensionInstalle
      */
     protected function updateModVarsTo14()
     {
-        $dbName = $this->getDbName();
         $conn = $this->getConnection();
-    
-        $conn->executeQuery("
-            UPDATE $dbName.module_vars
-            SET modname = 'MUCommentsModule'
-            WHERE modname = 'Comments';
-        ");
+        $conn->update('module_vars', ['modname' => 'MUCommentsModule'], ['modname' => 'Comments']);
     }
     
     /**
@@ -144,14 +138,7 @@ abstract class AbstractCommentsModuleInstaller extends AbstractExtensionInstalle
     protected function updateExtensionInfoFor14()
     {
         $conn = $this->getConnection();
-        $dbName = $this->getDbName();
-    
-        $conn->executeQuery("
-            UPDATE $dbName.modules
-            SET name = 'MUCommentsModule',
-                directory = 'MU/CommentsModule'
-            WHERE name = 'Comments';
-        ");
+        $conn->update('modules', ['name' => 'MUCommentsModule', 'directory' => 'MU/CommentsModule'], ['name' => 'Comments']);
     }
     
     /**
@@ -160,12 +147,10 @@ abstract class AbstractCommentsModuleInstaller extends AbstractExtensionInstalle
     protected function renamePermissionsFor14()
     {
         $conn = $this->getConnection();
-        $dbName = $this->getDbName();
-    
         $componentLength = strlen('Comments') + 1;
     
         $conn->executeQuery("
-            UPDATE $dbName.group_perms
+            UPDATE group_perms
             SET component = CONCAT('MUCommentsModule', SUBSTRING(component, $componentLength))
             WHERE component LIKE 'Comments%';
         ");
@@ -177,7 +162,6 @@ abstract class AbstractCommentsModuleInstaller extends AbstractExtensionInstalle
     protected function renameTablesFor14()
     {
         $conn = $this->getConnection();
-        $dbName = $this->getDbName();
     
         $oldPrefix = 'comments_';
         $oldPrefixLength = strlen($oldPrefix);
@@ -194,8 +178,8 @@ abstract class AbstractCommentsModuleInstaller extends AbstractExtensionInstalle
             $newTableName = str_replace($oldPrefix, $newPrefix, $tableName);
     
             $conn->executeQuery("
-                RENAME TABLE $dbName.$tableName
-                TO $dbName.$newTableName;
+                RENAME TABLE $tableName
+                TO $newTableName;
             ");
         }
     }
@@ -214,49 +198,32 @@ abstract class AbstractCommentsModuleInstaller extends AbstractExtensionInstalle
     protected function updateHookNamesFor14()
     {
         $conn = $this->getConnection();
-        $dbName = $this->getDbName();
     
-        $conn->executeQuery("
-            UPDATE $dbName.hook_area
-            SET owner = 'MUCommentsModule'
-            WHERE owner = 'Comments';
-        ");
+        $conn->update('hook_area', ['owner' => 'MUCommentsModule'], ['owner' => 'Comments']);
     
         $componentLength = strlen('subscriber.comments') + 1;
         $conn->executeQuery("
-            UPDATE $dbName.hook_area
+            UPDATE hook_area
             SET areaname = CONCAT('subscriber.mucommentsmodule', SUBSTRING(areaname, $componentLength))
             WHERE areaname LIKE 'subscriber.comments%';
         ");
     
-        $conn->executeQuery("
-            UPDATE $dbName.hook_binding
-            SET sowner = 'MUCommentsModule'
-            WHERE sowner = 'Comments';
-        ");
+        $conn->update('hook_binding', ['sowner' => 'MUCommentsModule'], ['sowner' => 'Comments']);
     
-        $conn->executeQuery("
-            UPDATE $dbName.hook_runtime
-            SET sowner = 'MUCommentsModule'
-            WHERE sowner = 'Comments';
-        ");
+        $conn->update('hook_runtime', ['sowner' => 'MUCommentsModule'], ['sowner' => 'Comments']);
     
         $componentLength = strlen('comments') + 1;
         $conn->executeQuery("
-            UPDATE $dbName.hook_runtime
+            UPDATE hook_runtime
             SET eventname = CONCAT('mucommentsmodule', SUBSTRING(eventname, $componentLength))
             WHERE eventname LIKE 'comments%';
         ");
     
-        $conn->executeQuery("
-            UPDATE $dbName.hook_subscriber
-            SET owner = 'MUCommentsModule'
-            WHERE owner = 'Comments';
-        ");
+        $conn->update('hook_subscriber', ['owner' => 'MUCommentsModule'], ['owner' => 'Comments']);
     
         $componentLength = strlen('comments') + 1;
         $conn->executeQuery("
-            UPDATE $dbName.hook_subscriber
+            UPDATE hook_subscriber
             SET eventname = CONCAT('mucommentsmodule', SUBSTRING(eventname, $componentLength))
             WHERE eventname LIKE 'comments%';
         ");
@@ -268,13 +235,8 @@ abstract class AbstractCommentsModuleInstaller extends AbstractExtensionInstalle
     protected function updateWorkflowsFor14()
     {
         $conn = $this->getConnection();
-        $dbName = $this->getDbName();
-    
-        $conn->executeQuery("
-            UPDATE $dbName.workflows
-            SET module = 'MUCommentsModule'
-            WHERE module = 'Comments';
-        ");
+        $conn->update('workflows', ['module' => 'MUCommentsModule'], ['module' => 'Comments']);
+        $conn->update('workflows', ['obj_table' => 'CommentEntity'], ['module' => 'MUCommentsModule', 'obj_table' => 'comment']);
     }
     
     /**
@@ -285,19 +247,8 @@ abstract class AbstractCommentsModuleInstaller extends AbstractExtensionInstalle
     protected function getConnection()
     {
         $entityManager = $this->container->get('doctrine.orm.default_entity_manager');
-        $connection = $entityManager->getConnection();
     
-        return $connection;
-    }
-    
-    /**
-     * Returns the name of the default system database.
-     *
-     * @return string the database name
-     */
-    protected function getDbName()
-    {
-        return $this->container->getParameter('database_name');
+        return $entityManager->getConnection();
     }
     
     /**

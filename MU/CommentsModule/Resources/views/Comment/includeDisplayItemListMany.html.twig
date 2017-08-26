@@ -10,12 +10,14 @@
 {% set hasEditPermission = hasPermission('MUCommentsModule:Comment:', '::', 'ACCESS_COMMENT') %}
 {% if context != 'display' %}
     <h3>{{ __('Assigned comments') }}</h3>
+    {{ pageAddAsset('stylesheet', zasset('@MUCommentsModule:css/style.css')) }}
+    {{ pageAddAsset('stylesheet', asset('jquery-ui/themes/base/jquery-ui.min.css')) }}
+    {{ pageAddAsset('stylesheet', asset('bootstrap-jqueryui/bootstrap-jqueryui.min.css')) }}
+    {{ pageAddAsset('javascript', asset('jquery-ui/jquery-ui.min.js')) }}
+    {{ pageAddAsset('javascript', asset('bootstrap-jqueryui/bootstrap-jqueryui.min.js')) }}
+    {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.js'), 99) }}
     {% if context == 'hookDisplayView' and hasEditPermission %}
         {% set entityNameTranslated = __('comment') %}
-        {{ pageAddAsset('stylesheet', asset('jquery-ui/themes/base/jquery-ui.min.css')) }}
-        {{ pageAddAsset('stylesheet', asset('bootstrap-jqueryui/bootstrap-jqueryui.min.css')) }}
-        {{ pageAddAsset('javascript', asset('jquery-ui/jquery-ui.min.js')) }}
-        {{ pageAddAsset('javascript', asset('bootstrap-jqueryui/bootstrap-jqueryui.min.js')) }}
         {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.HookAssignment.js'), 99) }}
         {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.AutoCompletion.js'), 99) }}
     {% endif %}
@@ -59,12 +61,12 @@
     {% set idPrefix = 'hookAssignmentComment' %}
     {% set addLinkText = __f('Attach %name%', {'%name%': entityNameTranslated}) %}
     <div id="{{ idPrefix }}LiveSearch" class="mucommentsmodule-add-hook-assignment">
-        <a id="{{ idPrefix }}AddLink" href="javascript:void(0);" title="{{ addLinkText|e('html_attr') }}" class="attach-mucommentsmodule-object hidden" data-owner="{{ subscriberOwner|e('html_attr') }}" data-area-id="{{ subscriberAreaId|e('html_attr') }}" data-object-id="{{ subscriberObjectId|e('html_attr') }}" data-url="{{ subscriberUrl|e('html_attr') }}" data-assigned-entity="comment"><i class="fa fa-link"></i> {{ addLinkText }}
+        <a id="{{ idPrefix }}AddLink" href="javascript:void(0);" title="{{ addLinkText|e('html_attr') }}" class="attach-mucommentsmodule-object hidden" data-owner="{{ subscriberOwner|e('html_attr') }}" data-area-id="{{ subscriberAreaId|e('html_attr') }}" data-object-id="{{ subscriberObjectId|e('html_attr') }}" data-url="{{ subscriberUrl|e('html_attr') }}" data-assigned-entity="comment"><i class="fa fa-link"></i> {{ addLinkText }}</a>
         <div id="{{ idPrefix }}AddFields" class="mucommentsmodule-autocomplete{{ withImage ? '-with-image' : '' }}">
             <label for="{{ idPrefix }}Selector">{{ __f('Find %name%', {'%name%': entityNameTranslated}) }}</label>
             <br />
             <i class="fa fa-search" title="{{ __f('Search %name%', {'%name%': entityNameTranslated})|e('html_attr') }}"></i>
-            <input type="hidden" name="{{ idPrefix }} id="{{ idPrefix }}" value="" />
+            <input type="hidden" name="{{ idPrefix }}" id="{{ idPrefix }}" value="" />
             <input type="hidden" name="{{ idPrefix }}Multiple" id="{{ idPrefix }}Multiple" value="0" />
             <input type="hidden" name="{{ idPrefix }}Mode" id="{{ idPrefix }}Mode" value="0" />
             <input type="hidden" name="{{ idPrefix }}ExcludedIds" id="{{ idPrefix }}ExcludedIds" value="{% for assignment in assignments %}{% if not loop.first %},{% endif %}{{ assignment.getAssignedId() }}{% endfor %}" />

@@ -15,7 +15,7 @@ namespace MU\CommentsModule\Form\Handler\Comment;
 use MU\CommentsModule\Form\Handler\Comment\Base\AbstractEditHandler;
 
 /**
- * This handler class handles the page events of the Form called by the mUCommentsModule_comment_edit() function.
+ * This handler class handles the page events of editing forms.
  * It aims on the comment object type.
  */
 class EditHandler extends AbstractEditHandler

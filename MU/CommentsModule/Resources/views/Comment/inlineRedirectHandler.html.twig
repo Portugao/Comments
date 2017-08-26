@@ -12,7 +12,7 @@
             // close window from parent document
             ( function($) {
                 $(document).ready(function() {
-                    mUCommentsCloseWindowFromInside('{{ idPrefix|e('js') }}', {% if commandName == 'create' %}{{ itemId }}, '{{ searchTerm|default('') }}'{% else %}0, ''{% endif %});
+                    mUCommentsCloseWindowFromInside('{{ idPrefix|e('js') }}', {% if commandName in ['submit', 'create', 'approve'] %}{{ itemId }}, '{{ searchTerm|default('') }}'{% else %}0, ''{% endif %});
                 });
             })(jQuery);
         /* ]]> */
