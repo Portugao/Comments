@@ -136,20 +136,19 @@ abstract class AbstractConfigType extends AbstractType
                 'choices_as_values' => true,
                 'multiple' => false
             ])
-            ->add('levelsOfComments', IntegerType::class, [
+            ->add('levelsOfComments', ChoiceType::class, [
                 'label' => $this->__('Levels of comments') . ':',
-                'label_attr' => [
-                    'class' => 'tooltips',
-                    'title' => $this->__('Maximum of level is 5.')
-                ],
-                'help' => $this->__('Maximum of level is 5.'),
-                'required' => false,
-                'data' => isset($this->moduleVars['levelsOfComments']) ? intval($this->moduleVars['levelsOfComments']) : intval(2),
-                'empty_data' => intval('2'),
+                'data' => isset($this->moduleVars['levelsOfComments']) ? $this->moduleVars['levelsOfComments'] : '',
+                'empty_data' => '',
                 'attr' => [
-                    'maxlength' => 255,
-                    'title' => $this->__('Enter the levels of comments.') . ' ' . $this->__('Only digits are allowed.')
-                ],'scale' => 0
+                    'title' => $this->__('Choose the levels of comments.')
+                ],'choices' => [
+                    $this->__('One') => 'one',
+                    $this->__('Two') => 'two',
+                    $this->__('Three') => 'three'
+                ],
+                'choices_as_values' => true,
+                'multiple' => false
             ])
         ;
     }
