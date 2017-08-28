@@ -45,7 +45,7 @@ abstract class AbstractCommentsModuleInstaller extends AbstractExtensionInstalle
         // set up all our vars with initial values
         $this->setVar('logIp', false);
         $this->setVar('orderComments', '');
-        $this->setVar('levelsOfComments', '2');
+        $this->setVar('levelsOfComments',  'one' );
         $this->setVar('spamProtector', '');
         $this->setVar('moderationGroupForComments', '2');
         $this->setVar('commentEntriesPerPage', '10');
