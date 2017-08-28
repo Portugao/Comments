@@ -21,6 +21,8 @@ application "Comments" {
     filterHookProvider ENABLED
         versionAllGeneratedFiles false
         generatePoweredByBacklinksIntoFooterTemplates false
+    generateTests false
+        markFiles "Controller/AjaxController.php,\r\nEntity/Repository/CommentRepository.php,\r\nResources/views/base.html.twig,\r\nResources/views/Comment/edit.html.twig,\r\nTwig/TwigExtension.php"
     }
     entities {
         entity "comment" leading {
@@ -86,9 +88,13 @@ variables {
                     }
                 }
             ,
-                intVar "levelsOfComments" {
-                    documentation "Maximum of level is 5."
-                    value "2"
+                listVar "levelsOfComments" {
+                    value ""
+                    items {
+                        listVarItem default "one",
+                        listVarItem "two",
+                        listVarItem "three"
+                    }
                 }
             }
         },
