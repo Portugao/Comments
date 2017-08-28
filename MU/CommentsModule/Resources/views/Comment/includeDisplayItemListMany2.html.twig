@@ -20,7 +20,6 @@
         {% set entityNameTranslated = __('comment') %}
         {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.HookAssignment.js'), 99) }}
         {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.AutoCompletion.js'), 99) }}
-        {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.CreateComments.js'), 99) }}
     {% endif %}
 {% endif %}
 {% set levels = getModVar('MUCommentsModule', 'levelsOfComments') %}
@@ -41,7 +40,7 @@
     <div class="comment-content">
         <div class="comment-header">{{ item.title }}</div>
         <div id="commenttext{{ item.id }}" class="comment-text">{{ item.text }} 
-        {% if levels >= 1 %}
+        {% if levels == 'one' or levels == 'two' or levels == 'three' %}
         <span class="answer-container"><a title="{{ item.id }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
         {% endif %}
         <noscript>
@@ -62,7 +61,7 @@
                 {% set profileLink = answer.createdBy.getUid()|profileLinkByUserId() %} 
                 {{ profileLink|raw }} 
                 {{ answer.text }} 
-                {% if levels >= 2 %}
+                {% if levels == 'one' or levels == 'two' %}
                 <span class="answer-container"><a title="{{ answer.id }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
                 {% endif %}
                 {% if answer.comments %}
@@ -146,11 +145,11 @@
            if(e.shiftKey == 0) {
                 e.preventDefault();
                 var text = MU(this).find('#answer-form-text').val();
-                var commentId = MU(this).find('#parentcomment').attr('value');
+                var commentId = MU(this).find('#parentcomment').val();
                 if(MU('#anser-form-text').val() != '') {
-                    MU('.this-answer-form').parent().append('<img src="zik15/images/ajax/indicator_circle.gif" />');
+                    MU('.this-answer-form').parent().append('<img class="commentimg" src="/zik15/images/ajax/indicator_circle.gif" />');
                     MU('.this-answer-form').remove();
-                    jQuery.ajax({
+                    MU.ajax({
                         method: 'POST',
                         url: '{{ path('mucommentsmodule_ajax_' ~ routeArea ~ 'answer') }}',
 
@@ -164,8 +163,9 @@
                             assignedEntity: 'comment'
                         },
                         success: function(data) {
-                        var out = '<div class="comments-answers"><span class="answer-avatar"></span>' + data.text + '</div>';
+                        var out = '<div class="comments-answers"><span class="answer-avatar"></span>' + data.link + ' ' + data.text + '</div>';
                             MU('#commenttext' + commentId).append(out);
+                            MU('.commentimg').hide('slow');
                         }
                     });
                 }
