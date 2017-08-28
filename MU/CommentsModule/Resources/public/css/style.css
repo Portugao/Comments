@@ -132,18 +132,59 @@ div.mucommentsmodule-view .avatar img {
     max-height: 24px;
 }
 
+.comment-container {
+	margin: 0 0 15px 0;
+	border-bottom: 1px solid #eee;
+	float: left;
+	width: 100%;
+}
+
 .comment-user {
-	border-right: 1px solid #eee;
+	text-align: center;
+	margin: 5px 0;
 }
 
 .comment-avatar {
+	width: 80px;
+}
+
+.answer-avatar {
 	width: 40px;
+	float: left;
+	margin: 0 5px 0 0;
+}
+
+.comment-content {
+    border-left: 1px solid #eee;
+    padding: 0 0 0 10px;
 }
 
 .comment-header {
 	font-weight: bolder;
+	margin: 0 0 15px 0;
 }
 
 .comment-text {
 	border-top: 1px solid #eee;
+	margin: 10px 0 0 0;
+	padding: 10px 0;
+}
+
+.answer-container {
+
+}
+
+.comments-answers {
+    padding: 5px 0 5px 10px;
+    border-left: 5px solid #eee;
+    min-height: 50px;
+}
+
+.answer-form {
+	display: block;
+	margin: 5px 0 0 0;
+}
+
+.second-level {
+	margin: 5px 0 0 0;
 }
