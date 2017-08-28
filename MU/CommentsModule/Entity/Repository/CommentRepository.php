@@ -14,6 +14,10 @@ namespace MU\CommentsModule\Entity\Repository;
 
 use MU\CommentsModule\Entity\Repository\Base\AbstractCommentRepository;
 
+use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
+use InvalidArgumentException;
+
 /**
  * Repository class used to implement own convenience methods for performing certain DQL queries.
  *
@@ -21,5 +25,32 @@ use MU\CommentsModule\Entity\Repository\Base\AbstractCommentRepository;
  */
 class CommentRepository extends AbstractCommentRepository
 {
-    // feel free to add your own methods here, like for example reusable DQL queries
+    /**
+     * Adds an array of id filters to given query instance.
+     *
+     * @param array        $idList The array of ids to use to retrieve the object
+     * @param QueryBuilder $qb     Query builder to be enhanced
+     *
+     * @return QueryBuilder Enriched query builder instance
+     *
+     * @throws InvalidArgumentException Thrown if invalid parameters are received
+     */
+    protected function addIdListFilter($idList, QueryBuilder $qb)
+    {
+        $orX = $qb->expr()->orX();
+    
+        foreach ($idList as $id) {
+            // check id parameter
+            if ($id == 0) {
+                throw new InvalidArgumentException('Invalid identifier received.');
+            }
+    
+            $orX->add($qb->expr()->eq('tbl.id', $id));
+        }
+    
+        $qb->andWhere($orX);
+        $qb->andWhere('tbl.comment is NULL');
+    
+        return $qb;
+    }
 }
