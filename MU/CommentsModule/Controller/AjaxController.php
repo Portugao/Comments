@@ -75,6 +75,91 @@ class AjaxController extends AbstractAjaxController
     {
         return parent::detachHookObjectAction($request);
     }
+    
+    /**
+     * Detachs a given hook assignment by removing the corresponding assignment data record.
+     *
+     * @Route("/answer", options={"expose"=true})
+     * @Method("POST")
+     *
+     * @param Request $request Current request instance
+     *
+     * @return JsonResponse
+     *
+     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
+     */
+    public function answerAction(Request $request)
+    {
+    	return $this->answerInternal($request);
+    }
+    
+    /**
+     * Attachs a given hook assignment by creating the corresponding assignment data record.
+     *
+     * @param Request $request Current request instance
+     *
+     * @return JsonResponse
+     *
+     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
+     */
+    public function answerInternal(Request $request)
+    {
+    	if (!$this->hasPermission('MUCommentsModule::Ajax', '::', ACCESS_EDIT)) {
+    		throw new AccessDeniedException();
+    	}
+    
+    	$subscriberOwner = $request->request->get('owner', '');
+    	$subscriberAreaId = $request->request->get('areaId', '');
+    	$subscriberObjectId = $request->request->getInt('objectId', 0);
+    	//$subscriberUrl = $request->request->get('url', '');
+    	$assignedEntity = $request->request->get('assignedEntity', '');
+    
+    	if (!$subscriberOwner || !$subscriberAreaId || !$subscriberObjectId || !$assignedEntity) {
+    		return new JsonResponse($this->__('Error: invalid input.'), JsonResponse::HTTP_BAD_REQUEST);
+    	}
+    
+    	//$subscriberUrl = !empty($subscriberUrl) ? unserialize($subscriberUrl) : [];
+    	
+    	$entityManager = $this->get('mu_comments_module.entity_factory')->getObjectManager();
+    	$repository = $this->get('mu_comments_module.entity_factory')->getRepository('comment');
+    	
+    	$text = $request->request->get('text');
+    	$parentid = $request->request->get('parentcomment');
+    	$parentEntity = $repository->selectById($parentid);
+    	if (!is_object($parentEntity)) {
+    		return new JsonResponse($this->__('Error: no object.'), JsonResponse::HTTP_BAD_REQUEST);
+    	}
+    	
+    	$comment = new \MU\CommentsModule\Entity\CommentEntity();
+    	$comment->setTitle('hallo');
+    	$comment->setText($text);
+    	$comment->setComment($parentEntity);
+    	$comment->setWorkflowState('approved');
+    	
+    	$qb = $entityManager->persist($comment);
+    	$qb = $entityManager->flush();
+    	
+    	$commentId = $comment->getId();
+    
+    	$assignment = new \MU\CommentsModule\Entity\HookAssignmentEntity();
+    	$assignment->setSubscriberOwner($subscriberOwner);
+    	$assignment->setSubscriberAreaId($subscriberAreaId);
+    	$assignment->setSubscriberObjectId($subscriberObjectId);
+    	//$assignment->setSubscriberUrl($subscriberUrl);
+    	$assignment->setAssignedEntity($assignedEntity);
+    	$assignment->setAssignedId($commentId);
+    	$assignment->setUpdatedDate(new \DateTime()); 
+
+    	$qb = $entityManager->persist($assignment);
+    	$qb = $entityManager->flush();
+    
+    	// return response
+    	return new JsonResponse([
+    			'id' => $commentId,
+    			'text' => $comment->getText(),
+    			'user' => $comment->getCreatedBy()->getUname()
+    	]);
+    }
 
     // feel free to add your own ajax controller methods here
 }

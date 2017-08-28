@@ -20,26 +20,74 @@
         {% set entityNameTranslated = __('comment') %}
         {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.HookAssignment.js'), 99) }}
         {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.AutoCompletion.js'), 99) }}
+        {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.CreateComments.js'), 99) }}
     {% endif %}
 {% endif %}
-
+{% set levels = getModVar('MUCommentsModule', 'levelsOfComments') %}
 {% if items|default and items|length > 0 %}
 <div class="list-group mucommentsmodule-related-item-list comment">
 {% for item in items %}
-    <div class="comment-container">
+    <div id="comment{{ item.id }}" class="comment-container">
     <div class="col-md-3">
         <div class="comment-user">
         {% set profileLink = item.createdBy.getUid()|profileLinkByUserId() %}
-        {{ profileLink|raw }}
-        <span class="coment-avatar">{{ userAvatar(item.createdBy.getUid(), {rating: 'g'}) }}</span>
+        {{ profileLink|raw }}<br />
+        <span class="comment-avatar">{{ userAvatar(item.createdBy.getUid(), {rating: 'g'}) }}</span>
         {{ item.yourMailAdress }}
         {{ item.homepage }}
         </div>
     </div>
     <div class="col-md-9">
+    <div class="comment-content">
         <div class="comment-header">{{ item.title }}</div>
-        <div class="comment-text">{{ item.text }}</div>
+        <div id="commenttext{{ item.id }}" class="comment-text">{{ item.text }} 
+        {% if levels >= 1 %}
+        <span class="answer-container"><a title="{{ item.id }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
+        {% endif %}
+        <noscript>
+        <form id="form{{ item.id }}" class="answer-form" action="{{ path('mucommentsmodule_ajax_' ~ routeArea ~ 'answer') }}"><textarea rows=1 id="answer-form-text" class="form-control" name="answer-form-text"></textarea>
+        <input type="hidden" name="parentcomment" value="{{ item.id }}" />
+        <input type="hidden" name="owner" value="{{ subscriberOwner|e('html_attr') }}" />
+        <input type="hidden" name="areaId" value="{{ subscriberAreaId|e('html_attr') }}" />
+        <input type="hidden" name="objectId" value="{{ subscriberObjectId|e('html_attr') }}" />
+        <input type="hidden" name="url" value="{{ subscriberUrl|e('html_attr') }}" />
+        <input type="hidden" name="assignedEntity" value="comment" />
+        <input class="comment-submit btn btn-default btn-sm" name="save" type="submit" /></form><br />
+        </noscript>
+        {% if item.comments %}
+            {% for answer in item.comments %}
+                <div class="comments-answers">
+                <span class="answer-avatar">
+                {{ userAvatar(answer.createdBy.getUid(), {rating: 'g'}) }}</span> 
+                {% set profileLink = answer.createdBy.getUid()|profileLinkByUserId() %} 
+                {{ profileLink|raw }} 
+                {{ answer.text }} 
+                {% if levels >= 2 %}
+                <span class="answer-container"><a title="{{ answer.id }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
+                {% endif %}
+                {% if answer.comments %}
+                    {% for answer in answer.comments %}
+                    <div class="comments-answers second-level">
+                    <span class="answer-avatar">
+                    {{ userAvatar(answer.createdBy.getUid(), {rating: 'g'}) }}</span> 
+                    {% set profileLink = answer.createdBy.getUid()|profileLinkByUserId() %} 
+                    {{ profileLink|raw }} 
+                    {{ answer.text }} 
+                    {% if levels >= 3 %}
+                    <span class="answer-container"><a title="{{ answer.id }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
+                    {% endif %}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
     </div>
+    </div>  
+    </div>
+    <div class="col-md-12">
+   </div>
     </div>
 {% endfor %}<br style="clear: both;" />
 {% if context == 'hookDisplayView' and hasEditPermission %}
@@ -47,7 +95,7 @@
 {% endif %}
 </div>
 {% endif %}
-{#% if context == 'hookDisplayView' and hasEditPermission %}
+{% if context == 'hookDisplayView' and hasEditPermission %}
     {% set withImage = false %}
     {% set idPrefix = 'hookAssignmentComment' %}
     {% set addLinkText = __f('Attach %name%', {'%name%': entityNameTranslated}) %}
@@ -83,6 +131,62 @@
             mUCommentsInitRelationItemsForm('comment', '{{ idPrefix }}', true);
         /* ]]> */
         </script>
+        <script>
+        var MU = jQuery.noConflict();
+        MU().ready(function() {
+        MU('.comment-answer').click(function(e) {
+            e.preventDefault();
+            MU('.this-answer-form').remove();
+            var formCommentId = 'form' + MU(this).attr('title');
+            var commentId = MU(this).attr('title');
+            MU(this).parent().children('.answer-form').append('<form id="' + formCommentId + '" class="this-answer-form"><textarea id="answer-form-text" name="answer-form-text" class="form-control" rows=1 placeholder="{{ __('Enter your comment') }}"></textarea><input type="hidden" id="parentcomment" name="parentcomment" value="' + commentId + '" /></form>');
+        });
+        MU('form').live('keydown', function(e) {
+           if (e.which == '13') {
+           if(e.shiftKey == 0) {
+                e.preventDefault();
+                var text = MU(this).find('#answer-form-text').val();
+                var commentId = MU(this).find('#parentcomment').attr('value');
+                if(MU('#anser-form-text').val() != '') {
+                    MU('.this-answer-form').parent().append('<img src="zik15/images/ajax/indicator_circle.gif" />');
+                    MU('.this-answer-form').remove();
+                    jQuery.ajax({
+                        method: 'POST',
+                        url: '{{ path('mucommentsmodule_ajax_' ~ routeArea ~ 'answer') }}',
+
+                        data: {
+                            owner: '{{ subscriberOwner|e('html_attr') }}',
+                            areaId: '{{ subscriberAreaId|e('html_attr') }}',
+                            objectId: '{{ subscriberObjectId|e('html_attr') }}',
+                            //url: '{{ subscriberUrl }}',
+                            text: text,
+                            parentcomment: commentId,
+                            assignedEntity: 'comment'
+                        },
+                        success: function(data) {
+                        var out = '<div class="comments-answers"><span class="answer-avatar"></span>' + data.text + '</div>';
+                            MU('#commenttext' + commentId).append(out);
+                        }
+                    });
+                }
+              }
+           }
+        });
+        
+        MU('.comment-submit').click(function(e) {
+            e.preventDefault();
+            var container = MU(this).parent('.comment-container');
+            if(MU('#answer-form-text').val() != '') {
+                alert('gesendet');
+                MU.get('{{ path('mucommentsmodule_ajax_' ~ routeArea ~ 'answer') }}', function(result) {
+                    if(result) {
+                        MU('#commenttext1').append('Hallo');
+                    }
+                });
+            }
+        });
+        });
+        </script>
     {% endset %}
     {{ pageAddAsset('footer', assignmentInitScript) }}
-{% endif %#}
+{% endif %}
