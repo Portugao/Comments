@@ -152,12 +152,17 @@ class AjaxController extends AbstractAjaxController
 
     	$qb = $entityManager->persist($assignment);
     	$qb = $entityManager->flush();
+    	
+    	$controllerHelper = $this->get('mu_comments_module.controller_helper');
+    	$profileLink = $controllerHelper->getProfileLink($comment->getCreatedBy()->getUid());
+    	$link = '<a href="' . $profileLink . '" >' . $comment->getCreatedBy()->getUname() . '</a>';
     
     	// return response
     	return new JsonResponse([
     			'id' => $commentId,
     			'text' => $comment->getText(),
-    			'user' => $comment->getCreatedBy()->getUname()
+    			'user' => $comment->getCreatedBy()->getUname(),
+    			'link' => $link
     	]);
     }
 

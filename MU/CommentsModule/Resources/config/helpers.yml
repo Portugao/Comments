@@ -17,6 +17,7 @@ services:
             - "@mu_comments_module.entity_factory"
             - "@mu_comments_module.collection_filter_helper"
             - "@mu_comments_module.model_helper"
+            - "@zikula_profile_module.bridge.profile_module_bridge"
     
     mu_comments_module.entity_display_helper:
         class: MU\CommentsModule\Helper\EntityDisplayHelper

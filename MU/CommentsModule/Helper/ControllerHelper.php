@@ -13,11 +13,60 @@
 namespace MU\CommentsModule\Helper;
 
 use MU\CommentsModule\Helper\Base\AbstractControllerHelper;
+use Zikula\ProfileModule\Bridge\ProfileModuleBridge;
+
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\RouterInterface;
+use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
+use MU\CommentsModule\Entity\Factory\EntityFactory;
+use MU\CommentsModule\Helper\CollectionFilterHelper;
+use MU\CommentsModule\Helper\ModelHelper;
 
 /**
  * Helper implementation class for controller layer methods.
  */
 class ControllerHelper extends AbstractControllerHelper
 {
-    // feel free to add your own convenience methods here
+	/**
+	 * @var ProfileModuleBridge
+	 */
+	protected $bridge;
+    /**
+     * ControllerHelper constructor.
+     *
+     * @param RequestStack        $requestStack    RequestStack service instance
+     * @param Routerinterface     $router          Router service instance
+     * @param FormFactoryInterface $formFactory    FormFactory service instance
+     * @param VariableApiInterface $variableApi     VariableApi service instance
+     * @param EntityFactory       $entityFactory   EntityFactory service instance
+     * @param CollectionFilterHelper $collectionFilterHelper CollectionFilterHelper service instance
+     * @param ModelHelper         $modelHelper     ModelHelper service instance
+     * @param ProfileModuleBridge $bridge          ProfileModuleBridge
+     */
+    public function __construct(
+        RequestStack $requestStack,
+        RouterInterface $router,
+        FormFactoryInterface $formFactory,
+        VariableApiInterface $variableApi,
+        EntityFactory $entityFactory,
+        CollectionFilterHelper $collectionFilterHelper,
+        ModelHelper $modelHelper,
+    	ProfileModuleBridge $bridge
+    ) {
+        $this->request = $requestStack->getCurrentRequest();
+        $this->router = $router;
+        $this->formFactory = $formFactory;
+        $this->variableApi = $variableApi;
+        $this->entityFactory = $entityFactory;
+        $this->collectionFilterHelper = $collectionFilterHelper;
+        $this->modelHelper = $modelHelper;
+        $this->bridge = $bridge;
+    }
+    
+    public function getProfileLink($uid)
+    {
+    	$link = $this->bridge->getProfileUrl($uid);
+    	return $link;
+    }
 }
