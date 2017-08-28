@@ -16,7 +16,13 @@
             '@MUCommentsModule/Form/bootstrap_3.html.twig',
             'ZikulaFormExtensionBundle:Form:form_div_layout.html.twig'
         ] %}
-        {{ form_start(form, {attr: {id: 'commentEditForm', class: 'mucomments-edit-form'}}) }}
+        {% set returnUrl = app.request.attributes.get('_route') %}
+        {% if mode == 'create' %}
+        {{ form_start(form, {attr: {id: 'commentEditForm', action: path('mucommentsmodule_comment_edit', { returnTo: returnUrl }), class: 'mucomments-edit-form'}}) }}
+        {% else %}
+        {{ form_start(form, {attr: {id: 'commentEditForm'} }) }}
+        {% endif %}
+ 
         {{ form_errors(form) }}
         <fieldset>
             <legend>{{ __('Content') }}</legend>
@@ -32,11 +38,16 @@
                 {{ form_row(form.mainId) }}
             </div>
         </fieldset>
-        
+        {% if routeArea != 'admin' %}
+        <div class="hidden">
+        {% endif %}
         {{ include(
             '@MUCommentsModule/Comment/includeSelectOne.html.twig',
             {group: 'comment', alias: 'comment', aliasReverse: 'comments', mandatory: false, idPrefix: 'commentsComment_Comment', linkingItem: comment, displayMode: 'choices'}
         ) }}
+        {% if routeArea != 'admin' %}
+        </div>
+        {% endif %}
         {% if mode != 'create' %}
             {{ include('@MUCommentsModule/Helper/includeStandardFieldsEdit.html.twig', {obj: comment}) }}
         {% endif %}
@@ -48,11 +59,11 @@
                 {% endfor %}
             </fieldset>
         {% endif %}
-        
+        <div class="hidden">
         <fieldset>
             <legend>{{ __('Communication') }}</legend>
             {{ form_row(form.additionalNotificationRemarks) }}
-        </fieldset>
+        </fieldset>    
         
         {% if form.moderationSpecificCreator is defined %}
             <fieldset id="moderationFieldsSection">
@@ -63,7 +74,7 @@
                 </div>
             </fieldset>
         {% endif %}
-        <div class="hidden">
+
         {# include return control #}
         {% if mode == 'create' %}
             <fieldset>
