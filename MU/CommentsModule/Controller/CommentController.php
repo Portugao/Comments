@@ -15,6 +15,8 @@ namespace MU\CommentsModule\Controller;
 use MU\CommentsModule\Controller\Base\AbstractCommentController;
 
 use RuntimeException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -33,6 +35,7 @@ class CommentController extends AbstractCommentController
      * @Route("/admin/comments",
      *        methods = {"GET"}
      * )
+     * @Cache(expires="+7 days", public=true)
      * @Theme("admin")
      *
      * @param Request $request Current request instance
@@ -52,6 +55,7 @@ class CommentController extends AbstractCommentController
      * @Route("/comments",
      *        methods = {"GET"}
      * )
+     * @Cache(expires="+7 days", public=true)
      *
      * @param Request $request Current request instance
      *
@@ -71,6 +75,7 @@ class CommentController extends AbstractCommentController
      *        defaults = {"sort" = "", "sortdir" = "asc", "pos" = 1, "num" = 10, "_format" = "html"},
      *        methods = {"GET"}
      * )
+     * @Cache(expires="+2 hours", public=false)
      * @Theme("admin")
      *
      * @param Request $request Current request instance
@@ -96,6 +101,7 @@ class CommentController extends AbstractCommentController
      *        defaults = {"sort" = "", "sortdir" = "asc", "pos" = 1, "num" = 10, "_format" = "html"},
      *        methods = {"GET"}
      * )
+     * @Cache(expires="+2 hours", public=false)
      *
      * @param Request $request Current request instance
      * @param string $sort         Sorting field
@@ -119,6 +125,8 @@ class CommentController extends AbstractCommentController
      *        defaults = {"_format" = "html"},
      *        methods = {"GET"}
      * )
+     * @ParamConverter("comment", class="MUCommentsModule:CommentEntity", options = {"repository_method" = "selectById", "mapping": {"id": "id"}, "map_method_signature" = true})
+     * @Cache(lastModified="comment.getUpdatedDate()", ETag="'Comment' ~ comment.getid() ~ comment.getUpdatedDate().format('U')")
      * @Theme("admin")
      *
      * @param Request $request Current request instance
@@ -142,6 +150,8 @@ class CommentController extends AbstractCommentController
      *        defaults = {"_format" = "html"},
      *        methods = {"GET"}
      * )
+     * @ParamConverter("comment", class="MUCommentsModule:CommentEntity", options = {"repository_method" = "selectById", "mapping": {"id": "id"}, "map_method_signature" = true})
+     * @Cache(lastModified="comment.getUpdatedDate()", ETag="'Comment' ~ comment.getid() ~ comment.getUpdatedDate().format('U')")
      *
      * @param Request $request Current request instance
      * @param CommentEntity $comment Treated comment instance
@@ -163,6 +173,7 @@ class CommentController extends AbstractCommentController
      *        defaults = {"id" = "0", "_format" = "html"},
      *        methods = {"GET", "POST"}
      * )
+     * @Cache(lastModified="comment.getUpdatedDate()", ETag="'Comment' ~ comment.getid() ~ comment.getUpdatedDate().format('U')")
      * @Theme("admin")
      *
      * @param Request $request Current request instance
@@ -186,6 +197,7 @@ class CommentController extends AbstractCommentController
      *        defaults = {"id" = "0", "_format" = "html"},
      *        methods = {"GET", "POST"}
      * )
+     * @Cache(lastModified="comment.getUpdatedDate()", ETag="'Comment' ~ comment.getid() ~ comment.getUpdatedDate().format('U')")
      *
      * @param Request $request Current request instance
      *
