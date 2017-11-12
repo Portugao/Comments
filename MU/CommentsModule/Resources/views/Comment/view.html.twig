@@ -30,6 +30,7 @@
                 <col id="cText" />
                 <col id="cParentid" />
                 <col id="cMainId" />
+                <col id="cIpOfComment" />
                 <col id="cComment" />
             </colgroup>
             <thead>
@@ -66,6 +67,9 @@
                 <th id="hMainId" scope="col" class="text-right">
                     <a href="{{ sort.mainId.url }}" title="{{ __f('Sort by %s', {'%s': 'main id'}) }}" class="{{ sort.mainId.class }}">{{ __('Main id') }}</a>
                 </th>
+                <th id="hIpOfComment" scope="col" class="text-left z-order-unsorted">
+                    {{ __('Ip of comment') }}
+                </th>
                 <th id="hComment" scope="col" class="text-left">
                     <a href="{{ sort.comment.url }}" title="{{ __f('Sort by %s', {'%s': 'comment'}) }}" class="{{ sort.comment.class }}">{{ __('Comment') }}</a>
                 </th>
@@ -98,12 +102,12 @@
                 </td>
                 <td headers="hYourMailAddress" class="text-center">
                     {% if comment.yourMailAddress is not empty %}
-                    <a href="mailto:{{ comment.yourMailAddress|protectMail }}" title="{{ __('Send an email') }}" class="fa fa-envelope"></a>
+                    <a href="mailto:{{ comment.yourMailAddress|protectMail }}" title="{{ __('Send an email') }}"><i class="fa fa-envelope"></i></a>
                     {% else %}&nbsp;{% endif %}
                 </td>
                 <td headers="hHomepage" class="text-center">
                     {% if comment.homepage is not empty %}
-                    <a href="{{ comment.homepage }}" title="{{ __('Visit this page') }}" class="fa fa-external-link-square"></a>
+                    <a href="{{ comment.homepage }}" title="{{ __('Visit this page') }}"><i class="fa fa-external-link-square"></i></a>
                     {% else %}&nbsp;{% endif %}
                 </td>
                 <td headers="hText" class="text-left">
@@ -115,12 +119,15 @@
                 <td headers="hMainId" class="text-right">
                     {{ comment.mainId }}
                 </td>
+                <td headers="hIpOfComment" class="text-left">
+                    {{ comment.ipOfComment }}
+                </td>
                 <td headers="hComment" class="text-left">
                     {% if comment.comment|default %}
                         <a href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'display', {'id': comment.comment.getId()}) }}">{% spaceless %}
                           {{ comment.comment|mucommentsmodule_formattedTitle }}
                         {% endspaceless %}</a>
-                        <a id="commentItem{{ comment.getKey() }}_rel_{{ comment.comment.getKey() }}Display" href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'display', {'id': comment.comment.getId(), raw: 1}) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="mucomments-inline-window hidden" data-modal-title="{{ comment.comment|mucommentsmodule_formattedTitle|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
+                        <a id="commentItem{{ comment.getKey() }}_rel_{{ comment.comment.getKey() }}Display" href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'display', {'id': comment.comment.getId(), raw: 1}) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="mucomments-inline-window hidden" data-modal-title="{{ comment.comment|mucommentsmodule_formattedTitle|e('html_attr') }}"><i class="fa fa-id-card-o"></i></a>
                     {% else %}
                         {{ __('Not set.') }}
                     {% endif %}
@@ -128,7 +135,7 @@
             </tr>
         {% else %}
             <tr class="z-{{ routeArea == 'admin' ? 'admin' : 'data' }}tableempty">
-                <td class="text-left" colspan="{% if routeArea == 'admin' %}11{% else %}10{% endif %}">
+                <td class="text-left" colspan="{% if routeArea == 'admin' %}12{% else %}11{% endif %}">
             {{ __('No comments found.') }}
               </td>
             </tr>
@@ -167,15 +174,17 @@
         {% if canBeCreated %}
             {% if hasPermission('MUCommentsModule:Comment:', '::', 'ACCESS_COMMENT') %}
                 {% set createTitle = __('Create comment') %}
-                <a href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'edit') }}" title="{{ createTitle|e('html_attr') }}" class="fa fa-plus">{{ createTitle }}</a>
+                <a href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'edit') }}" title="{{ createTitle|e('html_attr') }}"><i class="fa fa-plus"></i> {{ createTitle }}</a>
             {% endif %}
         {% endif %}
         {% if all == 1 %}
             {% set linkTitle = __('Back to paginated view') %}
-            <a href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'view') }}" title="{{ linkTitle|e('html_attr') }}" class="fa fa-table">{{ linkTitle }}</a>
+            {% set routeArgs = own ? {own: 1} : {} %}
+            <a href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'view', routeArgs) }}" title="{{ linkTitle|e('html_attr') }}"><i class="fa fa-table"></i> {{ linkTitle }}</a>
         {% else %}
             {% set linkTitle = __('Show all entries') %}
-            <a href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'view', {all: 1}) }}" title="{{ linkTitle|e('html_attr') }}" class="fa fa-table">{{ linkTitle }}</a>
+            {% set routeArgs = own ? {all: 1, own: 1} : {all: 1} %}
+            <a href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'view', routeArgs) }}" title="{{ linkTitle|e('html_attr') }}"><i class="fa fa-table"></i> {{ linkTitle }}</a>
         {% endif %}
     </p>
 {% endblock %}
@@ -183,6 +192,11 @@
     
     {# here you can activate calling display hooks for the view page if you need it #}
     {# % if routeArea != 'admin' %}
-        {{ notifyDisplayHooks(eventName='mucommentsmodule.ui_hooks.comments.display_view', urlObject=currentUrlObject) }}
+        {% set hooks = notifyDisplayHooks(eventName='mucommentsmodule.ui_hooks.comments.display_view', urlObject=currentUrlObject, outputAsArray=true) %}
+        {% if hooks is iterable and hooks|length > 0 %}
+            {% for area, hook in hooks %}
+                <div class="z-displayhook" data-area="{{ area|e('html_attr') }}">{{ hook|raw }}</div>
+            {% endfor %}
+        {% endif %}
     {% endif % #}
 {% endblock %}

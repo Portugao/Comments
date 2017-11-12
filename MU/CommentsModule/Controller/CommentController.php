@@ -15,6 +15,8 @@ namespace MU\CommentsModule\Controller;
 use MU\CommentsModule\Controller\Base\AbstractCommentController;
 
 use RuntimeException;
+
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -119,6 +121,7 @@ class CommentController extends AbstractCommentController
      *        defaults = {"_format" = "html"},
      *        methods = {"GET"}
      * )
+     * @ParamConverter("comment", class="MUCommentsModule:CommentEntity", options = {"repository_method" = "selectById", "mapping": {"id": "id"}, "map_method_signature" = true})
      * @Theme("admin")
      *
      * @param Request $request Current request instance
@@ -142,6 +145,7 @@ class CommentController extends AbstractCommentController
      *        defaults = {"_format" = "html"},
      *        methods = {"GET"}
      * )
+     * @ParamConverter("comment", class="MUCommentsModule:CommentEntity", options = {"repository_method" = "selectById", "mapping": {"id": "id"}, "map_method_signature" = true})
      *
      * @param Request $request Current request instance
      * @param CommentEntity $comment Treated comment instance

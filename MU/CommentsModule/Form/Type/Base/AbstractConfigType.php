@@ -12,17 +12,20 @@
 
 namespace MU\CommentsModule\Form\Type\Base;
 
-use Symfony\Component\Form\AbstractType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\ResetType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
-use Zikula\GroupsModule\Constant as GroupsConstant;
-use Zikula\GroupsModule\Entity\RepositoryInterface\GroupRepositoryInterface;
+use MU\CommentsModule\Form\Type\Field\MultiListType;
+use MU\CommentsModule\AppSettings;
+use MU\CommentsModule\Helper\ListEntriesHelper;
 
 /**
  * Configuration form type base class.
@@ -32,34 +35,22 @@ abstract class AbstractConfigType extends AbstractType
     use TranslatorTrait;
 
     /**
-     * @var array
+     * @var ListEntriesHelper
      */
-    protected $moduleVars;
+    protected $listHelper;
 
     /**
      * ConfigType constructor.
      *
-     * @param TranslatorInterface      $translator      Translator service instance
-     * @param object                   $moduleVars      Existing module vars
-     * @param GroupRepositoryInterface $groupRepository GroupRepository service instance
+     * @param TranslatorInterface $translator Translator service instance
+     * @param ListEntriesHelper $listHelper ListEntriesHelper service instance
      */
     public function __construct(
         TranslatorInterface $translator,
-        $moduleVars,
-        GroupRepositoryInterface $groupRepository
+        ListEntriesHelper $listHelper
     ) {
         $this->setTranslator($translator);
-        $this->moduleVars = $moduleVars;
-
-        // prepare group selector values
-        foreach (['moderationGroupForComments'] as $groupFieldName) {
-            $groupId = intval($this->moduleVars[$groupFieldName]);
-            if ($groupId < 1) {
-                // fallback to admin group
-                $groupId = GroupsConstant::GROUP_ID_ADMIN;
-            }
-            $this->moduleVars[$groupFieldName] = $groupRepository->find($groupId);
-        }
+        $this->listHelper = $listHelper;
     }
 
     /**
@@ -77,106 +68,109 @@ abstract class AbstractConfigType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $this->addGeneralSettingsFields($builder, $options);
-        $this->addSpamHandlingFields($builder, $options);
+        $this->addGeneralSettingFields($builder, $options);
+        $this->addSpamhandlingFields($builder, $options);
         $this->addModerationFields($builder, $options);
         $this->addListViewsFields($builder, $options);
+        $this->addIntegrationFields($builder, $options);
 
-        $builder
-            ->add('save', SubmitType::class, [
-                'label' => $this->__('Update configuration'),
-                'icon' => 'fa-check',
-                'attr' => [
-                    'class' => 'btn btn-success'
-                ]
-            ])
-            ->add('cancel', SubmitType::class, [
-                'label' => $this->__('Cancel'),
-                'icon' => 'fa-times',
-                'attr' => [
-                    'class' => 'btn btn-default',
-                    'formnovalidate' => 'formnovalidate'
-                ]
-            ])
-        ;
+        $this->addSubmitButtons($builder, $options);
     }
 
     /**
-     * Adds fields for general settings fields.
+     * Adds fields for general setting fields.
      *
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addGeneralSettingsFields(FormBuilderInterface $builder, array $options)
+    public function addGeneralSettingFields(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('logIp', CheckboxType::class, [
-                'label' => $this->__('Log ip') . ':',
-                'required' => false,
-                'data' => (bool)(isset($this->moduleVars['logIp']) ? $this->moduleVars['logIp'] : false),
-                'attr' => [
-                    'title' => $this->__('The log ip option.')
-                ],
-            ])
-            ->add('orderComments', ChoiceType::class, [
-                'label' => $this->__('Order comments') . ':',
-                'label_attr' => [
-                    'class' => 'tooltips',
-                    'title' => $this->__('Here you can decide, how to order main comments.')
-                ],
-                'help' => $this->__('Here you can decide, how to order main comments.'),
-                'data' => isset($this->moduleVars['orderComments']) ? $this->moduleVars['orderComments'] : '',
-                'empty_data' => '',
-                'attr' => [
-                    'title' => $this->__('Choose the order comments.')
-                ],'choices' => [
-                    $this->__('Ascending') => 'ascending',
-                    $this->__('Descending') => 'descending'
-                ],
-                'choices_as_values' => true,
-                'multiple' => false
-            ])
-            ->add('levelsOfComments', ChoiceType::class, [
-                'label' => $this->__('Levels of comments') . ':',
-                'data' => isset($this->moduleVars['levelsOfComments']) ? $this->moduleVars['levelsOfComments'] : '',
-                'empty_data' => '',
-                'attr' => [
-                    'title' => $this->__('Choose the levels of comments.')
-                ],'choices' => [
-                    $this->__('One') => 'one',
-                    $this->__('Two') => 'two',
-                    $this->__('Three') => 'three'
-                ],
-                'choices_as_values' => true,
-                'multiple' => false
-            ])
-        ;
+        
+        $builder->add('logIp', CheckboxType::class, [
+            'label' => $this->__('Log ip') . ':',
+            'attr' => [
+                'class' => '',
+                'title' => $this->__('The log ip option')
+            ],
+            'required' => false,
+        ]);
+        
+        $listEntries = $this->listHelper->getEntries('appSettings', 'orderComments');
+        $choices = [];
+        $choiceAttributes = [];
+        foreach ($listEntries as $entry) {
+            $choices[$entry['text']] = $entry['value'];
+            $choiceAttributes[$entry['text']] = ['title' => $entry['title']];
+        }
+        $builder->add('orderComments', ChoiceType::class, [
+            'label' => $this->__('Order comments') . ':',
+            'empty_data' => '',
+            'attr' => [
+                'class' => '',
+                'title' => $this->__('Choose the order comments.')
+            ],
+            'required' => true,
+            'choices' => $choices,
+            'choices_as_values' => true,
+            'choice_attr' => $choiceAttributes,
+            'multiple' => false,
+            'expanded' => false
+        ]);
+        
+        $listEntries = $this->listHelper->getEntries('appSettings', 'levelsOfComments');
+        $choices = [];
+        $choiceAttributes = [];
+        foreach ($listEntries as $entry) {
+            $choices[$entry['text']] = $entry['value'];
+            $choiceAttributes[$entry['text']] = ['title' => $entry['title']];
+        }
+        $builder->add('levelsOfComments', ChoiceType::class, [
+            'label' => $this->__('Levels of comments') . ':',
+            'empty_data' => '',
+            'attr' => [
+                'class' => '',
+                'title' => $this->__('Choose the levels of comments.')
+            ],
+            'required' => true,
+            'choices' => $choices,
+            'choices_as_values' => true,
+            'choice_attr' => $choiceAttributes,
+            'multiple' => false,
+            'expanded' => false
+        ]);
     }
 
     /**
-     * Adds fields for spam handling fields.
+     * Adds fields for spamhandling fields.
      *
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addSpamHandlingFields(FormBuilderInterface $builder, array $options)
+    public function addSpamhandlingFields(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('spamProtector', ChoiceType::class, [
-                'label' => $this->__('Spam protector') . ':',
-                'data' => isset($this->moduleVars['spamProtector']) ? $this->moduleVars['spamProtector'] : '',
-                'empty_data' => '',
-                'attr' => [
-                    'title' => $this->__('Choose the spam protector.')
-                ],'choices' => [
-                    $this->__('None') => 'none',
-                    $this->__('Intern') => 'intern',
-                    $this->__('Captcha') => 'captcha'
-                ],
-                'choices_as_values' => true,
-                'multiple' => false
-            ])
-        ;
+        
+        $listEntries = $this->listHelper->getEntries('appSettings', 'spamProtector');
+        $choices = [];
+        $choiceAttributes = [];
+        foreach ($listEntries as $entry) {
+            $choices[$entry['text']] = $entry['value'];
+            $choiceAttributes[$entry['text']] = ['title' => $entry['title']];
+        }
+        $builder->add('spamProtector', ChoiceType::class, [
+            'label' => $this->__('Spam protector') . ':',
+            'empty_data' => '',
+            'attr' => [
+                'class' => '',
+                'title' => $this->__('Choose the spam protector.')
+            ],
+            'required' => false,
+            'placeholder' => $this->__('Choose an option'),
+            'choices' => $choices,
+            'choices_as_values' => true,
+            'choice_attr' => $choiceAttributes,
+            'multiple' => false,
+            'expanded' => false
+        ]);
     }
 
     /**
@@ -187,24 +181,26 @@ abstract class AbstractConfigType extends AbstractType
      */
     public function addModerationFields(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('moderationGroupForComments', EntityType::class, [
-                'label' => $this->__('Moderation group for comments') . ':',
-                'label_attr' => [
-                    'class' => 'tooltips',
-                    'title' => $this->__('Used to determine moderator user accounts for sending email notifications.')
-                ],
-                'help' => $this->__('Used to determine moderator user accounts for sending email notifications.'),
-                'data' => isset($this->moduleVars['moderationGroupForComments']) ? $this->moduleVars['moderationGroupForComments'] : '',
-                'attr' => [
-                    'maxlength' => 255,
-                    'title' => $this->__('Choose the moderation group for comments.')
-                ],// Zikula core should provide a form type for this to hide entity details
-                'class' => 'ZikulaGroupsModule:GroupEntity',
-                'choice_label' => 'name',
-                'choice_value' => 'gid'
-            ])
-        ;
+        
+        $builder->add('moderationGroupForComments', EntityType::class, [
+            'label' => $this->__('Moderation group for comments') . ':',
+            'label_attr' => [
+                'class' => 'tooltips',
+                'title' => $this->__('Used to determine moderator user accounts for sending email notifications.')
+            ],
+            'help' => $this->__('Used to determine moderator user accounts for sending email notifications.'),
+            'empty_data' => '2',
+            'attr' => [
+                'maxlength' => 255,
+                'class' => '',
+                'title' => $this->__('Choose the moderation group for comments')
+            ],
+            'required' => true,
+            // Zikula core should provide a form type for this to hide entity details
+            'class' => 'ZikulaGroupsModule:GroupEntity',
+            'choice_label' => 'name',
+            'choice_value' => 'gid'
+        ]);
     }
 
     /**
@@ -215,36 +211,107 @@ abstract class AbstractConfigType extends AbstractType
      */
     public function addListViewsFields(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('commentEntriesPerPage', IntegerType::class, [
-                'label' => $this->__('Comment entries per page') . ':',
-                'label_attr' => [
-                    'class' => 'tooltips',
-                    'title' => $this->__('The amount of comments shown per page')
-                ],
-                'help' => $this->__('The amount of comments shown per page'),
-                'required' => false,
-                'data' => isset($this->moduleVars['commentEntriesPerPage']) ? intval($this->moduleVars['commentEntriesPerPage']) : intval(10),
-                'empty_data' => intval('10'),
-                'attr' => [
-                    'maxlength' => 255,
-                    'title' => $this->__('Enter the comment entries per page.') . ' ' . $this->__('Only digits are allowed.')
-                ],'scale' => 0
-            ])
-            ->add('linkOwnCommentsOnAccountPage', CheckboxType::class, [
-                'label' => $this->__('Link own comments on account page') . ':',
-                'label_attr' => [
-                    'class' => 'tooltips',
-                    'title' => $this->__('Whether to add a link to comments of the current user on his account page')
-                ],
-                'help' => $this->__('Whether to add a link to comments of the current user on his account page'),
-                'required' => false,
-                'data' => (bool)(isset($this->moduleVars['linkOwnCommentsOnAccountPage']) ? $this->moduleVars['linkOwnCommentsOnAccountPage'] : true),
-                'attr' => [
-                    'title' => $this->__('The link own comments on account page option.')
-                ],
-            ])
-        ;
+        
+        $builder->add('commentEntriesPerPage', IntegerType::class, [
+            'label' => $this->__('Comment entries per page') . ':',
+            'label_attr' => [
+                'class' => 'tooltips',
+                'title' => $this->__('The amount of comments shown per page')
+            ],
+            'help' => $this->__('The amount of comments shown per page'),
+            'empty_data' => '10',
+            'attr' => [
+                'maxlength' => 11,
+                'class' => '',
+                'title' => $this->__('Enter the comment entries per page.') . ' ' . $this->__('Only digits are allowed.')
+            ],
+            'required' => true,
+            'scale' => 0
+        ]);
+        
+        $builder->add('linkOwnCommentsOnAccountPage', CheckboxType::class, [
+            'label' => $this->__('Link own comments on account page') . ':',
+            'label_attr' => [
+                'class' => 'tooltips',
+                'title' => $this->__('Whether to add a link to comments of the current user on his account page')
+            ],
+            'help' => $this->__('Whether to add a link to comments of the current user on his account page'),
+            'attr' => [
+                'class' => '',
+                'title' => $this->__('The link own comments on account page option')
+            ],
+            'required' => true,
+        ]);
+    }
+
+    /**
+     * Adds fields for integration fields.
+     *
+     * @param FormBuilderInterface $builder The form builder
+     * @param array                $options The options
+     */
+    public function addIntegrationFields(FormBuilderInterface $builder, array $options)
+    {
+        
+        $listEntries = $this->listHelper->getEntries('appSettings', 'enabledFinderTypes');
+        $choices = [];
+        $choiceAttributes = [];
+        foreach ($listEntries as $entry) {
+            $choices[$entry['text']] = $entry['value'];
+            $choiceAttributes[$entry['text']] = ['title' => $entry['title']];
+        }
+        $builder->add('enabledFinderTypes', MultiListType::class, [
+            'label' => $this->__('Enabled finder types') . ':',
+            'label_attr' => [
+                'class' => 'tooltips',
+                'title' => $this->__('Which sections are supported in the Finder component (used by Scribite plug-ins).')
+            ],
+            'help' => $this->__('Which sections are supported in the Finder component (used by Scribite plug-ins).'),
+            'empty_data' => '',
+            'attr' => [
+                'class' => '',
+                'title' => $this->__('Choose the enabled finder types.')
+            ],
+            'required' => true,
+            'choices' => $choices,
+            'choices_as_values' => true,
+            'choice_attr' => $choiceAttributes,
+            'multiple' => true,
+            'expanded' => false
+        ]);
+    }
+
+    /**
+     * Adds submit buttons.
+     *
+     * @param FormBuilderInterface $builder The form builder
+     * @param array                $options The options
+     */
+    public function addSubmitButtons(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('save', SubmitType::class, [
+            'label' => $this->__('Update configuration'),
+            'icon' => 'fa-check',
+            'attr' => [
+                'class' => 'btn btn-success'
+            ]
+        ]);
+        $builder->add('reset', ResetType::class, [
+            'label' => $this->__('Reset'),
+            'icon' => 'fa-refresh',
+            'attr' => [
+                'class' => 'btn btn-default',
+                'formnovalidate' => 'formnovalidate'
+            ]
+        ]);
+        $builder->add('cancel', SubmitType::class, [
+            'label' => $this->__('Cancel'),
+            'icon' => 'fa-times',
+            'attr' => [
+                'class' => 'btn btn-default',
+                'formnovalidate' => 'formnovalidate'
+            ]
+        ]);
     }
 
     /**
@@ -253,5 +320,17 @@ abstract class AbstractConfigType extends AbstractType
     public function getBlockPrefix()
     {
         return 'mucommentsmodule_config';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver
+            ->setDefaults([
+                // define class for underlying data
+                'data_class' => AppSettings::class,
+            ]);
     }
 }

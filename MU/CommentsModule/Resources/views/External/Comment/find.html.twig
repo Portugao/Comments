@@ -1,0 +1,74 @@
+{# Purpose of this template: Display a popup selector of comments for scribite integration #}
+{% set useFinder = true %}
+{% extends 'MUCommentsModule::raw.html.twig' %}
+{% block title __('Search and select comment') %}
+{% block content %}
+    <div class="container">
+        <div class="zikula-bootstrap-tab-container">
+            <ul class="nav nav-tabs">
+            {% set activatedObjectTypes = getModVar('MUCommentsModule', 'enabledFinderTypes', []) %}
+            {% if 'comment' in activatedObjectTypes %}
+                <li{{ objectType == 'comment' ? ' class="active"' : '' }}><a href="{{ path('mucommentsmodule_external_finder', {objectType: 'comment', editor: editorName}) }}" title="{{ __('Search and select comment') }}">{{ __('Comments') }}</a></li>
+            {% endif %}
+            </ul>
+        </div>
+        {% form_theme finderForm with [
+            '@MUCommentsModule/Form/bootstrap_3.html.twig',
+            'ZikulaFormExtensionBundle:Form:form_div_layout.html.twig'
+        ] %}
+        {{ form_start(finderForm, {attr: {id: 'mUCommentsModuleSelectorForm'}}) }}
+        {{ form_errors(finderForm) }}
+        <fieldset>
+            <legend>{{ __('Search and select comment') }}</legend>
+            {{ form_row(finderForm.pasteAs) }}
+            <br />
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{{ __('Comment') }}:</label>
+                <div class="col-sm-9">
+                    <div id="mucommentsmoduleItemContainer">
+                        <ul>
+                            {% for comment in items %}
+                                <li>
+                                    {% set itemId = comment.getKey() %}
+                                    <a href="#" data-itemid="{{ itemId }}">
+                                        {{ comment|mucommentsmodule_formattedTitle }}
+                                    </a>
+                                    <input type="hidden" id="path{{ itemId }}" value="{{ path('mucommentsmodule_comment_display', {'id': comment.getId()}) }}" />
+                                    <input type="hidden" id="url{{ itemId }}" value="{{ url('mucommentsmodule_comment_display', {'id': comment.getId()}) }}" />
+                                    <input type="hidden" id="title{{ itemId }}" value="{{ comment|mucommentsmodule_formattedTitle|e('html_attr') }}" />
+                                    <input type="hidden" id="desc{{ itemId }}" value="{% set description %}{% if comment.text is not empty %}{{ comment.text }}{% endif %}
+                                    {% endset %}{{ description|striptags|e('html_attr') }}" />
+                                </li>
+                            {% else %}
+                                <li>{{ __('No comments found.') }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            {{ form_row(finderForm.sort) }}
+            {{ form_row(finderForm.sortdir) }}
+            {{ form_row(finderForm.num) }}
+            {{ form_row(finderForm.q) }}
+            <div>
+                {{ pager({display: 'page', rowcount: pager.numitems, limit: pager.itemsperpage, posvar: 'pos', maxpages: 10, route: 'mucommentsmodule_external_finder'}) }}
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-9">
+                    {{ form_widget(finderForm.update) }}
+                    {{ form_widget(finderForm.cancel) }}
+                </div>
+            </div>
+        </fieldset>
+        {{ form_end(finderForm) }}
+    </div>
+
+    {#
+    <div class="mucommentsmodule-finderform">
+        <fieldset>
+            {{ render(controller('MUCommentsModule:Comment:edit')) }}
+        </fieldset>
+    </div>
+    #}
+{% endblock %}

@@ -55,11 +55,26 @@ services:
         tags:
             - { name: form.type }
     
+    mu_comments_module.form.type.block.item:
+        class: MU\CommentsModule\Block\Form\Type\ItemBlockType
+        arguments:
+            - "@translator.default"
+            - "@mu_comments_module.entity_factory"
+            - "@mu_comments_module.entity_display_helper"
+        tags:
+            - { name: form.type }
+    
+    mu_comments_module.form.type.commentfinder:
+        class: MU\CommentsModule\Form\Type\Finder\CommentFinderType
+        arguments:
+            - "@translator.default"
+        tags:
+            - { name: form.type }
+    
     mu_comments_module.form.type.config:
         class: MU\CommentsModule\Form\Type\ConfigType
         arguments:
             - "@translator.default"
-            - "@=service('zikula_extensions_module.api.variable').getAll('MUCommentsModule')"
-            - "@zikula_groups_module.group_repository"
+            - "@mu_comments_module.listentries_helper"
         tags:
             - { name: form.type }

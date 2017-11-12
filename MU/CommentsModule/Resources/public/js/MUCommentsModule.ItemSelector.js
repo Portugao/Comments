@@ -7,8 +7,7 @@ mUCommentsModule.itemSelector.items = {};
 mUCommentsModule.itemSelector.baseId = 0;
 mUCommentsModule.itemSelector.selectedId = 0;
 
-mUCommentsModule.itemSelector.onLoad = function (baseId, selectedId)
-{
+mUCommentsModule.itemSelector.onLoad = function (baseId, selectedId) {
     mUCommentsModule.itemSelector.baseId = baseId;
     mUCommentsModule.itemSelector.selectedId = selectedId;
 
@@ -26,15 +25,13 @@ mUCommentsModule.itemSelector.onLoad = function (baseId, selectedId)
     mUCommentsModule.itemSelector.getItemList();
 };
 
-mUCommentsModule.itemSelector.onParamChanged = function ()
-{
+mUCommentsModule.itemSelector.onParamChanged = function () {
     jQuery('#ajaxIndicator').removeClass('hidden');
 
     mUCommentsModule.itemSelector.getItemList();
 };
 
-mUCommentsModule.itemSelector.getItemList = function ()
-{
+mUCommentsModule.itemSelector.getItemList = function () {
     var baseId;
     var params;
 
@@ -51,7 +48,7 @@ mUCommentsModule.itemSelector.getItemList = function ()
         params[catidsMain] = jQuery('#' + baseId + '_catidsMain').val();
     }
 
-    jQuery.getJSON(Routing.generate('mucommentsmodule_ajax_getitemlistfinder'), params, function( data ) {
+    jQuery.getJSON(Routing.generate('mucommentsmodule_ajax_getitemlistfinder'), params, function (data) {
         var baseId;
 
         baseId = mUCommentsModule.itemSelector.baseId;
@@ -62,8 +59,7 @@ mUCommentsModule.itemSelector.getItemList = function ()
     });
 };
 
-mUCommentsModule.itemSelector.updateItemDropdownEntries = function ()
-{
+mUCommentsModule.itemSelector.updateItemDropdownEntries = function () {
     var baseId, itemSelector, items, i, item;
 
     baseId = mUCommentsModule.itemSelector.baseId;
@@ -81,8 +77,7 @@ mUCommentsModule.itemSelector.updateItemDropdownEntries = function ()
     }
 };
 
-mUCommentsModule.itemSelector.updatePreview = function ()
-{
+mUCommentsModule.itemSelector.updatePreview = function () {
     var baseId, items, selectedElement, i;
 
     baseId = mUCommentsModule.itemSelector.baseId;
@@ -111,8 +106,7 @@ mUCommentsModule.itemSelector.updatePreview = function ()
     }
 };
 
-mUCommentsModule.itemSelector.onItemChanged = function ()
-{
+mUCommentsModule.itemSelector.onItemChanged = function () {
     var baseId, itemSelector, preview;
 
     baseId = mUCommentsModule.itemSelector.baseId;
@@ -123,7 +117,7 @@ mUCommentsModule.itemSelector.onItemChanged = function ()
     mUCommentsModule.itemSelector.selectedId = jQuery('#' + baseId + 'Id').val();
 };
 
-jQuery(document).ready(function() {
+jQuery(document).ready(function () {
     var infoElem;
 
     infoElem = jQuery('#itemSelectorInfo');

@@ -19,6 +19,7 @@
     {% if context == 'hookDisplayView' and hasEditPermission %}
         {% set entityNameTranslated = __('comment') %}
         {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.HookAssignment.js'), 99) }}
+        {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.InlineEditing.js'), 99) }}
         {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.AutoCompletion.js'), 99) }}
     {% endif %}
 {% endif %}
@@ -38,7 +39,7 @@
     {{ item|mucommentsmodule_formattedTitle }}
 {% if not noLink %}
     </a>
-    <a id="commentItem{{ item.getKey() }}Display" href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'display', {'id': item.getId(), raw: 1}) }}" title="{{ __('Open quick view window') }}" class="mucomments-inline-window hidden" data-modal-title="{{ item|mucommentsmodule_formattedTitle|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
+    <a id="commentItem{{ item.getKey() }}Display" href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'display', {'id': item.getId(), raw: 1}) }}" title="{{ __('Open quick view window') }}" class="mucomments-inline-window hidden" data-modal-title="{{ item|mucommentsmodule_formattedTitle|e('html_attr') }}"><i class="fa fa-id-card-o"></i></a>
 {% endif %}
 {% endspaceless %}
 </h4>
@@ -57,39 +58,37 @@
 </ul>
 {% endif %}
 {% if context == 'hookDisplayView' and hasEditPermission %}
-    {% set withImage = false %}
     {% set idPrefix = 'hookAssignmentComment' %}
     {% set addLinkText = __f('Attach %name%', {'%name%': entityNameTranslated}) %}
     <div id="{{ idPrefix }}LiveSearch" class="mucommentsmodule-add-hook-assignment">
         <a id="{{ idPrefix }}AddLink" href="javascript:void(0);" title="{{ addLinkText|e('html_attr') }}" class="attach-mucommentsmodule-object hidden" data-owner="{{ subscriberOwner|e('html_attr') }}" data-area-id="{{ subscriberAreaId|e('html_attr') }}" data-object-id="{{ subscriberObjectId|e('html_attr') }}" data-url="{{ subscriberUrl|e('html_attr') }}" data-assigned-entity="comment"><i class="fa fa-link"></i> {{ addLinkText }}</a>
-        <div id="{{ idPrefix }}AddFields" class="mucommentsmodule-autocomplete{{ withImage ? '-with-image' : '' }}">
+        <div id="{{ idPrefix }}AddFields" class="mucommentsmodule-autocomplete">
             <label for="{{ idPrefix }}Selector">{{ __f('Find %name%', {'%name%': entityNameTranslated}) }}</label>
             <br />
             <i class="fa fa-search" title="{{ __f('Search %name%', {'%name%': entityNameTranslated})|e('html_attr') }}"></i>
-            <input type="hidden" name="{{ idPrefix }}" id="{{ idPrefix }}" value="" />
+            <input type="hidden" name="{{ idPrefix }}" id="{{ idPrefix }}" value="{% for assignment in assignments %}{% if not loop.first %},{% endif %}{{ assignment.getAssignedId() }}{% endfor %}" />
             <input type="hidden" name="{{ idPrefix }}Multiple" id="{{ idPrefix }}Multiple" value="0" />
-            <input type="hidden" name="{{ idPrefix }}Mode" id="{{ idPrefix }}Mode" value="0" />
-            <input type="hidden" name="{{ idPrefix }}ExcludedIds" id="{{ idPrefix }}ExcludedIds" value="{% for assignment in assignments %}{% if not loop.first %},{% endif %}{{ assignment.getAssignedId() }}{% endfor %}" />
             <input type="text" id="{{ idPrefix }}Selector" name="{{ idPrefix }}Selector" autocomplete="off" />
             <input type="button" id="{{ idPrefix }}SelectorDoCancel" name="{{ idPrefix }}SelectorDoCancel" value="{{ __('Cancel') }}" class="btn btn-default mucommentsmodule-inline-button" />
-            <a id="{{ idPrefix }}SelectorDoNew" href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'edit') }}" title="{{ __f('Create new %name%', {'%name%': entityNameTranslated}) }}" class="btn btn-default mucommentsmodule-inline-button">{{ __('Create') }}</a>
+            <a id="{{ idPrefix }}SelectorDoNew" href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'edit') }}" title="{{ __f('Create new %name%', {'%name%': entityNameTranslated}) }}" class="btn btn-default mucommentsmodule-inline-button"><i class="fa fa-plus"></i> {{ __('Create') }}</a>
             <noscript><p>{{ __('This function requires JavaScript activated!') }}</p></noscript>
         </div>
     </div>
     {% set assignmentInitScript %}
-        <script type="text/javascript">
+        <script>
         /* <![CDATA[ */
-            var relationHandler = new Array();
-            var newItem = {
-                ot: 'comment',
+            var mUCommentsInlineEditHandlers = [];
+            var mUCommentsEditHandler = {
+                alias: '{{ idPrefix }}',
                 prefix: '{{ idPrefix }}SelectorDoNew',
                 moduleName: 'MUCommentsModule',
-                acInstance: null,
+                objectType: 'comment',
+                inputType: 'autocomplete',
                 windowInstanceId: null
             };
-            relationHandler.push(newItem);
+            mUCommentsInlineEditHandlers.push(mUCommentsEditHandler);
 
-            mUCommentsInitRelationItemsForm('comment', '{{ idPrefix }}', true);
+            mUCommentsInitRelationHandling('comment', '{{ idPrefix }}', '{{ idPrefix }}SelectorDoNew', true, 'autocomplete', '{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'edit') }}');
         /* ]]> */
         </script>
     {% endset %}

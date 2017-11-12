@@ -72,34 +72,38 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
             $isOwner = $currentUserId > 0 && null !== $entity->getCreatedBy() && $currentUserId == $entity->getCreatedBy()->getUid();
         
             if ($routeArea == 'admin') {
-                $menu->addChild($this->__('Preview'), [
+                $title = $this->__('Preview', 'mucommentsmodule');
+                $menu->addChild($title, [
                     'route' => $routePrefix . 'display',
                     'routeParameters' => $entity->createUrlArgs()
                 ])->setAttribute('icon', 'fa fa-search-plus');
-                $menu[$this->__('Preview')]->setLinkAttribute('target', '_blank');
-                $menu[$this->__('Preview')]->setLinkAttribute('title', $this->__('Open preview page'));
+                $menu[$title]->setLinkAttribute('target', '_blank');
+                $menu[$title]->setLinkAttribute('title', $this->__('Open preview page', 'mucommentsmodule'));
             }
             if ($context != 'display') {
-                $menu->addChild($this->__('Details'), [
+                $title = $this->__('Details', 'mucommentsmodule');
+                $menu->addChild($title, [
                     'route' => $routePrefix . $routeArea . 'display',
                     'routeParameters' => $entity->createUrlArgs()
                 ])->setAttribute('icon', 'fa fa-eye');
-                $menu[$this->__('Details')]->setLinkAttribute('title', str_replace('"', '', $entityDisplayHelper->getFormattedTitle($entity)));
+                $menu[$title]->setLinkAttribute('title', str_replace('"', '', $entityDisplayHelper->getFormattedTitle($entity)));
             }
             if ($permissionApi->hasPermission($component, $instance, ACCESS_EDIT)) {
-                $menu->addChild($this->__('Edit'), [
+                $title = $this->__('Edit', 'mucommentsmodule');
+                $menu->addChild($title, [
                     'route' => $routePrefix . $routeArea . 'edit',
                     'routeParameters' => $entity->createUrlArgs()
                 ])->setAttribute('icon', 'fa fa-pencil-square-o');
-                $menu[$this->__('Edit')]->setLinkAttribute('title', $this->__('Edit this comment'));
-                $menu->addChild($this->__('Reuse'), [
+                $menu[$title]->setLinkAttribute('title', $this->__('Edit this comment', 'mucommentsmodule'));
+                $title = $this->__('Reuse', 'mucommentsmodule');
+                $menu->addChild($title, [
                     'route' => $routePrefix . $routeArea . 'edit',
                     'routeParameters' => ['astemplate' => $entity->getKey()]
                 ])->setAttribute('icon', 'fa fa-files-o');
-                $menu[$this->__('Reuse')]->setLinkAttribute('title', $this->__('Reuse for new comment'));
+                $menu[$title]->setLinkAttribute('title', $this->__('Reuse for new comment', 'mucommentsmodule'));
             }
             if ($context == 'display') {
-                $title = $this->__('Back to overview');
+                $title = $this->__('Back to overview', 'mucommentsmodule');
                 $menu->addChild($title, [
                     'route' => $routePrefix . $routeArea . 'view'
                 ])->setAttribute('icon', 'fa fa-reply');
@@ -111,7 +115,7 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
             $relatedComponent = 'MUCommentsModule:Comment:';
             $relatedInstance = $entity->getKey() . '::';
             if ($isOwner || $permissionApi->hasPermission($relatedComponent, $relatedInstance, ACCESS_COMMENT)) {
-                $title = $this->__('Create comment');
+                $title = $this->__('Create comments', 'mucommentsmodule');
                 $menu->addChild($title, [
                     'route' => 'mucommentsmodule_comment_' . $routeArea . 'edit',
                     'routeParameters' => ['comment' => $entity->getKey()]

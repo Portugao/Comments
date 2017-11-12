@@ -35,7 +35,7 @@
             <dt>{{ __('Your mail address') }}</dt>
             <dd>{% if comment.yourMailAddress is not empty %}
             {% if not isQuickView %}
-            <a href="mailto:{{ comment.yourMailAddress|protectMail }}" title="{{ __('Send an email') }}" class="fa fa-envelope"></a>
+            <a href="mailto:{{ comment.yourMailAddress|protectMail }}" title="{{ __('Send an email') }}"><i class="fa fa-envelope"></i></a>
             {% else %}
                 {{ comment.yourMailAddress|protectMail }}
             {% endif %}
@@ -46,7 +46,7 @@
             <dt>{{ __('Homepage') }}</dt>
             <dd>{% if comment.homepage is not empty %}
             {% if not isQuickView %}
-            <a href="{{ comment.homepage }}" title="{{ __('Visit this page') }}" class="fa fa-external-link-square"></a>
+            <a href="{{ comment.homepage }}" title="{{ __('Visit this page') }}"><i class="fa fa-external-link-square"></i></a>
             {% else %}
                 {{ comment.homepage }}
             {% endif %}
@@ -72,7 +72,7 @@
                   <a href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'display', {'id': comment.comment.getId()}) }}">{% spaceless %}
                     {{ comment.comment|mucommentsmodule_formattedTitle }}
                   {% endspaceless %}</a>
-                  <a id="commentItem{{ comment.comment.getKey() }}Display" href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'display', {'id': comment.comment.getId(), raw: 1}) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="mucomments-inline-window hidden" data-modal-title="{{ comment.comment|mucommentsmodule_formattedTitle|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
+                  <a id="commentItem{{ comment.comment.getKey() }}Display" href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'display', {'id': comment.comment.getId(), raw: 1}) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="mucomments-inline-window hidden" data-modal-title="{{ comment.comment|mucommentsmodule_formattedTitle|e('html_attr') }}"><i class="fa fa-id-card-o"></i></a>
               {% else %}
                   {{ comment.comment|mucommentsmodule_formattedTitle }}
               {% endif %}
@@ -120,10 +120,15 @@
     {% if mayManage %}
         <p class="managelink">
             {% set createTitle = __('Create comment') %}
-            <a href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'edit', {comment: comment.getKey()}) }}" title="{{ createTitle|e('html_attr') }}" class="fa fa-plus">{{ createTitle }}</a>
+            <a href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'edit', {comment: comment.getKey()}) }}" title="{{ createTitle|e('html_attr') }}"><i class="fa fa-plus"></i> {{ createTitle }}</a>
         </p>
     {% endif %}
 {% endblock %}
 {% block display_hooks %}
-    {{ notifyDisplayHooks(eventName='mucommentsmodule.ui_hooks.comments.display_view', id=comment.getKey(), urlObject=currentUrlObject) }}
+    {% set hooks = notifyDisplayHooks(eventName='mucommentsmodule.ui_hooks.comments.display_view', id=comment.getKey(), urlObject=currentUrlObject, outputAsArray=true) %}
+    {% if hooks is iterable and hooks|length > 0 %}
+        {% for area, hook in hooks %}
+            <div class="z-displayhook" data-area="{{ area|e('html_attr') }}">{{ hook|raw }}</div>
+        {% endfor %}
+    {% endif %}
 {% endblock %}

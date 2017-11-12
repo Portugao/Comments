@@ -1,15 +1,13 @@
 'use strict';
 
-function mUCommentsCapitaliseFirstLetter(string)
-{
+function mUCommentsCapitaliseFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.substring(1);
 }
 
 /**
  * Initialise the quick navigation form in list views.
  */
-function mUCommentsInitQuickNavigation()
-{
+function mUCommentsInitQuickNavigation() {
     var quickNavForm;
     var objectType;
 
@@ -34,8 +32,7 @@ function mUCommentsInitQuickNavigation()
 /**
  * Simulates a simple alert using bootstrap.
  */
-function mUCommentsSimpleAlert(beforeElem, title, content, alertId, cssClass)
-{
+function mUCommentsSimpleAlert(anchorElement, title, content, alertId, cssClass) {
     var alertBox;
 
     alertBox = ' \
@@ -45,8 +42,8 @@ function mUCommentsSimpleAlert(beforeElem, title, content, alertId, cssClass)
           <p>' + content + '</p> \
         </div>';
 
-    // insert alert before the given element
-    beforeElem.before(alertBox);
+    // insert alert before the given anchor element
+    anchorElement.before(alertBox);
 
     jQuery('#' + alertId).delay(200).addClass('in').fadeOut(4000, function () {
         jQuery(this).remove();
@@ -56,8 +53,7 @@ function mUCommentsSimpleAlert(beforeElem, title, content, alertId, cssClass)
 /**
  * Initialises the mass toggle functionality for admin view pages.
  */
-function mUCommentsInitMassToggle()
-{
+function mUCommentsInitMassToggle() {
     if (jQuery('.mucomments-mass-toggle').length > 0) {
         jQuery('.mucomments-mass-toggle').unbind('click').click(function (event) {
             if (jQuery('.table.fixed-columns').length > 0) {
@@ -73,10 +69,9 @@ function mUCommentsInitMassToggle()
 /**
  * Initialises fixed table columns.
  */
-function mUCommentsInitFixedColumns()
-{
+function mUCommentsInitFixedColumns() {
     jQuery('.table.fixed-columns').remove();
-    jQuery('.table').each(function() {
+    jQuery('.table').each(function () {
         var originalTable, fixedColumnsTable, fixedTableWidth;
 
         originalTable = jQuery(this);
@@ -105,8 +100,7 @@ function mUCommentsInitFixedColumns()
 /**
  * Creates a dropdown menu for the item actions.
  */
-function mUCommentsInitItemActions(context)
-{
+function mUCommentsInitItemActions(context) {
     var containerSelector;
     var containers;
     var listClasses;
@@ -146,8 +140,7 @@ function mUCommentsInitItemActions(context)
 /**
  * Helper function to create new Bootstrap modal window instances.
  */
-function mUCommentsInitInlineWindow(containerElem)
-{
+function mUCommentsInitInlineWindow(containerElem) {
     var newWindowId;
     var modalTitle;
 
@@ -157,13 +150,13 @@ function mUCommentsInitInlineWindow(containerElem)
     // define name of window
     newWindowId = containerElem.attr('id') + 'Dialog';
 
-    containerElem.unbind('click').click(function(event) {
+    containerElem.unbind('click').click(function (event) {
         event.preventDefault();
 
         // check if window exists already
         if (jQuery('#' + newWindowId).length < 1) {
             // create new window instance
-            jQuery('<div id="' + newWindowId + '"></div>')
+            jQuery('<div />', { id: newWindowId })
                 .append(
                     jQuery('<iframe width="100%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" />')
                         .attr('src', containerElem.attr('href'))
@@ -196,14 +189,13 @@ function mUCommentsInitInlineWindow(containerElem)
 /**
  * Initialises modals for inline display of related items.
  */
-function mUCommentsInitQuickViewModals()
-{
+function mUCommentsInitQuickViewModals() {
     jQuery('.mucomments-inline-window').each(function (index) {
         mUCommentsInitInlineWindow(jQuery(this));
     });
 }
 
-jQuery(document).ready(function() {
+jQuery(document).ready(function () {
     var isViewPage;
     var isDisplayPage;
 

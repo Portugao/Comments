@@ -114,6 +114,16 @@ abstract class AbstractCommentEntity extends EntityAccess
      */
     protected $mainId = 0;
     
+    /**
+     * @ORM\Column(length=255)
+     * @Assert\NotNull()
+     * @Assert\Regex(pattern="/\s/", match=false, message="This value must not contain space chars.")
+     * @Assert\Length(min="0", max="255")
+     * @Assert\Ip(version="all_public")
+     * @var string $ipOfComment
+     */
+    protected $ipOfComment = '';
+    
     
     /**
      * Bidirectional - Many comments [comments] are linked by one comment [comment] (OWNING SIDE).
@@ -391,6 +401,30 @@ abstract class AbstractCommentEntity extends EntityAccess
     {
         if (intval($this->mainId) !== intval($mainId)) {
             $this->mainId = intval($mainId);
+        }
+    }
+    
+    /**
+     * Returns the ip of comment.
+     *
+     * @return string
+     */
+    public function getIpOfComment()
+    {
+        return $this->ipOfComment;
+    }
+    
+    /**
+     * Sets the ip of comment.
+     *
+     * @param string $ipOfComment
+     *
+     * @return void
+     */
+    public function setIpOfComment($ipOfComment)
+    {
+        if ($this->ipOfComment !== $ipOfComment) {
+            $this->ipOfComment = isset($ipOfComment) ? $ipOfComment : '';
         }
     }
     

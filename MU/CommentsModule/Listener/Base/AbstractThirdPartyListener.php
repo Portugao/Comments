@@ -27,7 +27,7 @@ abstract class AbstractThirdPartyListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            'module.content.gettypes'               => ['contentGetTypes', 5],
+            'module.content.gettypes'                 => ['contentGetTypes', 5],
         ];
     }
     

@@ -368,7 +368,8 @@ abstract class AbstractEditHandler
                 }
             }
         } else {
-            if (!$this->permissionApi->hasPermission($this->permissionComponent, '::', ACCESS_EDIT)) {
+            $permissionLevel = in_array($this->objectType, ['comment']) ? ACCESS_COMMENT : ACCESS_EDIT;
+            if (!$this->permissionApi->hasPermission($this->permissionComponent, '::', $permissionLevel)) {
                 throw new AccessDeniedException();
             }
     
@@ -537,6 +538,10 @@ abstract class AbstractEditHandler
                 $args['commandName'] = $action['id'];
             }
         }
+        if ($this->templateParameters['mode'] == 'create' && $this->form->get('submitrepeat')->isClicked()) {
+            $args['commandName'] = 'submit';
+            $this->repeatCreateAction = true;
+        }
         if ($this->form->get('cancel')->isClicked()) {
             $args['commandName'] = 'cancel';
         }
@@ -668,10 +673,6 @@ abstract class AbstractEditHandler
     {
         // fetch posted data input values as an associative array
         $formData = $this->form->getData();
-    
-        if ($this->templateParameters['mode'] == 'create' && isset($this->form['repeatCreation']) && $this->form['repeatCreation']->getData() == 1) {
-            $this->repeatCreateAction = true;
-        }
     
         if (method_exists($this->entityRef, 'getCreatedBy')) {
             if (isset($this->form['moderationSpecificCreator']) && null !== $this->form['moderationSpecificCreator']->getData()) {

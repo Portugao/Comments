@@ -8,7 +8,7 @@ application "Comments" {
         settingsContainer "Settings"
         targetCoreVersion ZK15
         generatePendingContentSupport false
-        generateExternalControllerAndFinder false
+        generateExternalControllerAndFinder true
         generateScribitePlugins false
         generateTagSupport false
         generateMultiHookNeedles false
@@ -22,7 +22,7 @@ application "Comments" {
         versionAllGeneratedFiles false
         generatePoweredByBacklinksIntoFooterTemplates false
     generateTests false
-        markFiles "Controller/AjaxController.php,\r\nEntity/Repository/CommentRepository.php,\r\nResources/views/base.html.twig,\r\nResources/views/Comment/edit.html.twig,\r\nTwig/TwigExtension.php"
+        markFiles "Controller/AjaxController.php,\r\nEntity/Repository/CommentRepository.php,\r\nHelper/ControllerHelper.php,\r\nHookProvider/CommentUiHooksProvider.php,\r\nResources/config/helpers.yml,\r\nResources/public/css/style.css,\r\nResources/views/base.html.twig,\r\nResources/views/Comment/edit.html.twig,\r\nTwig/TwigExtension.php"
     }
     entities {
         entity "comment" leading {
@@ -58,6 +58,12 @@ application "Comments" {
                     mandatory false
                     visible false
                 }
+            ,
+                string "ipOfComment" {
+                    mandatory false
+                    displayType VIEW
+                    ipAddress ALL_PUBLIC
+                }
             }
             actions {
                 mainAction "Index",
@@ -77,35 +83,34 @@ application "Comments" {
         }
     }
 variables {
-        varContainer "generalSettings" {
-            vars {
-                boolVar "logIp",
-                listVar "orderComments" {
-                    documentation "Here you can decide, how to order main comments."
+        varContainer "GeneralSetting" {
+            fields {
+                boolean "logIp" {
+                    mandatory false
+                },
+                list "orderComments" {
                     items {
-                        listVarItem "ascending",
-                        listVarItem "descending"
+                        default listItem "ascending" ( "asc" ),
+                        listItem "descending" ( "desc" )
                     }
-                }
-            ,
-                listVar "levelsOfComments" {
-                    value ""
+                },
+                list "levelsOfComments" {
                     items {
-                        listVarItem default "one",
-                        listVarItem "two",
-                        listVarItem "three"
+                        default listItem "One" ( "one" ),
+                        listItem "Two" ( "two" ),
+                        listItem "Three" ( "three" )
                     }
                 }
             }
         },
-        varContainer "spamHandling" {
+        varContainer "spamhandling" {
             sortOrder 2
-            vars {
-                listVar "spamProtector" {
+            fields {
+                list "spamProtector" {
+                    mandatory false
                     items {
-                        listVarItem "None",
-                        listVarItem "Intern",
-                        listVarItem "Captcha"
+                        listItem "Intern" ( "intern" ),
+                        listItem "Captcha" ( "captcha" )
                     }
                 }
             }

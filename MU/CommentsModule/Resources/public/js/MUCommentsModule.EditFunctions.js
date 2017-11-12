@@ -6,8 +6,7 @@ var editForm;
 var formButtons;
 var triggerValidation = true;
 
-function mUCommentsTriggerFormValidation()
-{
+function mUCommentsTriggerFormValidation() {
     mUCommentsExecuteCustomValidationConstraints(editedObjectType, editedEntityId);
 
     if (!editForm.get(0).checkValidity()) {
@@ -37,8 +36,7 @@ function mUCommentsHandleFormSubmit (event) {
 /**
  * Initialises an entity edit form.
  */
-function mUCommentsInitEditForm(mode, entityId)
-{
+function mUCommentsInitEditForm(mode, entityId) {
     if (jQuery('.mucomments-edit-form').length < 1) {
         return;
     }
@@ -66,18 +64,32 @@ function mUCommentsInitEditForm(mode, entityId)
     });
 
     formButtons = editForm.find('.form-buttons input');
-    editForm.find('.btn-danger').first().bind('click keypress', function (event) {
-        if (!window.confirm(Translator.__('Do you really want to delete this entry?'))) {
-            event.preventDefault();
-        }
-    });
+    if (editForm.find('.btn-danger').length > 0) {
+        editForm.find('.btn-danger').first().bind('click keypress', function (event) {
+            if (!window.confirm(Translator.__('Do you really want to delete this entry?'))) {
+                event.preventDefault();
+            }
+        });
+    }
     editForm.find('button[type=submit]').bind('click keypress', function (event) {
-        triggerValidation = !jQuery(this).attr('formnovalidate');
+        triggerValidation = !jQuery(this).prop('formnovalidate');
     });
     editForm.submit(mUCommentsHandleFormSubmit);
 
     if (mode != 'create') {
         mUCommentsTriggerFormValidation();
+    }
+}
+
+/**
+ * Initialises a relation field section with autocompletion and optional edit capabilities.
+ */
+function mUCommentsInitRelationHandling(objectType, alias, idPrefix, includeEditing, inputType, createUrl) {
+    if (inputType == 'autocomplete') {
+        mUCommentsInitAutoCompletion(objectType, idPrefix, includeEditing);
+    }
+    if (includeEditing) {
+        mUCommentsInitInlineEditingButtons(objectType, alias, idPrefix, inputType, createUrl);
     }
 }
 

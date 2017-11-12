@@ -14,7 +14,6 @@ namespace MU\CommentsModule\Form\Type\Base;
 
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -104,7 +103,6 @@ abstract class AbstractCommentType extends AbstractType
         $this->addIncomingRelationshipFields($builder, $options);
         $this->addAdditionalNotificationRemarksField($builder, $options);
         $this->addModerationFields($builder, $options);
-        $this->addReturnControlField($builder, $options);
         $this->addSubmitButtons($builder, $options);
     }
 
@@ -144,7 +142,7 @@ abstract class AbstractCommentType extends AbstractType
             'empty_data' => '',
             'attr' => [
                 'maxlength' => 255,
-                'class' => ' validate-email',
+                'class' => '',
                 'title' => $this->__('Enter the your mail address of the comment')
             ],
             'required' => false,
@@ -155,7 +153,7 @@ abstract class AbstractCommentType extends AbstractType
             'empty_data' => '',
             'attr' => [
                 'maxlength' => 255,
-                'class' => ' validate-url',
+                'class' => '',
                 'title' => $this->__('Enter the homepage of the comment')
             ],
             'required' => false,
@@ -178,7 +176,7 @@ abstract class AbstractCommentType extends AbstractType
             'empty_data' => '0',
             'attr' => [
                 'maxlength' => 11,
-                'class' => ' validate-digits',
+                'class' => '',
                 'title' => $this->__('Enter the parentid of the comment.') . ' ' . $this->__('Only digits are allowed.')
             ],
             'required' => false,
@@ -190,11 +188,23 @@ abstract class AbstractCommentType extends AbstractType
             'empty_data' => '0',
             'attr' => [
                 'maxlength' => 11,
-                'class' => ' validate-digits',
+                'class' => '',
                 'title' => $this->__('Enter the main id of the comment.') . ' ' . $this->__('Only digits are allowed.')
             ],
             'required' => false,
             'scale' => 0
+        ]);
+        
+        $builder->add('ipOfComment', TextType::class, [
+            'label' => $this->__('Ip of comment') . ':',
+            'help' => [$this->__('Note: this value must not contain spaces.'), $this->__('Note: this value must be a valid IP address. Allowed IPv4 and IPv6 addresses using only public ranges (without private and reserved ranges).')],
+            'empty_data' => '',
+            'attr' => [
+                'maxlength' => 255,
+                'class' => ' validate-nospace',
+                'title' => $this->__('Enter the ip of comment of the comment')
+            ],
+            'required' => false,
         ]);
     }
 
@@ -270,13 +280,15 @@ abstract class AbstractCommentType extends AbstractType
         if (!$options['has_moderate_permission']) {
             return;
         }
+        if ($options['inline_usage']) {
+            return;
+        }
     
         $builder->add('moderationSpecificCreator', UserLiveSearchType::class, [
             'mapped' => false,
             'label' => $this->__('Creator') . ':',
             'attr' => [
                 'maxlength' => 11,
-                'class' => ' validate-digits',
                 'title' => $this->__('Here you can choose a user which will be set as creator')
             ],
             'empty_data' => 0,
@@ -300,24 +312,6 @@ abstract class AbstractCommentType extends AbstractType
     }
 
     /**
-     * Adds the return control field.
-     *
-     * @param FormBuilderInterface $builder The form builder
-     * @param array                $options The options
-     */
-    public function addReturnControlField(FormBuilderInterface $builder, array $options)
-    {
-        if ($options['mode'] != 'create') {
-            return;
-        }
-        $builder->add('repeatCreation', CheckboxType::class, [
-            'mapped' => false,
-            'label' => $this->__('Create another item after save'),
-            'required' => false
-        ]);
-    }
-
-    /**
      * Adds submit buttons.
      *
      * @param FormBuilderInterface $builder The form builder
@@ -333,6 +327,16 @@ abstract class AbstractCommentType extends AbstractType
                     'class' => $action['buttonClass']
                 ]
             ]);
+            if ($options['mode'] == 'create' && $action['id'] == 'submit' && !$options['inline_usage']) {
+                // add additional button to submit item and return to create form
+                $builder->add('submitrepeat', SubmitType::class, [
+                    'label' => $this->__('Submit and repeat'),
+                    'icon' => 'fa-repeat',
+                    'attr' => [
+                        'class' => $action['buttonClass']
+                    ]
+                ]);
+            }
         }
         $builder->add('reset', ResetType::class, [
             'label' => $this->__('Reset'),

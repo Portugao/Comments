@@ -1,0 +1,5 @@
+{# Purpose of this template: Display item information for previewing from other modules #}
+<dl id="comment{{ comment.getKey() }}">
+<dt>{{ comment|mucommentsmodule_formattedTitle|notifyFilters('comments.filter_hooks.comments.filter')|safeHtml }}</dt>
+{% if comment.text is not empty %}<dd>{{ comment.text }}</dd>{% endif %}
+</dl>
