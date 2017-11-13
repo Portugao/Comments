@@ -44,12 +44,14 @@ abstract class AbstractCommentsModuleInstaller extends AbstractExtensionInstalle
     
         // set up all our vars with initial values
         $this->setVar('logIp', false);
-        $this->setVar('orderComments', '');
-        $this->setVar('levelsOfComments',  'one' );
-        $this->setVar('spamProtector', '');
-        $this->setVar('moderationGroupForComments', '2');
-        $this->setVar('commentEntriesPerPage', '10');
+        $this->setVar('orderComments', 'desc');
+        $this->setVar('levelsOfComments', '');
+        $this->setVar('positionOfForm', 'above');
+        $this->setVar('spamProtector', null);
+        $this->setVar('moderationGroupForComments', 2);
+        $this->setVar('commentEntriesPerPage', 10);
         $this->setVar('linkOwnCommentsOnAccountPage', true);
+        $this->setVar('enabledFinderTypes', 'comment');
     
         // initialisation successful
         return true;
@@ -281,7 +283,7 @@ abstract class AbstractCommentsModuleInstaller extends AbstractExtensionInstalle
     /**
      * Build array with all entity classes for MUCommentsModule.
      *
-     * @return array list of class names
+     * @return string[] List of class names
      */
     protected function listEntityClasses()
     {

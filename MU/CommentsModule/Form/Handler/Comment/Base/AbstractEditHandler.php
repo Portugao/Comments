@@ -34,7 +34,7 @@ abstract class AbstractEditHandler extends EditHandler
      *
      * @return boolean False in case of initialisation errors, otherwise true
      */
-    public function processForm(array $templateParameters)
+    public function processForm(array $templateParameters = [])
     {
         $this->objectType = 'comment';
         $this->objectTypeCapital = 'Comment';
@@ -145,7 +145,7 @@ abstract class AbstractEditHandler extends EditHandler
      *
      * @return string The default redirect url
      */
-    protected function getDefaultReturnUrl($args)
+    protected function getDefaultReturnUrl(array $args = [])
     {
         $objectIsPersisted = $args['commandName'] != 'delete' && !($this->templateParameters['mode'] == 'create' && $args['commandName'] == 'cancel');
     
@@ -203,8 +203,8 @@ abstract class AbstractEditHandler extends EditHandler
     /**
      * Get success or error message for default operations.
      *
-     * @param array   $args    Arguments from handleCommand method
-     * @param Boolean $success Becomes true if this is a success, false for default error
+     * @param array   $args    List of arguments from handleCommand method
+     * @param boolean $success Becomes true if this is a success, false for default error
      *
      * @return String desired status or error message
      */
@@ -237,9 +237,9 @@ abstract class AbstractEditHandler extends EditHandler
     /**
      * This method executes a certain workflow action.
      *
-     * @param array $args Arguments from handleCommand method
+     * @param array $args List of arguments from handleCommand method
      *
-     * @return bool Whether everything worked well or not
+     * @return boolean Whether everything worked well or not
      *
      * @throws RuntimeException Thrown if concurrent editing is recognised or another error occurs
      */
@@ -278,7 +278,7 @@ abstract class AbstractEditHandler extends EditHandler
      *
      * @return string The redirect url
      */
-    protected function getRedirectUrl($args)
+    protected function getRedirectUrl(array $args = [])
     {
         if (true === $this->templateParameters['inlineUsage']) {
             $commandName = substr($args['commandName'], 0, 6) == 'submit' ? 'create' : $args['commandName'];

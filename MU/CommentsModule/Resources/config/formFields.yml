@@ -1,2 +1,9 @@
 services:
     # Form field types
+    
+    mu_comments_module.form.type.field.multilist:
+        class: MU\CommentsModule\Form\Type\Field\MultiListType
+        arguments:
+            - "@mu_comments_module.listentries_helper"
+        tags:
+            - { name: form.type }

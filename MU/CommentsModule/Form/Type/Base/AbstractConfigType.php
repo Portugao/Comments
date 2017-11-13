@@ -83,7 +83,7 @@ abstract class AbstractConfigType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addGeneralSettingFields(FormBuilderInterface $builder, array $options)
+    public function addGeneralSettingFields(FormBuilderInterface $builder, array $options = [])
     {
         
         $builder->add('logIp', CheckboxType::class, [
@@ -138,6 +138,28 @@ abstract class AbstractConfigType extends AbstractType
             'multiple' => false,
             'expanded' => false
         ]);
+        
+        $listEntries = $this->listHelper->getEntries('appSettings', 'positionOfForm');
+        $choices = [];
+        $choiceAttributes = [];
+        foreach ($listEntries as $entry) {
+            $choices[$entry['text']] = $entry['value'];
+            $choiceAttributes[$entry['text']] = ['title' => $entry['title']];
+        }
+        $builder->add('positionOfForm', ChoiceType::class, [
+            'label' => $this->__('Position of form') . ':',
+            'empty_data' => '',
+            'attr' => [
+                'class' => '',
+                'title' => $this->__('Choose the position of form.')
+            ],
+            'required' => true,
+            'choices' => $choices,
+            'choices_as_values' => true,
+            'choice_attr' => $choiceAttributes,
+            'multiple' => false,
+            'expanded' => false
+        ]);
     }
 
     /**
@@ -146,7 +168,7 @@ abstract class AbstractConfigType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addSpamhandlingFields(FormBuilderInterface $builder, array $options)
+    public function addSpamhandlingFields(FormBuilderInterface $builder, array $options = [])
     {
         
         $listEntries = $this->listHelper->getEntries('appSettings', 'spamProtector');
@@ -179,7 +201,7 @@ abstract class AbstractConfigType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addModerationFields(FormBuilderInterface $builder, array $options)
+    public function addModerationFields(FormBuilderInterface $builder, array $options = [])
     {
         
         $builder->add('moderationGroupForComments', EntityType::class, [
@@ -209,7 +231,7 @@ abstract class AbstractConfigType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addListViewsFields(FormBuilderInterface $builder, array $options)
+    public function addListViewsFields(FormBuilderInterface $builder, array $options = [])
     {
         
         $builder->add('commentEntriesPerPage', IntegerType::class, [
@@ -240,7 +262,7 @@ abstract class AbstractConfigType extends AbstractType
                 'class' => '',
                 'title' => $this->__('The link own comments on account page option')
             ],
-            'required' => true,
+            'required' => false,
         ]);
     }
 
@@ -250,7 +272,7 @@ abstract class AbstractConfigType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addIntegrationFields(FormBuilderInterface $builder, array $options)
+    public function addIntegrationFields(FormBuilderInterface $builder, array $options = [])
     {
         
         $listEntries = $this->listHelper->getEntries('appSettings', 'enabledFinderTypes');
@@ -272,7 +294,8 @@ abstract class AbstractConfigType extends AbstractType
                 'class' => '',
                 'title' => $this->__('Choose the enabled finder types.')
             ],
-            'required' => true,
+            'required' => false,
+            'placeholder' => $this->__('Choose an option'),
             'choices' => $choices,
             'choices_as_values' => true,
             'choice_attr' => $choiceAttributes,
@@ -287,7 +310,7 @@ abstract class AbstractConfigType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addSubmitButtons(FormBuilderInterface $builder, array $options)
+    public function addSubmitButtons(FormBuilderInterface $builder, array $options = [])
     {
         $builder->add('save', SubmitType::class, [
             'label' => $this->__('Update configuration'),

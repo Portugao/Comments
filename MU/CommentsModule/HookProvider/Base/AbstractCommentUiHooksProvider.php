@@ -260,7 +260,7 @@ abstract class AbstractCommentUiHooksProvider implements HookProviderInterface
      *
      * @param Hook $hook
      *
-     * @return array
+     * @return array List of assignments and assigned entities
      */
     protected function selectAssignedEntities(Hook $hook)
     {
@@ -279,7 +279,7 @@ abstract class AbstractCommentUiHooksProvider implements HookProviderInterface
      *
      * @param Hook $hook
      *
-     * @return array
+     * @return array List of assignments and identifiers of assigned entities
      */
     protected function selectAssignedIds(Hook $hook)
     {

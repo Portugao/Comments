@@ -28,7 +28,7 @@ class TwigExtension extends AbstractTwigExtension
     public function getFunctions()
     {
     	$functions = parent::getFunctions();
-    	$functions[] = new \Twig_SimpleFunction('mucommentsmodule_showEditForm', [$this, 'showEditForm'], ['is_safe' => ['html']]);
+    	$functions[] = new \Twig_SimpleFunction('mucommentsmodule_showEditForm', [$this, 'showEditForm'], ['is_safe' => ['html'], 'owner']);
  	
     	return $functions;
     }

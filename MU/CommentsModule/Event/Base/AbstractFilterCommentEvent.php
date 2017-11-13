@@ -36,7 +36,7 @@ class AbstractFilterCommentEvent extends Event
      * @param CommentEntity $comment Processed entity
      * @param array $entityChangeSet Change set for preUpdate events
      */
-    public function __construct(CommentEntity $comment, $entityChangeSet = [])
+    public function __construct(CommentEntity $comment, array $entityChangeSet = [])
     {
         $this->comment = $comment;
         $this->entityChangeSet = $entityChangeSet;
@@ -55,7 +55,7 @@ class AbstractFilterCommentEvent extends Event
     /**
      * Returns the change set.
      *
-     * @return array
+     * @return array Entity change set
      */
     public function getEntityChangeSet()
     {

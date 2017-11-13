@@ -45,7 +45,7 @@ abstract class AbstractAppSettings
      * @CommentsAssert\ListEntry(entityName="appSettings", propertyName="orderComments", multiple=false)
      * @var string $orderComments
      */
-    protected $orderComments = '';
+    protected $orderComments = 'desc';
     
     /**
      * @Assert\NotBlank()
@@ -55,24 +55,29 @@ abstract class AbstractAppSettings
     protected $levelsOfComments = '';
     
     /**
-     * @Assert\NotNull()
+     * @Assert\NotBlank()
+     * @CommentsAssert\ListEntry(entityName="appSettings", propertyName="positionOfForm", multiple=false)
+     * @var string $positionOfForm
+     */
+    protected $positionOfForm = 'above';
+    
+    /**
      * @CommentsAssert\ListEntry(entityName="appSettings", propertyName="spamProtector", multiple=false)
      * @var string $spamProtector
      */
-    protected $spamProtector = '';
+    protected $spamProtector = null;
     
     /**
      * Used to determine moderator user accounts for sending email notifications.
-     * @Assert\Type(type="integer")
+     *
      * @Assert\NotBlank()
-     * @Assert\NotEqualTo(value=0)
-     * @Assert\LessThan(value=100000000000)
      * @var integer $moderationGroupForComments
      */
     protected $moderationGroupForComments = 2;
     
     /**
      * The amount of comments shown per page
+     *
      * @Assert\Type(type="integer")
      * @Assert\NotBlank()
      * @Assert\NotEqualTo(value=0)
@@ -83,7 +88,8 @@ abstract class AbstractAppSettings
     
     /**
      * Whether to add a link to comments of the current user on his account page
-     * @Assert\IsTrue(message="This option is mandatory.")
+     *
+     * @Assert\NotNull()
      * @Assert\Type(type="bool")
      * @var boolean $linkOwnCommentsOnAccountPage
      */
@@ -91,11 +97,12 @@ abstract class AbstractAppSettings
     
     /**
      * Which sections are supported in the Finder component (used by Scribite plug-ins).
-     * @Assert\NotBlank()
+     *
+     * @Assert\NotNull()
      * @CommentsAssert\ListEntry(entityName="appSettings", propertyName="enabledFinderTypes", multiple=true)
      * @var string $enabledFinderTypes
      */
-    protected $enabledFinderTypes = '';
+    protected $enabledFinderTypes = 'comment';
     
     
     /**
@@ -187,6 +194,30 @@ abstract class AbstractAppSettings
     }
     
     /**
+     * Returns the position of form.
+     *
+     * @return string
+     */
+    public function getPositionOfForm()
+    {
+        return $this->positionOfForm;
+    }
+    
+    /**
+     * Sets the position of form.
+     *
+     * @param string $positionOfForm
+     *
+     * @return void
+     */
+    public function setPositionOfForm($positionOfForm)
+    {
+        if ($this->positionOfForm !== $positionOfForm) {
+            $this->positionOfForm = isset($positionOfForm) ? $positionOfForm : '';
+        }
+    }
+    
+    /**
      * Returns the spam protector.
      *
      * @return string
@@ -206,7 +237,7 @@ abstract class AbstractAppSettings
     public function setSpamProtector($spamProtector)
     {
         if ($this->spamProtector !== $spamProtector) {
-            $this->spamProtector = isset($spamProtector) ? $spamProtector : '';
+            $this->spamProtector = $spamProtector;
         }
     }
     
@@ -229,7 +260,7 @@ abstract class AbstractAppSettings
      */
     public function setModerationGroupForComments($moderationGroupForComments)
     {
-        if (intval($this->moderationGroupForComments) !== intval($moderationGroupForComments)) {
+        if ($this->moderationGroupForComments !== $moderationGroupForComments) {
             $this->moderationGroupForComments = $moderationGroupForComments;
         }
     }
@@ -323,6 +354,9 @@ abstract class AbstractAppSettings
         if (isset($moduleVars['levelsOfComments'])) {
             $this->setLevelsOfComments($moduleVars['levelsOfComments']);
         }
+        if (isset($moduleVars['positionOfForm'])) {
+            $this->setPositionOfForm($moduleVars['positionOfForm']);
+        }
         if (isset($moduleVars['spamProtector'])) {
             $this->setSpamProtector($moduleVars['spamProtector']);
         }
@@ -352,7 +386,7 @@ abstract class AbstractAppSettings
     /**
      * Saves module variables into the database.
      */
-    protected function save()
+    public function save()
     {
         // normalise group selector values
         $group = $this->getModerationGroupForComments();
@@ -362,6 +396,7 @@ abstract class AbstractAppSettings
         $this->variableApi->set('MUCommentsModule', 'logIp', $this->getLogIp());
         $this->variableApi->set('MUCommentsModule', 'orderComments', $this->getOrderComments());
         $this->variableApi->set('MUCommentsModule', 'levelsOfComments', $this->getLevelsOfComments());
+        $this->variableApi->set('MUCommentsModule', 'positionOfForm', $this->getPositionOfForm());
         $this->variableApi->set('MUCommentsModule', 'spamProtector', $this->getSpamProtector());
         $this->variableApi->set('MUCommentsModule', 'moderationGroupForComments', $this->getModerationGroupForComments());
         $this->variableApi->set('MUCommentsModule', 'commentEntriesPerPage', $this->getCommentEntriesPerPage());

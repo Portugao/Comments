@@ -22,7 +22,7 @@ application "Comments" {
         versionAllGeneratedFiles false
         generatePoweredByBacklinksIntoFooterTemplates false
     generateTests false
-        markFiles "Controller/AjaxController.php,\r\nEntity/Repository/CommentRepository.php,\r\nHelper/ControllerHelper.php,\r\nHookProvider/CommentUiHooksProvider.php,\r\nResources/config/helpers.yml,\r\nResources/public/css/style.css,\r\nResources/views/base.html.twig,\r\nResources/views/Comment/edit.html.twig,\r\nTwig/TwigExtension.php"
+        markFiles "Controller/AjaxController.php,\r\nHelper/ControllerHelper.php,\r\nHookProvider/CommentUiHooksProvider.php,\r\nResources/config/helpers.yml,\r\nResources/public/css/style.css,\r\nResources/views/base.html.twig,\r\nResources/views/Comment/edit.html.twig,\r\nTwig/TwigExtension.php"
     }
     entities {
         entity "comment" leading {
@@ -48,12 +48,12 @@ application "Comments" {
                 text "text" {
                     length 20000
                 },
-                integer "parentid" {
+                integer "parentid" nullable {
                     defaultValue "0"
                     mandatory false
                     visible false
                 },
-                integer "mainId" {
+                integer "mainId" nullable {
                     defaultValue "0"
                     mandatory false
                     visible false
@@ -90,15 +90,22 @@ variables {
                 },
                 list "orderComments" {
                     items {
-                        default listItem "ascending" ( "asc" ),
-                        listItem "descending" ( "desc" )
+                        listItem "ascending" ( "asc" ),
+                        default listItem "descending" ( "desc" )
                     }
                 },
                 list "levelsOfComments" {
                     items {
-                        default listItem "One" ( "one" ),
-                        listItem "Two" ( "two" ),
-                        listItem "Three" ( "three" )
+                        listItem "One" ( "one" ),
+                        listItem   "Two" ( "two" ),
+                        listItem   "Three" ( "three" )
+                    }
+                }
+            ,
+                list "positionOfForm" {
+                    items {
+                        default listItem "above" ( "above" ),
+                        listItem "below" ( "below" )
                     }
                 }
             }
@@ -106,7 +113,7 @@ variables {
         varContainer "spamhandling" {
             sortOrder 2
             fields {
-                list "spamProtector" {
+                list "spamProtector" nullable {
                     mandatory false
                     items {
                         listItem "Intern" ( "intern" ),

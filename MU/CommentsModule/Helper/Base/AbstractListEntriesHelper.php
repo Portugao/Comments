@@ -137,6 +137,25 @@ abstract class AbstractListEntriesHelper
                         break;
                 }
                 break;
+            case 'appSettings':
+                switch ($fieldName) {
+                    case 'orderComments':
+                        $result = false;
+                        break;
+                    case 'levelsOfComments':
+                        $result = false;
+                        break;
+                    case 'positionOfForm':
+                        $result = false;
+                        break;
+                    case 'spamProtector':
+                        $result = false;
+                        break;
+                    case 'enabledFinderTypes':
+                        $result = true;
+                        break;
+                }
+                break;
         }
     
         return $result;
@@ -163,6 +182,25 @@ abstract class AbstractListEntriesHelper
                 switch ($fieldName) {
                     case 'workflowState':
                         $entries = $this->getWorkflowStateEntriesForComment();
+                        break;
+                }
+                break;
+            case 'appSettings':
+                switch ($fieldName) {
+                    case 'orderComments':
+                        $entries = $this->getOrderCommentsEntriesForAppSettings();
+                        break;
+                    case 'levelsOfComments':
+                        $entries = $this->getLevelsOfCommentsEntriesForAppSettings();
+                        break;
+                    case 'positionOfForm':
+                        $entries = $this->getPositionOfFormEntriesForAppSettings();
+                        break;
+                    case 'spamProtector':
+                        $entries = $this->getSpamProtectorEntriesForAppSettings();
+                        break;
+                    case 'enabledFinderTypes':
+                        $entries = $this->getEnabledFinderTypesEntriesForAppSettings();
                         break;
                 }
                 break;
@@ -207,6 +245,136 @@ abstract class AbstractListEntriesHelper
             'title'   => $this->__('Shows all items except these which are approved'),
             'image'   => '',
             'default' => false
+        ];
+    
+        return $states;
+    }
+    
+    /**
+     * Get 'order comments' list entries.
+     *
+     * @return array Array with desired list entries
+     */
+    public function getOrderCommentsEntriesForAppSettings()
+    {
+        $states = [];
+        $states[] = [
+            'value'   => 'asc',
+            'text'    => $this->__('Ascending'),
+            'title'   => '',
+            'image'   => '',
+            'default' => false
+        ];
+        $states[] = [
+            'value'   => 'desc',
+            'text'    => $this->__('Descending'),
+            'title'   => '',
+            'image'   => '',
+            'default' => true
+        ];
+    
+        return $states;
+    }
+    
+    /**
+     * Get 'levels of comments' list entries.
+     *
+     * @return array Array with desired list entries
+     */
+    public function getLevelsOfCommentsEntriesForAppSettings()
+    {
+        $states = [];
+        $states[] = [
+            'value'   => 'one',
+            'text'    => $this->__('One'),
+            'title'   => '',
+            'image'   => '',
+            'default' => false
+        ];
+        $states[] = [
+            'value'   => 'two',
+            'text'    => $this->__('Two'),
+            'title'   => '',
+            'image'   => '',
+            'default' => false
+        ];
+        $states[] = [
+            'value'   => 'three',
+            'text'    => $this->__('Three'),
+            'title'   => '',
+            'image'   => '',
+            'default' => false
+        ];
+    
+        return $states;
+    }
+    
+    /**
+     * Get 'position of form' list entries.
+     *
+     * @return array Array with desired list entries
+     */
+    public function getPositionOfFormEntriesForAppSettings()
+    {
+        $states = [];
+        $states[] = [
+            'value'   => 'above',
+            'text'    => $this->__('Above'),
+            'title'   => '',
+            'image'   => '',
+            'default' => true
+        ];
+        $states[] = [
+            'value'   => 'below',
+            'text'    => $this->__('Below'),
+            'title'   => '',
+            'image'   => '',
+            'default' => false
+        ];
+    
+        return $states;
+    }
+    
+    /**
+     * Get 'spam protector' list entries.
+     *
+     * @return array Array with desired list entries
+     */
+    public function getSpamProtectorEntriesForAppSettings()
+    {
+        $states = [];
+        $states[] = [
+            'value'   => 'intern',
+            'text'    => $this->__('Intern'),
+            'title'   => '',
+            'image'   => '',
+            'default' => false
+        ];
+        $states[] = [
+            'value'   => 'captcha',
+            'text'    => $this->__('Captcha'),
+            'title'   => '',
+            'image'   => '',
+            'default' => false
+        ];
+    
+        return $states;
+    }
+    
+    /**
+     * Get 'enabled finder types' list entries.
+     *
+     * @return array Array with desired list entries
+     */
+    public function getEnabledFinderTypesEntriesForAppSettings()
+    {
+        $states = [];
+        $states[] = [
+            'value'   => 'comment',
+            'text'    => $this->__('Comment'),
+            'title'   => '',
+            'image'   => '',
+            'default' => true
         ];
     
         return $states;
