@@ -122,18 +122,29 @@ class AjaxController extends AbstractAjaxController
     	
     	$entityManager = $this->get('mu_comments_module.entity_factory')->getObjectManager();
     	$repository = $this->get('mu_comments_module.entity_factory')->getRepository('comment');
-    	
+    	$parentEntity = '';
+    	$title = $request->request->get('title', '');
     	$text = $request->request->get('text');
     	$parentid = $request->request->get('parentcomment');
+    	if ($parentid > 0) {
     	$parentEntity = $repository->selectById($parentid);
     	if (!is_object($parentEntity)) {
     		return new JsonResponse($this->__('Error: no object.'), JsonResponse::HTTP_BAD_REQUEST);
     	}
-    	
+    	}
+ 	
     	$comment = new \MU\CommentsModule\Entity\CommentEntity();
-    	$comment->setTitle('hallo');
+    	if ($title != '') {
+    	    $comment->setTitle($title);	
+    	} else {
+    	    $comment->setTitle('hallo');
+    	}
     	$comment->setText($text);
+    	if (is_Object($parentEntity)) {
     	$comment->setComment($parentEntity);
+    	} else {
+    		$comment->setComment(NULL);
+    	}
     	$comment->setWorkflowState('approved');
     	
     	$qb = $entityManager->persist($comment);
