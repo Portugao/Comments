@@ -162,6 +162,7 @@ class AjaxController extends AbstractAjaxController
     			'id' => $commentId,
     			'text' => $comment->getText(),
     			'user' => $comment->getCreatedBy()->getUname(),
+    			'created' => $comment->getCreatedDate(),
     			'link' => $link
     	]);
     }

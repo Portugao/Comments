@@ -13,7 +13,7 @@
 namespace MU\CommentsModule\Helper;
 
 use MU\CommentsModule\Helper\Base\AbstractControllerHelper;
-use Zikula\ProfileModule\Bridge\ProfileModuleBridge;
+use Zikula\UsersModule\Collector\ProfileModuleCollector;
 
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -29,9 +29,9 @@ use MU\CommentsModule\Helper\ModelHelper;
 class ControllerHelper extends AbstractControllerHelper
 {
 	/**
-	 * @var ProfileModuleBridge
+	 * @var ProfileModuleCollector
 	 */
-	protected $bridge;
+	protected $collector;
     /**
      * ControllerHelper constructor.
      *
@@ -42,7 +42,7 @@ class ControllerHelper extends AbstractControllerHelper
      * @param EntityFactory       $entityFactory   EntityFactory service instance
      * @param CollectionFilterHelper $collectionFilterHelper CollectionFilterHelper service instance
      * @param ModelHelper         $modelHelper     ModelHelper service instance
-     * @param ProfileModuleBridge $bridge          ProfileModuleBridge
+     * @param ProfileModuleCollector $collector          ProfileModuleCollector
      */
     public function __construct(
         RequestStack $requestStack,
@@ -52,7 +52,7 @@ class ControllerHelper extends AbstractControllerHelper
         EntityFactory $entityFactory,
         CollectionFilterHelper $collectionFilterHelper,
         ModelHelper $modelHelper,
-    	ProfileModuleBridge $bridge
+    	ProfileModuleCollector $collector
     ) {
         $this->request = $requestStack->getCurrentRequest();
         $this->router = $router;
@@ -61,12 +61,14 @@ class ControllerHelper extends AbstractControllerHelper
         $this->entityFactory = $entityFactory;
         $this->collectionFilterHelper = $collectionFilterHelper;
         $this->modelHelper = $modelHelper;
-        $this->bridge = $bridge;
+        $this->collector = $collector;
     }
     
     public function getProfileLink($uid)
     {
-    	$link = $this->bridge->getProfileUrl($uid);
+    	//$link = $this->collector->getProfileUrl($uid);
+    	$selected = $this->collector->getSelected();
+    	$link = $selected->getProfileUrl($uid);
     	return $link;
     }
 }
