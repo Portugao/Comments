@@ -24,33 +24,33 @@ use InvalidArgumentException;
  * This is the concrete repository class for comment entities.
  */
 class CommentRepository extends AbstractCommentRepository
-{
+{    
     /**
      * Adds an array of id filters to given query instance.
      *
-     * @param array        $idList The array of ids to use to retrieve the object
+     * @param array        $idList List of identifiers to use to retrieve the object
      * @param QueryBuilder $qb     Query builder to be enhanced
      *
      * @return QueryBuilder Enriched query builder instance
      *
      * @throws InvalidArgumentException Thrown if invalid parameters are received
      */
-    protected function addIdListFilter($idList, QueryBuilder $qb)
+    protected function addIdListFilter(array $idList, QueryBuilder $qb)
     {
-        $orX = $qb->expr()->orX();
+    	$orX = $qb->expr()->orX();
     
-        foreach ($idList as $id) {
-            // check id parameter
-            if ($id == 0) {
-                throw new InvalidArgumentException('Invalid identifier received.');
-            }
+    	foreach ($idList as $id) {
+    		// check id parameter
+    		if ($id == 0) {
+    			throw new InvalidArgumentException('Invalid identifier received.');
+    		}
     
-            $orX->add($qb->expr()->eq('tbl.id', $id));
-        }
+    		$orX->add($qb->expr()->eq('tbl.id', $id));
+    	}
     
-        $qb->andWhere($orX);
-        $qb->andWhere('tbl.comment is NULL');
+    	$qb->andWhere($orX);
+    	$qb->andWhere('tbl.comment is NULL');
     
-        return $qb;
+    	return $qb;
     }
 }
