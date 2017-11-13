@@ -1,0 +1,48 @@
+    <form name="mucommentsmodule_comment" method="post" id="commentEditForm" action="/comments/comment/edit" class="mucomments-edit-form form-horizontal">
+        <fieldset>
+            <legend>Inhalt</legend>
+            <div class="form-group"><label class="col-sm-3 control-label required" for="mucommentsmodule_comment_title">Title:</label><div class="col-sm-9">            
+            <input type="text" id="mucommentsmodule_comment_title" name="mucommentsmodule_comment[title]" required="required" maxlength="255" class="form-control" title="Enter the title of the comment" />
+            </div>
+            </div>
+            
+            <div class="form-group"><label class="col-sm-3 control-label" for="mucommentsmodule_comment_name">Name:</label><div class="col-sm-9">
+            <input type="text" id="mucommentsmodule_comment_name" name="mucommentsmodule_comment[name]" maxlength="255" class="form-control" title="Enter the name of the comment" /> 
+            </div>
+            </div>
+            
+            <div class="form-group"><label class="col-sm-3 control-label" for="mucommentsmodule_comment_yourMailAddress">Your mail address:</label><div class="col-sm-9">
+            <input type="email" id="mucommentsmodule_comment_yourMailAddress" name="mucommentsmodule_comment[yourMailAddress]" maxlength="255" class="form-control" title="Enter the your mail address of the comment" />     
+			</div>
+			</div>
+            <div class="form-group"><label class="col-sm-3 control-label" for="mucommentsmodule_comment_homepage">Homepage:</label><div class="col-sm-9">
+            <input type="url" id="mucommentsmodule_comment_homepage" name="mucommentsmodule_comment[homepage]" maxlength="255" class="form-control" title="Enter the homepage of the comment" />    
+			</div>
+			</div>
+            
+            <div class="form-group"><label class="col-sm-3 control-label required" for="mucommentsmodule_comment_text">Text:</label><div class="col-sm-9">
+            <textarea id="mucommentsmodule_comment_text" name="mucommentsmodule_comment[text]" required="required" maxlength="20000" class="form-control" title="Enter the text of the comment"></textarea>                            
+            <em class="help-block small">Note: this value must not exceed 20000 characters.</em>        
+        	</div>
+			</div>
+            
+            <div class="hidden">
+            <div class="form-group"><label class="col-sm-3 control-label" for="mucommentsmodule_comment_parentid">Parentid:</label><div class="col-sm-9">
+            <input type="number" id="mucommentsmodule_comment_parentid" name="mucommentsmodule_comment[parentid]" maxlength="11" class="form-control" title="Enter the parentid of the comment. Only digits are allowed." value="0" />     
+			</div>
+			</div>
+                
+            <div class="form-group"><label class="col-sm-3 control-label" for="mucommentsmodule_comment_mainId">Main id:</label><div class="col-sm-9">
+            <input type="number" id="mucommentsmodule_comment_mainId" name="mucommentsmodule_comment[mainId]" maxlength="11" class="form-control" title="Enter the main id of the comment. Only digits are allowed." value="0" />     
+			</div>
+			</div>
+        </fieldset>
+        <div class="form-group form-buttons">
+            <div class="col-sm-offset-3 col-sm-9">
+            <button type="submit" id="mucommentsmodule_comment_submit" name="mucommentsmodule_comment[submit]" class="btn btn-success btn">Submit</button>
+            <button type="submit" id="mucommentsmodule_comment_approve" name="mucommentsmodule_comment[approve]" class="btn btn-default btn">Submit and approve</button>
+            <button type="reset" id="mucommentsmodule_comment_reset" name="mucommentsmodule_comment[reset]" class="btn btn-default btn" formnovalidate="formnovalidate"><i class="fa fa-refresh"></i> Reset</button>
+        </div>
+        </div>
+        <input type="hidden" id="mucommentsmodule_comment__token" name="mucommentsmodule_comment[_token]" value="" />                  
+    </form>
