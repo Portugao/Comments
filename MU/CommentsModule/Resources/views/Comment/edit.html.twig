@@ -20,10 +20,9 @@
 {{ form_errors(form) }}
         <fieldset>
             <legend>{{ __('Content') }}</legend>
-            {{ form_row(form.title) }}
+            {{ form_row(form.subject) }}
             {{ form_row(form.name) }}
             {{ form_row(form.yourMailAddress) }}
-            {{ form_row(form.homepage) }}
             {{ form_row(form.text) }}
             {% if routeArea != 'admin' %}
             <div class="hidden">
@@ -34,7 +33,8 @@
             {% if routeArea != 'admin' %}
             </div>
             {% endif %}
-            </div>
+            {{ form_row(form.content) }}
+            {{ form_row(form.sendMails) }}
         </fieldset>
             {% if routeArea != 'admin' %}
             <div class="hidden">
