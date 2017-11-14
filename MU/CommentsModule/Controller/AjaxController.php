@@ -123,7 +123,8 @@ class AjaxController extends AbstractAjaxController
     	$entityManager = $this->get('mu_comments_module.entity_factory')->getObjectManager();
     	$repository = $this->get('mu_comments_module.entity_factory')->getRepository('comment');
     	$parentEntity = '';
-    	$title = $request->request->get('title', '');
+    	$subject = $request->request->get('subject', '');
+    	$name = $request->request->get('name', '');
     	$text = $request->request->get('text');
     	$parentid = $request->request->get('parentcomment');
     	if ($parentid > 0) {
@@ -134,10 +135,10 @@ class AjaxController extends AbstractAjaxController
     	}
  	
     	$comment = new \MU\CommentsModule\Entity\CommentEntity();
-    	if ($title != '') {
-    	    $comment->setTitle($title);	
+    	if ($subject != '') {
+    	    $comment->setSubject($subject);	
     	} else {
-    	    $comment->setTitle('hello');
+    	    $comment->setSubject('hello');
     	}
     	$comment->setText($text);
     	if (is_Object($parentEntity)) {
@@ -171,7 +172,7 @@ class AjaxController extends AbstractAjaxController
     	// return response
     	return new JsonResponse([
     			'id' => $commentId,
-    			'title' => $comment->getTitle(),
+    			'subject' => $comment->getSubject(),
     			'text' => $comment->getText(),
     			'user' => $comment->getCreatedBy()->getUname(),
     			'created' => $comment->getCreatedDate(),
