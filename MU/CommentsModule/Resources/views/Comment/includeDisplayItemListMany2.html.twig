@@ -35,6 +35,8 @@
         ) }}
     </div>
 {% endif %}
+{% else %}
+{{ __('Creating comments only for registered users') }}
 {% endif %}
 {% set levels = getModVar('MUCommentsModule', 'levelsOfComments') %}
 {% if items|default and items|length > 0 %}
@@ -52,10 +54,10 @@
     </div>
     <div class="col-md-10">
     <div class="comment-content">
-        <div class="comment-header">{{ item.title }} - {{ item.createdDate|localizeddate('medium', 'short')|raw }}</div>
+        <div class="comment-header">{% if item.subject != '' %}{{ item.subject }} - {% endif %}{{ item.createdDate|localizeddate('medium', 'short')|raw }} <a title="{{ __('edit') }}" href=""><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a> </div>
         <div id="commenttext{{ item.id }}" class="comment-text">{{ item.text }} 
         {% if levels == 'one' or levels == 'two' or levels == 'three' and context == 'hookDisplayView' and hasEditPermission %}
-        <span class="answer-container"><a title="{{ item.id }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
+        <span class="answer-container hidden"><a title="{{ item.id }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
         {% endif %}
         {% if item.comments %}
             {% for answer in item.comments %}
@@ -66,7 +68,7 @@
                 {{ profileLink|raw }} 
                 {{ answer.text }} 
                 {% if levels == 'two' or levels == 'three' and context == 'hookDisplayView' and hasEditPermission %}
-                <span class="answer-container"><a title="{{ answer.id }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
+                <span class="answer-container hidden"><a title="{{ answer.id }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
                 {% endif %}
                 {% if answer.comments %}
                     {% for answer in answer.comments %}
@@ -77,7 +79,7 @@
                     {{ profileLink|raw }} 
                     {{ answer.text }} 
                     {% if levels == 'three' and context == 'hookDisplayView' and hasEditPermission %}
-                    <span class="answer-container"><a title="{{ answer.id }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
+                    <span class="answer-container hidden"><a title="{{ answer.id }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
                     {% endif %}
                     </div>
                     {% endfor %}
@@ -90,6 +92,9 @@
     </div>  
     </div>
     <div class="col-md-12">
+    <noscript>
+        {{ __('For answering to comments Javascript enabled is needed. Without you only can create new comments!') }}
+    </noscript>
    </div>
     </div>
 {% endfor %}<br style="clear: both;" />
@@ -108,48 +113,15 @@
 {% endif %}
 {% endif %}
 {% if context == 'hookDisplayView' and hasEditPermission %}
-    {% set withImage = false %}
-    {% set idPrefix = 'hookAssignmentComment' %}
-    {% set addLinkText = __f('Attach %name%', {'%name%': entityNameTranslated}) %}
-    <div id="{{ idPrefix }}LiveSearch" class="mucommentsmodule-add-hook-assignment">
-        <a id="{{ idPrefix }}AddLink" href="javascript:void(0);" title="{{ addLinkText|e('html_attr') }}" class="attach-mucommentsmodule-object hidden" data-owner="{{ subscriberOwner|e('html_attr') }}" data-area-id="{{ subscriberAreaId|e('html_attr') }}" data-object-id="{{ subscriberObjectId|e('html_attr') }}" data-url="{{ subscriberUrl|e('html_attr') }}" data-assigned-entity="comment"><i class="fa fa-link"></i> {{ addLinkText }}</a>
-        <div id="{{ idPrefix }}AddFields" class="mucommentsmodule-autocomplete{{ withImage ? '-with-image' : '' }}">
-            <label for="{{ idPrefix }}Selector">{{ __f('Find %name%', {'%name%': entityNameTranslated}) }}</label>
-            <br />
-            <i class="fa fa-search" title="{{ __f('Search %name%', {'%name%': entityNameTranslated})|e('html_attr') }}"></i>
-            <input type="hidden" name="{{ idPrefix }}" id="{{ idPrefix }}" value="" />
-            <input type="hidden" name="{{ idPrefix }}Multiple" id="{{ idPrefix }}Multiple" value="0" />
-            <input type="hidden" name="{{ idPrefix }}Mode" id="{{ idPrefix }}Mode" value="0" />
-            <input type="hidden" name="{{ idPrefix }}ExcludedIds" id="{{ idPrefix }}ExcludedIds" value="{% for assignment in assignments %}{% if not loop.first %},{% endif %}{{ assignment.getAssignedId() }}{% endfor %}" />
-            <input type="text" id="{{ idPrefix }}Selector" name="{{ idPrefix }}Selector" autocomplete="off" />
-            <input type="button" id="{{ idPrefix }}SelectorDoCancel" name="{{ idPrefix }}SelectorDoCancel" value="{{ __('Cancel') }}" class="btn btn-default mucommentsmodule-inline-button" />
-            <a id="{{ idPrefix }}SelectorDoNew" href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'edit') }}" title="{{ __f('Create new %name%', {'%name%': entityNameTranslated}) }}" class="btn btn-default mucommentsmodule-inline-button">{{ __('Create') }}</a>
-            <noscript><p>{{ __('This function requires JavaScript activated!') }}</p></noscript>
-        </div>
-    </div>
-    {% set assignmentInitScript %}
-        <script type="text/javascript">
-        /* <![CDATA[ */
-            var relationHandler = new Array();
-            var newItem = {
-                ot: 'comment',
-                prefix: '{{ idPrefix }}SelectorDoNew',
-                moduleName: 'MUCommentsModule',
-                acInstance: null,
-                windowInstanceId: null
-            };
-            relationHandler.push(newItem);
 
-            mUCommentsInitRelationItemsForm('comment', '{{ idPrefix }}', true);
-        /* ]]> */
-        </script>
         <script>
         var MU = jQuery.noConflict();
         MU().ready(function() {
+        MU('.answer-container').removeClass('hidden');
         MU('.comment-answer').click(function(e) {
             e.preventDefault();
             MU('.this-answer-form').remove();
-            var formCommentId = 'form' + MU(this).attr('title');
+            var formCommentId = 'form' + MU(this).attr('subject');
             var commentId = MU(this).attr('title');
             MU(this).parent().children('.answer-form').append('<form id="' + formCommentId + '" class="this-answer-form"><textarea id="answer-form-text" name="answer-form-text" class="form-control" rows=1 placeholder="{{ __('Enter your comment') }}"></textarea><input type="hidden" id="parentcomment" name="parentcomment" value="' + commentId + '" /></form>');
         });
@@ -190,7 +162,8 @@
            if (e.which == '13') {
            if(e.shiftKey == 0) {
                 e.preventDefault();
-                var title = MU(this).find('#mucommentsmodule_comment_title').val();
+                var subject = MU(this).find('#mucommentsmodule_comment_subject').val();
+                var name = MU(this).find('#mucommentsmodule_comment_name').val();
                 var text = MU(this).find('#mucommentsmodule_comment_text').val();
                 if(MU('#mucommentsmodule_comment_title').val() != '' && MU('#mucommentsmodule_comment_text').val() != '') {
                     MU('#commentEditForm').parent().append('<img class="commentimg" src="/images/ajax/indicator_circle.gif" />');
@@ -203,7 +176,8 @@
                             areaId: '{{ subscriberAreaId|e('html_attr') }}',
                             objectId: '{{ subscriberObjectId|e('html_attr') }}',
                             url: '{{ subscriberUrl }}',
-                            title: title,
+                            subject: subject,
+                            name: name,
                             text: text,
                             parentcomment: 0,
                             assignedEntity: 'comment'
@@ -234,6 +208,4 @@
         });
         });
         </script>
-    {% endset %}
-    {{ pageAddAsset('footer', assignmentInitScript) }}
 {% endif %}
