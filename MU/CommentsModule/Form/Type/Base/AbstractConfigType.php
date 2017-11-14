@@ -19,6 +19,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\ResetType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Zikula\Common\Translator\TranslatorInterface;
@@ -69,6 +70,7 @@ abstract class AbstractConfigType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $this->addGeneralSettingFields($builder, $options);
+        $this->addMailingFields($builder, $options);
         $this->addSpamhandlingFields($builder, $options);
         $this->addModerationFields($builder, $options);
         $this->addListViewsFields($builder, $options);
@@ -163,6 +165,32 @@ abstract class AbstractConfigType extends AbstractType
     }
 
     /**
+     * Adds fields for mailing fields.
+     *
+     * @param FormBuilderInterface $builder The form builder
+     * @param array                $options The options
+     */
+    public function addMailingFields(FormBuilderInterface $builder, array $options = [])
+    {
+        
+        $builder->add('sendMails', CheckboxType::class, [
+            'label' => $this->__('Send mails') . ':',
+            'label_attr' => [
+                'class' => 'tooltips',
+                'title' => $this->__('Enable, if you want activate the mailing feature.
+                If someone check the field send mails, he gets a mail, when someone answers to his comment.')
+            ],
+            'help' => $this->__('Enable, if you want activate the mailing feature.
+            If someone check the field send mails, he gets a mail, when someone answers to his comment.'),
+            'attr' => [
+                'class' => '',
+                'title' => $this->__('The send mails option')
+            ],
+            'required' => false,
+        ]);
+    }
+
+    /**
      * Adds fields for spamhandling fields.
      *
      * @param FormBuilderInterface $builder The form builder
@@ -171,27 +199,49 @@ abstract class AbstractConfigType extends AbstractType
     public function addSpamhandlingFields(FormBuilderInterface $builder, array $options = [])
     {
         
-        $listEntries = $this->listHelper->getEntries('appSettings', 'spamProtector');
-        $choices = [];
-        $choiceAttributes = [];
-        foreach ($listEntries as $entry) {
-            $choices[$entry['text']] = $entry['value'];
-            $choiceAttributes[$entry['text']] = ['title' => $entry['title']];
-        }
-        $builder->add('spamProtector', ChoiceType::class, [
-            'label' => $this->__('Spam protector') . ':',
-            'empty_data' => '',
+        $builder->add('enableInternSpamHandling', CheckboxType::class, [
+            'label' => $this->__('Enable intern spam handling') . ':',
             'attr' => [
                 'class' => '',
-                'title' => $this->__('Choose the spam protector.')
+                'title' => $this->__('The enable intern spam handling option')
             ],
             'required' => false,
-            'placeholder' => $this->__('Choose an option'),
-            'choices' => $choices,
-            'choices_as_values' => true,
-            'choice_attr' => $choiceAttributes,
-            'multiple' => false,
-            'expanded' => false
+        ]);
+        
+        $builder->add('toModeration', TextType::class, [
+            'label' => $this->__('To moderation') . ':',
+            'label_attr' => [
+                'class' => 'tooltips',
+                'title' => $this->__('Enter commaseparated words, that has to push an entry to moderate.
+                Like (sex,porno,gays) for example.')
+            ],
+            'help' => $this->__('Enter commaseparated words, that has to push an entry to moderate.
+            Like (sex,porno,gays) for example.'),
+            'empty_data' => '',
+            'attr' => [
+                'maxlength' => 255,
+                'class' => '',
+                'title' => $this->__('Enter the to moderation')
+            ],
+            'required' => false,
+        ]);
+        
+        $builder->add('toNotSaved', TextType::class, [
+            'label' => $this->__('To not saved') . ':',
+            'label_attr' => [
+                'class' => 'tooltips',
+                'title' => $this->__('Enter commaseparated words, that has to push an entry to block and not saved.
+                Like (sex,porno,gays) for example.')
+            ],
+            'help' => $this->__('Enter commaseparated words, that has to push an entry to block and not saved.
+            Like (sex,porno,gays) for example.'),
+            'empty_data' => '',
+            'attr' => [
+                'maxlength' => 255,
+                'class' => '',
+                'title' => $this->__('Enter the to not saved')
+            ],
+            'required' => true,
         ]);
     }
 

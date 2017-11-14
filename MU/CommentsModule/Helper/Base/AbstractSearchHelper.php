@@ -166,11 +166,11 @@ abstract class AbstractSearchHelper implements SearchableInterface
                 case 'comment':
                     $whereArray[] = 'tbl.workflowState';
                     $whereArray[] = 'tbl.title';
-                    $whereArray[] = 'tbl.name';
+                    $whereArray[] = 'tbl.subject';
                     $whereArray[] = 'tbl.yourMailAddress';
-                    $whereArray[] = 'tbl.homepage';
                     $whereArray[] = 'tbl.text';
                     $whereArray[] = 'tbl.ipOfComment';
+                    $whereArray[] = 'tbl.content';
                     break;
             }
     

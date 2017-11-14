@@ -22,7 +22,7 @@ application "Comments" {
         versionAllGeneratedFiles false
         generatePoweredByBacklinksIntoFooterTemplates false
     generateTests false
-        markFiles "Controller/AjaxController.php,\r\nHelper/ControllerHelper.php,\r\nHookProvider/CommentUiHooksProvider.php,\r\nResources/config/helpers.yml,\r\nResources/public/css/style.css,\r\nResources/views/base.html.twig,\r\nResources/views/Comment/edit.html.twig,\r\nTwig/TwigExtension.php"
+        markFiles "Controller/AjaxController.php,\r\nEntity/Repository/CommentRepository.php,\r\nHelper/ControllerHelper.php,\r\nHookProvider/CommentUiHooksProvider.php,\r\nResources/config/helpers.yml,\r\nResources/public/css/style.css,\r\nResources/views/base.html.twig,\r\nResources/views/Comment/edit.html.twig,\r\nTwig/TwigExtension.php"
     }
     entities {
         entity "comment" leading {
@@ -35,14 +35,14 @@ application "Comments" {
             formAwareHookProvider ENABLED
             uiHooksProvider ENABLED
             fields {
-                string "title",
-                string "name" {
+                string "title" {
                     mandatory false
+                },
+                string "subject" {
+                    mandatory true
                 },
                 email "yourMailAddress" {
-                    mandatory false
-                },
-                url "homepage" {
+                    documentation "Not public.\r\nIf the mailing feature is enabled, you get mails for commented items or comments."
                     mandatory false
                 },
                 text "text" {
@@ -51,18 +51,31 @@ application "Comments" {
                 integer "parentid" nullable {
                     defaultValue "0"
                     mandatory false
+                    displayType NONE
                     visible false
                 },
                 integer "mainId" nullable {
                     defaultValue "0"
                     mandatory false
+                    displayType NONE
                     visible false
                 }
             ,
                 string "ipOfComment" {
                     mandatory false
-                    displayType VIEW
+                    displayType NONE
                     ipAddress ALL_PUBLIC
+                }
+            ,
+                text "content" {
+                    mandatory false
+                    displayType NONE
+                    length 1000
+                }
+            ,
+                boolean "sendMails" {
+                    documentation "Do want to get a mail, when someone answers to your comment?"
+                    mandatory false
                 }
             }
             actions {
@@ -111,14 +124,26 @@ variables {
             }
         },
         varContainer "spamhandling" {
+            sortOrder 3
+            fields {
+                boolean "enableInternSpamHandling" {
+                    mandatory false
+                },
+                string "toModeration" {
+                    documentation "Enter commaseparated words, that has to push an entry to moderate.\r\nLike (sex,porno,gays) for example."
+                    mandatory false
+                },
+                string "toNotSaved" {
+                    documentation "Enter commaseparated words, that has to push an entry to block and not saved.\r\nLike (sex,porno,gays) for example."
+                }
+            }
+        },
+        varContainer "Mailing" {
             sortOrder 2
             fields {
-                list "spamProtector" nullable {
+                boolean "sendMails" {
+                    documentation "Enable, if you want activate the mailing feature.\r\nIf someone check the field send mails, he gets a mail, when someone answers to his comment."
                     mandatory false
-                    items {
-                        listItem "Intern" ( "intern" ),
-                        listItem "Captcha" ( "captcha" )
-                    }
                 }
             }
         }

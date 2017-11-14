@@ -95,6 +95,7 @@ abstract class AbstractCommentQuickNavType extends AbstractType
         $this->addSearchField($builder, $options);
         $this->addSortingFields($builder, $options);
         $this->addAmountField($builder, $options);
+        $this->addBooleanFields($builder, $options);
         $builder->add('updateview', SubmitType::class, [
             'label' => $this->__('OK'),
             'attr' => [
@@ -205,12 +206,10 @@ abstract class AbstractCommentQuickNavType extends AbstractType
                 'choices' =>             [
                     $this->__('Workflow state') => 'workflowState',
                     $this->__('Title') => 'title',
-                    $this->__('Name') => 'name',
+                    $this->__('Subject') => 'subject',
                     $this->__('Your mail address') => 'yourMailAddress',
-                    $this->__('Homepage') => 'homepage',
                     $this->__('Text') => 'text',
-                    $this->__('Parentid') => 'parentid',
-                    $this->__('Main id') => 'mainId',
+                    $this->__('Send mails') => 'sendMails',
                     $this->__('Creation date') => 'createdDate',
                     $this->__('Creator') => 'createdBy',
                     $this->__('Update date') => 'updatedDate',
@@ -263,6 +262,29 @@ abstract class AbstractCommentQuickNavType extends AbstractType
             'choices_as_values' => true,
             'required' => false,
             'expanded' => false
+        ]);
+    }
+
+    /**
+     * Adds boolean fields.
+     *
+     * @param FormBuilderInterface $builder The form builder
+     * @param array                $options The options
+     */
+    public function addBooleanFields(FormBuilderInterface $builder, array $options = [])
+    {
+        $builder->add('sendMails', ChoiceType::class, [
+            'label' => $this->__('Send mails'),
+            'attr' => [
+                'class' => 'input-sm'
+            ],
+            'required' => false,
+            'placeholder' => $this->__('All'),
+            'choices' => [
+                $this->__('No') => 'no',
+                $this->__('Yes') => 'yes'
+            ],
+            'choices_as_values' => true
         ]);
     }
 

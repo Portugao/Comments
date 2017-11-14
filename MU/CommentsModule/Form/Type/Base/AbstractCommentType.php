@@ -14,6 +14,7 @@ namespace MU\CommentsModule\Form\Type\Base;
 
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -22,7 +23,6 @@ use Symfony\Component\Form\Extension\Core\Type\ResetType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -123,38 +123,34 @@ abstract class AbstractCommentType extends AbstractType
                 'class' => '',
                 'title' => $this->__('Enter the title of the comment')
             ],
-            'required' => true,
+            'required' => false,
         ]);
         
-        $builder->add('name', TextType::class, [
-            'label' => $this->__('Name') . ':',
+        $builder->add('subject', TextType::class, [
+            'label' => $this->__('Subject') . ':',
             'empty_data' => '',
             'attr' => [
                 'maxlength' => 255,
                 'class' => '',
-                'title' => $this->__('Enter the name of the comment')
+                'title' => $this->__('Enter the subject of the comment')
             ],
-            'required' => false,
+            'required' => true,
         ]);
         
         $builder->add('yourMailAddress', EmailType::class, [
             'label' => $this->__('Your mail address') . ':',
+            'label_attr' => [
+                'class' => 'tooltips',
+                'title' => $this->__('Not public.
+                If the mailing feature is enabled, you get mails for commented items or comments.')
+            ],
+            'help' => $this->__('Not public.
+            If the mailing feature is enabled, you get mails for commented items or comments.'),
             'empty_data' => '',
             'attr' => [
                 'maxlength' => 255,
                 'class' => '',
                 'title' => $this->__('Enter the your mail address of the comment')
-            ],
-            'required' => false,
-        ]);
-        
-        $builder->add('homepage', UrlType::class, [
-            'label' => $this->__('Homepage') . ':',
-            'empty_data' => '',
-            'attr' => [
-                'maxlength' => 255,
-                'class' => '',
-                'title' => $this->__('Enter the homepage of the comment')
             ],
             'required' => false,
         ]);
@@ -203,6 +199,32 @@ abstract class AbstractCommentType extends AbstractType
                 'maxlength' => 255,
                 'class' => ' validate-nospace',
                 'title' => $this->__('Enter the ip of comment of the comment')
+            ],
+            'required' => false,
+        ]);
+        
+        $builder->add('content', TextareaType::class, [
+            'label' => $this->__('Content') . ':',
+            'help' => $this->__f('Note: this value must not exceed %amount% characters.', ['%amount%' => 1000]),
+            'empty_data' => '',
+            'attr' => [
+                'maxlength' => 1000,
+                'class' => '',
+                'title' => $this->__('Enter the content of the comment')
+            ],
+            'required' => false,
+        ]);
+        
+        $builder->add('sendMails', CheckboxType::class, [
+            'label' => $this->__('Send mails') . ':',
+            'label_attr' => [
+                'class' => 'tooltips',
+                'title' => $this->__('Do want to get a mail, when someone answers to your comment?')
+            ],
+            'help' => $this->__('Do want to get a mail, when someone answers to your comment?'),
+            'attr' => [
+                'class' => '',
+                'title' => $this->__('send mails ?')
             ],
             'required' => false,
         ]);

@@ -21,12 +21,10 @@
                 <select id="{$baseID}Sort" name="sort" class="form-control">
                     <option value="workflowState"{if $sort eq 'workflowState'} selected="selected"{/if}>{gt text='Workflow state'}</option>
                     <option value="title"{if $sort eq 'title'} selected="selected"{/if}>{gt text='Title'}</option>
-                    <option value="name"{if $sort eq 'name'} selected="selected"{/if}>{gt text='Name'}</option>
+                    <option value="subject"{if $sort eq 'subject'} selected="selected"{/if}>{gt text='Subject'}</option>
                     <option value="yourMailAddress"{if $sort eq 'yourMailAddress'} selected="selected"{/if}>{gt text='Your mail address'}</option>
-                    <option value="homepage"{if $sort eq 'homepage'} selected="selected"{/if}>{gt text='Homepage'}</option>
                     <option value="text"{if $sort eq 'text'} selected="selected"{/if}>{gt text='Text'}</option>
-                    <option value="parentid"{if $sort eq 'parentid'} selected="selected"{/if}>{gt text='Parentid'}</option>
-                    <option value="mainId"{if $sort eq 'mainId'} selected="selected"{/if}>{gt text='Main id'}</option>
+                    <option value="sendMails"{if $sort eq 'sendMails'} selected="selected"{/if}>{gt text='Send mails'}</option>
                     <option value="createdDate"{if $sort eq 'createdDate'} selected="selected"{/if}>{gt text='Creation date'}</option>
                     <option value="createdBy"{if $sort eq 'createdBy'} selected="selected"{/if}>{gt text='Creator'}</option>
                     <option value="updatedDate"{if $sort eq 'updatedDate'} selected="selected"{/if}>{gt text='Update date'}</option>

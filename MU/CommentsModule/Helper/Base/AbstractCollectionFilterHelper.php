@@ -131,6 +131,7 @@ abstract class AbstractCollectionFilterHelper
         $parameters['comment'] = $this->request->query->get('comment', 0);
         $parameters['workflowState'] = $this->request->query->get('workflowState', '');
         $parameters['q'] = $this->request->query->get('q', '');
+        $parameters['sendMails'] = $this->request->query->get('sendMails', '');
     
         return $parameters;
     }
@@ -158,6 +159,13 @@ abstract class AbstractCollectionFilterHelper
                 // quick search
                 if (!empty($v)) {
                     $qb = $this->addSearchFilter('comment', $qb, $v);
+                }
+            } elseif (in_array($k, ['sendMails'])) {
+                // boolean filter
+                if ($v == 'no') {
+                    $qb->andWhere('tbl.' . $k . ' = 0');
+                } elseif ($v == 'yes' || $v == '1') {
+                    $qb->andWhere('tbl.' . $k . ' = 1');
                 }
             } else if (is_array($v)) {
                 continue;
@@ -241,12 +249,10 @@ abstract class AbstractCollectionFilterHelper
             $parameters['searchWorkflowState'] = $fragment;
             $filters[] = 'tbl.title LIKE :searchTitle';
             $parameters['searchTitle'] = '%' . $fragment . '%';
-            $filters[] = 'tbl.name LIKE :searchName';
-            $parameters['searchName'] = '%' . $fragment . '%';
+            $filters[] = 'tbl.subject LIKE :searchSubject';
+            $parameters['searchSubject'] = '%' . $fragment . '%';
             $filters[] = 'tbl.yourMailAddress = :searchYourMailAddress';
             $parameters['searchYourMailAddress'] = $fragment;
-            $filters[] = 'tbl.homepage = :searchHomepage';
-            $parameters['searchHomepage'] = $fragment;
             $filters[] = 'tbl.text LIKE :searchText';
             $parameters['searchText'] = '%' . $fragment . '%';
             $filters[] = 'tbl.parentid = :searchParentid';
@@ -255,6 +261,8 @@ abstract class AbstractCollectionFilterHelper
             $parameters['searchMainId'] = $fragment;
             $filters[] = 'tbl.ipOfComment LIKE :searchIpOfComment';
             $parameters['searchIpOfComment'] = '%' . $fragment . '%';
+            $filters[] = 'tbl.content LIKE :searchContent';
+            $parameters['searchContent'] = '%' . $fragment . '%';
         }
     
         $qb->andWhere('(' . implode(' OR ', $filters) . ')');

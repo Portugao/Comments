@@ -27,9 +27,9 @@
             <dt>{{ __('Title') }}</dt>
             <dd>{{ comment.title }}</dd>
         {% endif %}
-        {% if comment.name is not empty %}
-            <dt>{{ __('Name') }}</dt>
-            <dd>{{ comment.name }}</dd>
+        {% if comment.subject is not empty %}
+            <dt>{{ __('Subject') }}</dt>
+            <dd>{{ comment.subject }}</dd>
         {% endif %}
         {% if comment.yourMailAddress is not empty %}
             <dt>{{ __('Your mail address') }}</dt>
@@ -42,28 +42,18 @@
             {% else %}&nbsp;{% endif %}
             </dd>
         {% endif %}
-        {% if comment.homepage is not empty %}
-            <dt>{{ __('Homepage') }}</dt>
-            <dd>{% if comment.homepage is not empty %}
-            {% if not isQuickView %}
-            <a href="{{ comment.homepage }}" title="{{ __('Visit this page') }}"><i class="fa fa-external-link-square"></i></a>
-            {% else %}
-                {{ comment.homepage }}
-            {% endif %}
-            {% else %}&nbsp;{% endif %}
-            </dd>
-        {% endif %}
         {% if comment.text is not empty %}
             <dt>{{ __('Text') }}</dt>
             <dd>{{ comment.text|safeHtml }}</dd>
         {% endif %}
-        {% if comment.parentid is not empty %}
-            <dt>{{ __('Parentid') }}</dt>
-            <dd>{{ comment.parentid }}</dd>
-        {% endif %}
-        {% if comment.mainId is not empty %}
-            <dt>{{ __('Main id') }}</dt>
-            <dd>{{ comment.mainId }}</dd>
+        {% if comment.sendMails is not empty %}
+            <dt>{{ __('Send mails') }}</dt>
+            <dd>{% if comment.sendMails %}
+                <i class="fa fa-check" title="{{ __('Yes') }}"></i>
+            {% else %}
+                <i class="fa fa-times" title="{{ __('No') }}"></i>
+            {% endif %}
+            </dd>
         {% endif %}
         {% if comment.comment|default %}
             <dt>{{ __('Comment') }}</dt>

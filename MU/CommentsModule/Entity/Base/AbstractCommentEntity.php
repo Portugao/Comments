@@ -61,7 +61,7 @@ abstract class AbstractCommentEntity extends EntityAccess
     
     /**
      * @ORM\Column(length=255)
-     * @Assert\NotBlank()
+     * @Assert\NotNull()
      * @Assert\Length(min="0", max="255")
      * @var string $title
      */
@@ -69,28 +69,22 @@ abstract class AbstractCommentEntity extends EntityAccess
     
     /**
      * @ORM\Column(length=255)
-     * @Assert\NotNull()
+     * @Assert\NotBlank()
      * @Assert\Length(min="0", max="255")
-     * @var string $name
+     * @var string $subject
      */
-    protected $name = '';
+    protected $subject = '';
     
     /**
+     * Not public.
+     If the mailing feature is enabled, you get mails for commented items or comments.
+     *
      * @ORM\Column(length=255)
      * @Assert\NotNull()
      * @Assert\Length(min="0", max="255")
      * @var string $yourMailAddress
      */
     protected $yourMailAddress = '';
-    
-    /**
-     * @ORM\Column(length=255)
-     * @Assert\NotNull()
-     * @Assert\Length(min="0", max="255")
-     * @Assert\Url(checkDNS=false)
-     * @var string $homepage
-     */
-    protected $homepage = '';
     
     /**
      * @ORM\Column(type="text", length=20000)
@@ -123,6 +117,24 @@ abstract class AbstractCommentEntity extends EntityAccess
      * @var string $ipOfComment
      */
     protected $ipOfComment = '';
+    
+    /**
+     * @ORM\Column(type="text", length=1000)
+     * @Assert\NotNull()
+     * @Assert\Length(min="0", max="1000")
+     * @var text $content
+     */
+    protected $content = '';
+    
+    /**
+     * Do want to get a mail, when someone answers to your comment?
+     *
+     * @ORM\Column(type="boolean")
+     * @Assert\NotNull()
+     * @Assert\Type(type="bool")
+     * @var boolean $sendMails
+     */
+    protected $sendMails = false;
     
     
     /**
@@ -261,26 +273,26 @@ abstract class AbstractCommentEntity extends EntityAccess
     }
     
     /**
-     * Returns the name.
+     * Returns the subject.
      *
      * @return string
      */
-    public function getName()
+    public function getSubject()
     {
-        return $this->name;
+        return $this->subject;
     }
     
     /**
-     * Sets the name.
+     * Sets the subject.
      *
-     * @param string $name
+     * @param string $subject
      *
      * @return void
      */
-    public function setName($name)
+    public function setSubject($subject)
     {
-        if ($this->name !== $name) {
-            $this->name = isset($name) ? $name : '';
+        if ($this->subject !== $subject) {
+            $this->subject = isset($subject) ? $subject : '';
         }
     }
     
@@ -305,30 +317,6 @@ abstract class AbstractCommentEntity extends EntityAccess
     {
         if ($this->yourMailAddress !== $yourMailAddress) {
             $this->yourMailAddress = isset($yourMailAddress) ? $yourMailAddress : '';
-        }
-    }
-    
-    /**
-     * Returns the homepage.
-     *
-     * @return string
-     */
-    public function getHomepage()
-    {
-        return $this->homepage;
-    }
-    
-    /**
-     * Sets the homepage.
-     *
-     * @param string $homepage
-     *
-     * @return void
-     */
-    public function setHomepage($homepage)
-    {
-        if ($this->homepage !== $homepage) {
-            $this->homepage = isset($homepage) ? $homepage : '';
         }
     }
     
@@ -425,6 +413,54 @@ abstract class AbstractCommentEntity extends EntityAccess
     {
         if ($this->ipOfComment !== $ipOfComment) {
             $this->ipOfComment = isset($ipOfComment) ? $ipOfComment : '';
+        }
+    }
+    
+    /**
+     * Returns the content.
+     *
+     * @return text
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+    
+    /**
+     * Sets the content.
+     *
+     * @param text $content
+     *
+     * @return void
+     */
+    public function setContent($content)
+    {
+        if ($this->content !== $content) {
+            $this->content = isset($content) ? $content : '';
+        }
+    }
+    
+    /**
+     * Returns the send mails.
+     *
+     * @return boolean
+     */
+    public function getSendMails()
+    {
+        return $this->sendMails;
+    }
+    
+    /**
+     * Sets the send mails.
+     *
+     * @param boolean $sendMails
+     *
+     * @return void
+     */
+    public function setSendMails($sendMails)
+    {
+        if (boolval($this->sendMails) !== boolval($sendMails)) {
+            $this->sendMails = boolval($sendMails);
         }
     }
     

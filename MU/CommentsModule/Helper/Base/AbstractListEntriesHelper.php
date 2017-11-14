@@ -148,9 +148,6 @@ abstract class AbstractListEntriesHelper
                     case 'positionOfForm':
                         $result = false;
                         break;
-                    case 'spamProtector':
-                        $result = false;
-                        break;
                     case 'enabledFinderTypes':
                         $result = true;
                         break;
@@ -195,9 +192,6 @@ abstract class AbstractListEntriesHelper
                         break;
                     case 'positionOfForm':
                         $entries = $this->getPositionOfFormEntriesForAppSettings();
-                        break;
-                    case 'spamProtector':
-                        $entries = $this->getSpamProtectorEntriesForAppSettings();
                         break;
                     case 'enabledFinderTypes':
                         $entries = $this->getEnabledFinderTypesEntriesForAppSettings();
@@ -327,32 +321,6 @@ abstract class AbstractListEntriesHelper
         $states[] = [
             'value'   => 'below',
             'text'    => $this->__('Below'),
-            'title'   => '',
-            'image'   => '',
-            'default' => false
-        ];
-    
-        return $states;
-    }
-    
-    /**
-     * Get 'spam protector' list entries.
-     *
-     * @return array Array with desired list entries
-     */
-    public function getSpamProtectorEntriesForAppSettings()
-    {
-        $states = [];
-        $states[] = [
-            'value'   => 'intern',
-            'text'    => $this->__('Intern'),
-            'title'   => '',
-            'image'   => '',
-            'default' => false
-        ];
-        $states[] = [
-            'value'   => 'captcha',
-            'text'    => $this->__('Captcha'),
             'title'   => '',
             'image'   => '',
             'default' => false

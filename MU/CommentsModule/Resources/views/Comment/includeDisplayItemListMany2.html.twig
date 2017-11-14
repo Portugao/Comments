@@ -52,7 +52,7 @@
     </div>
     <div class="col-md-10">
     <div class="comment-content">
-        <div class="comment-header">{{ item.title }}</div>
+        <div class="comment-header">{{ item.title }} - {{ item.createdDate|localizeddate('medium', 'short')|raw }}</div>
         <div id="commenttext{{ item.id }}" class="comment-text">{{ item.text }} 
         {% if levels == 'one' or levels == 'two' or levels == 'three' and context == 'hookDisplayView' and hasEditPermission %}
         <span class="answer-container"><a title="{{ item.id }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>

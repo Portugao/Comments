@@ -137,7 +137,7 @@ class AjaxController extends AbstractAjaxController
     	if ($title != '') {
     	    $comment->setTitle($title);	
     	} else {
-    	    $comment->setTitle('hallo');
+    	    $comment->setTitle('hello');
     	}
     	$comment->setText($text);
     	if (is_Object($parentEntity)) {
@@ -171,6 +171,7 @@ class AjaxController extends AbstractAjaxController
     	// return response
     	return new JsonResponse([
     			'id' => $commentId,
+    			'title' => $comment->getTitle(),
     			'text' => $comment->getText(),
     			'user' => $comment->getCreatedBy()->getUname(),
     			'created' => $comment->getCreatedDate(),

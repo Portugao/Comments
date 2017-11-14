@@ -62,10 +62,41 @@ abstract class AbstractAppSettings
     protected $positionOfForm = 'above';
     
     /**
-     * @CommentsAssert\ListEntry(entityName="appSettings", propertyName="spamProtector", multiple=false)
-     * @var string $spamProtector
+     * Enable, if you want activate the mailing feature.
+     If someone check the field send mails, he gets a mail, when someone answers to his comment.
+     *
+     * @Assert\NotNull()
+     * @Assert\Type(type="bool")
+     * @var boolean $sendMails
      */
-    protected $spamProtector = null;
+    protected $sendMails = false;
+    
+    /**
+     * @Assert\NotNull()
+     * @Assert\Type(type="bool")
+     * @var boolean $enableInternSpamHandling
+     */
+    protected $enableInternSpamHandling = false;
+    
+    /**
+     * Enter commaseparated words, that has to push an entry to moderate.
+     Like (sex,porno,gays) for example.
+     *
+     * @Assert\NotNull()
+     * @Assert\Length(min="0", max="255")
+     * @var string $toModeration
+     */
+    protected $toModeration = '';
+    
+    /**
+     * Enter commaseparated words, that has to push an entry to block and not saved.
+     Like (sex,porno,gays) for example.
+     *
+     * @Assert\NotBlank()
+     * @Assert\Length(min="0", max="255")
+     * @var string $toNotSaved
+     */
+    protected $toNotSaved = '';
     
     /**
      * Used to determine moderator user accounts for sending email notifications.
@@ -218,26 +249,98 @@ abstract class AbstractAppSettings
     }
     
     /**
-     * Returns the spam protector.
+     * Returns the send mails.
      *
-     * @return string
+     * @return boolean
      */
-    public function getSpamProtector()
+    public function getSendMails()
     {
-        return $this->spamProtector;
+        return $this->sendMails;
     }
     
     /**
-     * Sets the spam protector.
+     * Sets the send mails.
      *
-     * @param string $spamProtector
+     * @param boolean $sendMails
      *
      * @return void
      */
-    public function setSpamProtector($spamProtector)
+    public function setSendMails($sendMails)
     {
-        if ($this->spamProtector !== $spamProtector) {
-            $this->spamProtector = $spamProtector;
+        if (boolval($this->sendMails) !== boolval($sendMails)) {
+            $this->sendMails = boolval($sendMails);
+        }
+    }
+    
+    /**
+     * Returns the enable intern spam handling.
+     *
+     * @return boolean
+     */
+    public function getEnableInternSpamHandling()
+    {
+        return $this->enableInternSpamHandling;
+    }
+    
+    /**
+     * Sets the enable intern spam handling.
+     *
+     * @param boolean $enableInternSpamHandling
+     *
+     * @return void
+     */
+    public function setEnableInternSpamHandling($enableInternSpamHandling)
+    {
+        if (boolval($this->enableInternSpamHandling) !== boolval($enableInternSpamHandling)) {
+            $this->enableInternSpamHandling = boolval($enableInternSpamHandling);
+        }
+    }
+    
+    /**
+     * Returns the to moderation.
+     *
+     * @return string
+     */
+    public function getToModeration()
+    {
+        return $this->toModeration;
+    }
+    
+    /**
+     * Sets the to moderation.
+     *
+     * @param string $toModeration
+     *
+     * @return void
+     */
+    public function setToModeration($toModeration)
+    {
+        if ($this->toModeration !== $toModeration) {
+            $this->toModeration = isset($toModeration) ? $toModeration : '';
+        }
+    }
+    
+    /**
+     * Returns the to not saved.
+     *
+     * @return string
+     */
+    public function getToNotSaved()
+    {
+        return $this->toNotSaved;
+    }
+    
+    /**
+     * Sets the to not saved.
+     *
+     * @param string $toNotSaved
+     *
+     * @return void
+     */
+    public function setToNotSaved($toNotSaved)
+    {
+        if ($this->toNotSaved !== $toNotSaved) {
+            $this->toNotSaved = isset($toNotSaved) ? $toNotSaved : '';
         }
     }
     
@@ -357,8 +460,17 @@ abstract class AbstractAppSettings
         if (isset($moduleVars['positionOfForm'])) {
             $this->setPositionOfForm($moduleVars['positionOfForm']);
         }
-        if (isset($moduleVars['spamProtector'])) {
-            $this->setSpamProtector($moduleVars['spamProtector']);
+        if (isset($moduleVars['sendMails'])) {
+            $this->setSendMails($moduleVars['sendMails']);
+        }
+        if (isset($moduleVars['enableInternSpamHandling'])) {
+            $this->setEnableInternSpamHandling($moduleVars['enableInternSpamHandling']);
+        }
+        if (isset($moduleVars['toModeration'])) {
+            $this->setToModeration($moduleVars['toModeration']);
+        }
+        if (isset($moduleVars['toNotSaved'])) {
+            $this->setToNotSaved($moduleVars['toNotSaved']);
         }
         if (isset($moduleVars['moderationGroupForComments'])) {
             $this->setModerationGroupForComments($moduleVars['moderationGroupForComments']);
@@ -397,7 +509,10 @@ abstract class AbstractAppSettings
         $this->variableApi->set('MUCommentsModule', 'orderComments', $this->getOrderComments());
         $this->variableApi->set('MUCommentsModule', 'levelsOfComments', $this->getLevelsOfComments());
         $this->variableApi->set('MUCommentsModule', 'positionOfForm', $this->getPositionOfForm());
-        $this->variableApi->set('MUCommentsModule', 'spamProtector', $this->getSpamProtector());
+        $this->variableApi->set('MUCommentsModule', 'sendMails', $this->getSendMails());
+        $this->variableApi->set('MUCommentsModule', 'enableInternSpamHandling', $this->getEnableInternSpamHandling());
+        $this->variableApi->set('MUCommentsModule', 'toModeration', $this->getToModeration());
+        $this->variableApi->set('MUCommentsModule', 'toNotSaved', $this->getToNotSaved());
         $this->variableApi->set('MUCommentsModule', 'moderationGroupForComments', $this->getModerationGroupForComments());
         $this->variableApi->set('MUCommentsModule', 'commentEntriesPerPage', $this->getCommentEntriesPerPage());
         $this->variableApi->set('MUCommentsModule', 'linkOwnCommentsOnAccountPage', $this->getLinkOwnCommentsOnAccountPage());

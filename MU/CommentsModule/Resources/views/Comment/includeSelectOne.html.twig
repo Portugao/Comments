@@ -15,9 +15,8 @@
             <fieldset>
                 <legend>{{ __('Content') }}</legend>
                 {{ form_row(attribute(subFields, 'title')) }}
-                {{ form_row(attribute(subFields, 'name')) }}
+                {{ form_row(attribute(subFields, 'subject')) }}
                 {{ form_row(attribute(subFields, 'yourMailAddress')) }}
-                {{ form_row(attribute(subFields, 'homepage')) }}
                 {{ form_row(attribute(subFields, 'text')) }}
                 <div class="hidden">
                     {{ form_row(attribute(subFields, 'parentid')) }}
@@ -26,6 +25,8 @@
                     {{ form_row(attribute(subFields, 'mainId')) }}
                 </div>
                 {{ form_row(attribute(subFields, 'ipOfComment')) }}
+                {{ form_row(attribute(subFields, 'content')) }}
+                {{ form_row(attribute(subFields, 'sendMails')) }}
             </fieldset>
         {% elseif displayMode == 'choices' %}
             {{ form_row(attribute(form, alias)) }}

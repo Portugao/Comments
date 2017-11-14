@@ -66,9 +66,15 @@ class ControllerHelper extends AbstractControllerHelper
     
     public function getProfileLink($uid)
     {
-    	//$link = $this->collector->getProfileUrl($uid);
     	$selected = $this->collector->getSelected();
     	$link = $selected->getProfileUrl($uid);
     	return $link;
+    }
+    
+    public function getAvatar($uid)
+    {
+    	$selected = $this->collector->getSelected();
+    	$avatar = $selected->getAvatar($uid);
+    	return $avatar;
     }
 }

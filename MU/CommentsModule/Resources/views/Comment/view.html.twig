@@ -24,13 +24,10 @@
                 <col id="cWorkflowState" />
                 {% endif %}
                 <col id="cTitle" />
-                <col id="cName" />
+                <col id="cSubject" />
                 <col id="cYourMailAddress" />
-                <col id="cHomepage" />
                 <col id="cText" />
-                <col id="cParentid" />
-                <col id="cMainId" />
-                <col id="cIpOfComment" />
+                <col id="cSendMails" />
                 <col id="cComment" />
             </colgroup>
             <thead>
@@ -49,26 +46,17 @@
                 <th id="hTitle" scope="col" class="text-left">
                     <a href="{{ sort.title.url }}" title="{{ __f('Sort by %s', {'%s': 'title'}) }}" class="{{ sort.title.class }}">{{ __('Title') }}</a>
                 </th>
-                <th id="hName" scope="col" class="text-left">
-                    <a href="{{ sort.name.url }}" title="{{ __f('Sort by %s', {'%s': 'name'}) }}" class="{{ sort.name.class }}">{{ __('Name') }}</a>
+                <th id="hSubject" scope="col" class="text-left">
+                    <a href="{{ sort.subject.url }}" title="{{ __f('Sort by %s', {'%s': 'subject'}) }}" class="{{ sort.subject.class }}">{{ __('Subject') }}</a>
                 </th>
                 <th id="hYourMailAddress" scope="col" class="text-center">
                     <a href="{{ sort.yourMailAddress.url }}" title="{{ __f('Sort by %s', {'%s': 'your mail address'}) }}" class="{{ sort.yourMailAddress.class }}">{{ __('Your mail address') }}</a>
                 </th>
-                <th id="hHomepage" scope="col" class="text-center">
-                    <a href="{{ sort.homepage.url }}" title="{{ __f('Sort by %s', {'%s': 'homepage'}) }}" class="{{ sort.homepage.class }}">{{ __('Homepage') }}</a>
-                </th>
                 <th id="hText" scope="col" class="text-left">
                     <a href="{{ sort.text.url }}" title="{{ __f('Sort by %s', {'%s': 'text'}) }}" class="{{ sort.text.class }}">{{ __('Text') }}</a>
                 </th>
-                <th id="hParentid" scope="col" class="text-right">
-                    <a href="{{ sort.parentid.url }}" title="{{ __f('Sort by %s', {'%s': 'parentid'}) }}" class="{{ sort.parentid.class }}">{{ __('Parentid') }}</a>
-                </th>
-                <th id="hMainId" scope="col" class="text-right">
-                    <a href="{{ sort.mainId.url }}" title="{{ __f('Sort by %s', {'%s': 'main id'}) }}" class="{{ sort.mainId.class }}">{{ __('Main id') }}</a>
-                </th>
-                <th id="hIpOfComment" scope="col" class="text-left z-order-unsorted">
-                    {{ __('Ip of comment') }}
+                <th id="hSendMails" scope="col" class="text-center">
+                    <a href="{{ sort.sendMails.url }}" title="{{ __f('Sort by %s', {'%s': 'send mails'}) }}" class="{{ sort.sendMails.class }}">{{ __('Send mails') }}</a>
                 </th>
                 <th id="hComment" scope="col" class="text-left">
                     <a href="{{ sort.comment.url }}" title="{{ __f('Sort by %s', {'%s': 'comment'}) }}" class="{{ sort.comment.class }}">{{ __('Comment') }}</a>
@@ -97,30 +85,23 @@
                 {% endif %}<td headers="hTitle" class="text-left">
                     <a href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'display', {'id': comment.getId()}) }}" title="{{ __('View detail page')|e('html_attr') }}">{{ comment.title|notifyFilters('mucommentsmodule.filterhook.comments')|safeHtml }}</a>
                 </td>
-                <td headers="hName" class="text-left">
-                    <a href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'display', {'id': comment.getId()}) }}" title="{{ __('View detail page')|e('html_attr') }}">{{ comment.name|notifyFilters('mucommentsmodule.filterhook.comments')|safeHtml }}</a>
+                <td headers="hSubject" class="text-left">
+                    {{ comment.subject }}
                 </td>
                 <td headers="hYourMailAddress" class="text-center">
                     {% if comment.yourMailAddress is not empty %}
                     <a href="mailto:{{ comment.yourMailAddress|protectMail }}" title="{{ __('Send an email') }}"><i class="fa fa-envelope"></i></a>
                     {% else %}&nbsp;{% endif %}
                 </td>
-                <td headers="hHomepage" class="text-center">
-                    {% if comment.homepage is not empty %}
-                    <a href="{{ comment.homepage }}" title="{{ __('Visit this page') }}"><i class="fa fa-external-link-square"></i></a>
-                    {% else %}&nbsp;{% endif %}
-                </td>
                 <td headers="hText" class="text-left">
                     {{ comment.text|striptags|truncate(50) }}
                 </td>
-                <td headers="hParentid" class="text-right">
-                    {{ comment.parentid }}
-                </td>
-                <td headers="hMainId" class="text-right">
-                    {{ comment.mainId }}
-                </td>
-                <td headers="hIpOfComment" class="text-left">
-                    {{ comment.ipOfComment }}
+                <td headers="hSendMails" class="text-center">
+                    {% if comment.sendMails %}
+                        <i class="fa fa-check" title="{{ __('Yes') }}"></i>
+                    {% else %}
+                        <i class="fa fa-times" title="{{ __('No') }}"></i>
+                    {% endif %}
                 </td>
                 <td headers="hComment" class="text-left">
                     {% if comment.comment|default %}
@@ -135,7 +116,7 @@
             </tr>
         {% else %}
             <tr class="z-{{ routeArea == 'admin' ? 'admin' : 'data' }}tableempty">
-                <td class="text-left" colspan="{% if routeArea == 'admin' %}12{% else %}11{% endif %}">
+                <td class="text-left" colspan="{% if routeArea == 'admin' %}9{% else %}8{% endif %}">
             {{ __('No comments found.') }}
               </td>
             </tr>

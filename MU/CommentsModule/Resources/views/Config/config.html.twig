@@ -15,21 +15,25 @@
                 <li role="presentation" class="active">
                     <a id="vars1Tab" href="#tab1" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a>
                 </li>
-                {% set tabTitle = __('Spamhandling') %}
+                {% set tabTitle = __('Mailing') %}
                 <li role="presentation">
                     <a id="vars2Tab" href="#tab2" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a>
                 </li>
-                {% set tabTitle = __('Moderation') %}
+                {% set tabTitle = __('Spamhandling') %}
                 <li role="presentation">
                     <a id="vars3Tab" href="#tab3" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a>
                 </li>
-                {% set tabTitle = __('List views') %}
+                {% set tabTitle = __('Moderation') %}
                 <li role="presentation">
                     <a id="vars4Tab" href="#tab4" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a>
                 </li>
-                {% set tabTitle = __('Integration') %}
+                {% set tabTitle = __('List views') %}
                 <li role="presentation">
                     <a id="vars5Tab" href="#tab5" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a>
+                </li>
+                {% set tabTitle = __('Integration') %}
+                <li role="presentation">
+                    <a id="vars6Tab" href="#tab6" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a>
                 </li>
                 {% set tabTitle = __('Workflows') %}
                 <li role="presentation">
@@ -53,15 +57,26 @@
                     </fieldset>
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab2" aria-labelledby="vars2Tab">
+                    {% set tabTitle = __('Mailing') %}
+                    <fieldset>
+                        <legend>{{ tabTitle }}</legend>
+                    
+                    
+                        {{ form_row(form.sendMails) }}
+                    </fieldset>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="tab3" aria-labelledby="vars3Tab">
                     {% set tabTitle = __('Spamhandling') %}
                     <fieldset>
                         <legend>{{ tabTitle }}</legend>
                     
                     
-                        {{ form_row(form.spamProtector) }}
+                        {{ form_row(form.enableInternSpamHandling) }}
+                        {{ form_row(form.toModeration) }}
+                        {{ form_row(form.toNotSaved) }}
                     </fieldset>
                 </div>
-                <div role="tabpanel" class="tab-pane fade" id="tab3" aria-labelledby="vars3Tab">
+                <div role="tabpanel" class="tab-pane fade" id="tab4" aria-labelledby="vars4Tab">
                     {% set tabTitle = __('Moderation') %}
                     <fieldset>
                         <legend>{{ tabTitle }}</legend>
@@ -71,7 +86,7 @@
                         {{ form_row(form.moderationGroupForComments) }}
                     </fieldset>
                 </div>
-                <div role="tabpanel" class="tab-pane fade" id="tab4" aria-labelledby="vars4Tab">
+                <div role="tabpanel" class="tab-pane fade" id="tab5" aria-labelledby="vars5Tab">
                     {% set tabTitle = __('List views') %}
                     <fieldset>
                         <legend>{{ tabTitle }}</legend>
@@ -82,7 +97,7 @@
                         {{ form_row(form.linkOwnCommentsOnAccountPage) }}
                     </fieldset>
                 </div>
-                <div role="tabpanel" class="tab-pane fade" id="tab5" aria-labelledby="vars5Tab">
+                <div role="tabpanel" class="tab-pane fade" id="tab6" aria-labelledby="vars6Tab">
                     {% set tabTitle = __('Integration') %}
                     <fieldset>
                         <legend>{{ tabTitle }}</legend>

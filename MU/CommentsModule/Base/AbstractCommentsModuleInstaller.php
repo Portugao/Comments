@@ -47,7 +47,10 @@ abstract class AbstractCommentsModuleInstaller extends AbstractExtensionInstalle
         $this->setVar('orderComments', 'desc');
         $this->setVar('levelsOfComments', '');
         $this->setVar('positionOfForm', 'above');
-        $this->setVar('spamProtector', null);
+        $this->setVar('enableInternSpamHandling', false);
+        $this->setVar('toModeration', '');
+        $this->setVar('toNotSaved', '');
+        $this->setVar('sendMails', false);
         $this->setVar('moderationGroupForComments', 2);
         $this->setVar('commentEntriesPerPage', 10);
         $this->setVar('linkOwnCommentsOnAccountPage', true);
