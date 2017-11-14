@@ -63,21 +63,21 @@ abstract class AbstractCommentEntity extends EntityAccess
      * @ORM\Column(length=255)
      * @Assert\NotNull()
      * @Assert\Length(min="0", max="255")
-     * @var string $title
-     */
-    protected $title = '';
-    
-    /**
-     * @ORM\Column(length=255)
-     * @Assert\NotBlank()
-     * @Assert\Length(min="0", max="255")
      * @var string $subject
      */
     protected $subject = '';
     
     /**
+     * @ORM\Column(length=255)
+     * @Assert\NotNull()
+     * @Assert\Length(min="0", max="255")
+     * @var string $name
+     */
+    protected $name = '';
+    
+    /**
      * Not public.
-     If the mailing feature is enabled, you get mails for commented items or comments.
+     If the mailing feature is enabled, you get mails for the the commented item or your comment.
      *
      * @ORM\Column(length=255)
      * @Assert\NotNull()
@@ -87,9 +87,9 @@ abstract class AbstractCommentEntity extends EntityAccess
     protected $yourMailAddress = '';
     
     /**
-     * @ORM\Column(type="text", length=20000)
+     * @ORM\Column(type="text", length=10000)
      * @Assert\NotBlank()
-     * @Assert\Length(min="0", max="20000")
+     * @Assert\Length(min="0", max="10000")
      * @var text $text
      */
     protected $text = '';
@@ -249,30 +249,6 @@ abstract class AbstractCommentEntity extends EntityAccess
     }
     
     /**
-     * Returns the title.
-     *
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
-    
-    /**
-     * Sets the title.
-     *
-     * @param string $title
-     *
-     * @return void
-     */
-    public function setTitle($title)
-    {
-        if ($this->title !== $title) {
-            $this->title = isset($title) ? $title : '';
-        }
-    }
-    
-    /**
      * Returns the subject.
      *
      * @return string
@@ -293,6 +269,30 @@ abstract class AbstractCommentEntity extends EntityAccess
     {
         if ($this->subject !== $subject) {
             $this->subject = isset($subject) ? $subject : '';
+        }
+    }
+    
+    /**
+     * Returns the name.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+    
+    /**
+     * Sets the name.
+     *
+     * @param string $name
+     *
+     * @return void
+     */
+    public function setName($name)
+    {
+        if ($this->name !== $name) {
+            $this->name = isset($name) ? $name : '';
         }
     }
     
@@ -604,7 +604,7 @@ abstract class AbstractCommentEntity extends EntityAccess
      */
     public function __toString()
     {
-        return 'Comment ' . $this->getKey() . ': ' . $this->getTitle();
+        return 'Comment ' . $this->getKey() . ': ' . $this->getSubject();
     }
     
     /**

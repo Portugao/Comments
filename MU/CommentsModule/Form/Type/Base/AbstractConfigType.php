@@ -177,11 +177,11 @@ abstract class AbstractConfigType extends AbstractType
             'label' => $this->__('Send mails') . ':',
             'label_attr' => [
                 'class' => 'tooltips',
-                'title' => $this->__('Enable, if you want activate the mailing feature.
-                If someone check the field send mails, he gets a mail, when someone answers to his comment.')
+                'title' => $this->__('Enable, if you want to activate the mailing feature.
+                If someone checks the field send mails, he gets a mail, when someone answers to his comment.')
             ],
-            'help' => $this->__('Enable, if you want activate the mailing feature.
-            If someone check the field send mails, he gets a mail, when someone answers to his comment.'),
+            'help' => $this->__('Enable, if you want to activate the mailing feature.
+            If someone checks the field send mails, he gets a mail, when someone answers to his comment.'),
             'attr' => [
                 'class' => '',
                 'title' => $this->__('The send mails option')
@@ -213,7 +213,7 @@ abstract class AbstractConfigType extends AbstractType
             'label_attr' => [
                 'class' => 'tooltips',
                 'title' => $this->__('Enter commaseparated words, that has to push an entry to moderate.
-                Like (sex,porno,gays) for example.')
+                Like (sex,porno) for example.')
             ],
             'help' => $this->__('Enter commaseparated words, that has to push an entry to moderate.
             Like (sex,porno,gays) for example.'),
@@ -231,7 +231,7 @@ abstract class AbstractConfigType extends AbstractType
             'label_attr' => [
                 'class' => 'tooltips',
                 'title' => $this->__('Enter commaseparated words, that has to push an entry to block and not saved.
-                Like (sex,porno,gays) for example.')
+                Like (sex,porno) for example.')
             ],
             'help' => $this->__('Enter commaseparated words, that has to push an entry to block and not saved.
             Like (sex,porno,gays) for example.'),
@@ -241,7 +241,7 @@ abstract class AbstractConfigType extends AbstractType
                 'class' => '',
                 'title' => $this->__('Enter the to not saved')
             ],
-            'required' => true,
+            'required' => false,
         ]);
     }
 

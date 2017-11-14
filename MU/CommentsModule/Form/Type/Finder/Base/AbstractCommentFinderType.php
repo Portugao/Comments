@@ -124,8 +124,8 @@ abstract class AbstractCommentFinderType extends AbstractType
                 'empty_data' => '',
                 'choices' => [
                     $this->__('Workflow state') => 'workflowState',
-                    $this->__('Title') => 'title',
                     $this->__('Subject') => 'subject',
+                    $this->__('Name') => 'name',
                     $this->__('Your mail address') => 'yourMailAddress',
                     $this->__('Text') => 'text',
                     $this->__('Send mails') => 'sendMails',

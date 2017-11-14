@@ -35,18 +35,18 @@ application "Comments" {
             formAwareHookProvider ENABLED
             uiHooksProvider ENABLED
             fields {
-                string "title" {
+                string "subject" {
                     mandatory false
                 },
-                string "subject" {
-                    mandatory true
+                string "name" {
+                    mandatory false
                 },
                 email "yourMailAddress" {
-                    documentation "Not public.\r\nIf the mailing feature is enabled, you get mails for commented items or comments."
+                    documentation "Not public.\r\nIf the mailing feature is enabled, you get mails for the the commented item or your comment."
                     mandatory false
                 },
                 text "text" {
-                    length 20000
+                    length 10000
                 },
                 integer "parentid" nullable {
                     defaultValue "0"

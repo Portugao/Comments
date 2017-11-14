@@ -23,8 +23,8 @@
                 {% if routeArea == 'admin' %}
                 <col id="cWorkflowState" />
                 {% endif %}
-                <col id="cTitle" />
                 <col id="cSubject" />
+                <col id="cName" />
                 <col id="cYourMailAddress" />
                 <col id="cText" />
                 <col id="cSendMails" />
@@ -43,11 +43,11 @@
                     <a href="{{ sort.workflowState.url }}" title="{{ __f('Sort by %s', {'%s': 'state'}) }}" class="{{ sort.workflowState.class }}">{{ __('State') }}</a>
                 </th>
                 {% endif %}
-                <th id="hTitle" scope="col" class="text-left">
-                    <a href="{{ sort.title.url }}" title="{{ __f('Sort by %s', {'%s': 'title'}) }}" class="{{ sort.title.class }}">{{ __('Title') }}</a>
-                </th>
                 <th id="hSubject" scope="col" class="text-left">
                     <a href="{{ sort.subject.url }}" title="{{ __f('Sort by %s', {'%s': 'subject'}) }}" class="{{ sort.subject.class }}">{{ __('Subject') }}</a>
+                </th>
+                <th id="hName" scope="col" class="text-left">
+                    <a href="{{ sort.name.url }}" title="{{ __f('Sort by %s', {'%s': 'name'}) }}" class="{{ sort.name.class }}">{{ __('Name') }}</a>
                 </th>
                 <th id="hYourMailAddress" scope="col" class="text-center">
                     <a href="{{ sort.yourMailAddress.url }}" title="{{ __f('Sort by %s', {'%s': 'your mail address'}) }}" class="{{ sort.yourMailAddress.class }}">{{ __('Your mail address') }}</a>
@@ -82,11 +82,11 @@
                 {% if routeArea == 'admin' %}<td headers="hWorkflowState" class="text-left nowrap">
                     {{ comment.workflowState|mucommentsmodule_objectState }}
                 </td>
-                {% endif %}<td headers="hTitle" class="text-left">
-                    <a href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'display', {'id': comment.getId()}) }}" title="{{ __('View detail page')|e('html_attr') }}">{{ comment.title|notifyFilters('mucommentsmodule.filterhook.comments')|safeHtml }}</a>
-                </td>
-                <td headers="hSubject" class="text-left">
+                {% endif %}<td headers="hSubject" class="text-left">
                     {{ comment.subject }}
+                </td>
+                <td headers="hName" class="text-left">
+                    <a href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'display', {'id': comment.getId()}) }}" title="{{ __('View detail page')|e('html_attr') }}">{{ comment.name|notifyFilters('mucommentsmodule.filterhook.comments')|safeHtml }}</a>
                 </td>
                 <td headers="hYourMailAddress" class="text-center">
                     {% if comment.yourMailAddress is not empty %}

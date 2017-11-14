@@ -8,7 +8,7 @@
             <div class="col-sm-9">
                 <select id="{$baseID}Id" name="id" class="form-control">
                     {foreach item='comment' from=$items}
-                        <option value="{$comment->getKey()}"{if $selectedId eq $comment->getKey()} selected="selected"{/if}>{$comment->getTitle()}</option>
+                        <option value="{$comment->getKey()}"{if $selectedId eq $comment->getKey()} selected="selected"{/if}>{$comment->getSubject()}</option>
                     {foreachelse}
                         <option value="0">{gt text='No entries found.'}</option>
                     {/foreach}
@@ -20,8 +20,8 @@
             <div class="col-sm-9">
                 <select id="{$baseID}Sort" name="sort" class="form-control">
                     <option value="workflowState"{if $sort eq 'workflowState'} selected="selected"{/if}>{gt text='Workflow state'}</option>
-                    <option value="title"{if $sort eq 'title'} selected="selected"{/if}>{gt text='Title'}</option>
                     <option value="subject"{if $sort eq 'subject'} selected="selected"{/if}>{gt text='Subject'}</option>
+                    <option value="name"{if $sort eq 'name'} selected="selected"{/if}>{gt text='Name'}</option>
                     <option value="yourMailAddress"{if $sort eq 'yourMailAddress'} selected="selected"{/if}>{gt text='Your mail address'}</option>
                     <option value="text"{if $sort eq 'text'} selected="selected"{/if}>{gt text='Text'}</option>
                     <option value="sendMails"{if $sort eq 'sendMails'} selected="selected"{/if}>{gt text='Send mails'}</option>

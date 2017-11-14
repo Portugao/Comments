@@ -136,8 +136,8 @@ abstract class AbstractCommentController extends AbstractController
         
         $sortableColumns->addColumns([
             new Column('workflowState'),
-            new Column('title'),
             new Column('subject'),
+            new Column('name'),
             new Column('yourMailAddress'),
             new Column('text'),
             new Column('sendMails'),
@@ -431,7 +431,7 @@ abstract class AbstractCommentController extends AbstractController
             $comment = $repository->selectById($id);
             if (null !== $comment) {
                 $formattedTitle = $this->get('mu_comments_module.entity_display_helper')->getFormattedTitle($comment);
-                $searchTerm = $comment->getTitle();
+                $searchTerm = $comment->getSubject();
             }
         }
         

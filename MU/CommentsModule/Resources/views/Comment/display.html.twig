@@ -23,13 +23,13 @@
             <dt>{{ __('State') }}</dt>
             <dd>{{ comment.workflowState|mucommentsmodule_listEntry('comment', 'workflowState') }}</dd>
         {% endif %}
-        {% if comment.title is not empty %}
-            <dt>{{ __('Title') }}</dt>
-            <dd>{{ comment.title }}</dd>
-        {% endif %}
         {% if comment.subject is not empty %}
             <dt>{{ __('Subject') }}</dt>
             <dd>{{ comment.subject }}</dd>
+        {% endif %}
+        {% if comment.name is not empty %}
+            <dt>{{ __('Name') }}</dt>
+            <dd>{{ comment.name }}</dd>
         {% endif %}
         {% if comment.yourMailAddress is not empty %}
             <dt>{{ __('Your mail address') }}</dt>

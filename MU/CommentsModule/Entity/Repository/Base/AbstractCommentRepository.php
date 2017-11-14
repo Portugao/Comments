@@ -40,7 +40,7 @@ abstract class AbstractCommentRepository extends EntityRepository
     /**
      * @var string The default sorting field/expression
      */
-    protected $defaultSortingField = 'title';
+    protected $defaultSortingField = 'subject';
 
     /**
      * @var CollectionFilterHelper
@@ -56,8 +56,8 @@ abstract class AbstractCommentRepository extends EntityRepository
     {
         return [
             'workflowState',
-            'title',
             'subject',
+            'name',
             'yourMailAddress',
             'text',
             'sendMails',
@@ -558,7 +558,6 @@ abstract class AbstractCommentRepository extends EntityRepository
             // but for the slim version we select only the basic fields, and no joins
     
             $selection = 'tbl.id';
-            $selection .= ', tbl.title';
             $useJoins = false;
         }
     

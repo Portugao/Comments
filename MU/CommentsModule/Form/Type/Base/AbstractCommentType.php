@@ -115,17 +115,6 @@ abstract class AbstractCommentType extends AbstractType
     public function addEntityFields(FormBuilderInterface $builder, array $options = [])
     {
         
-        $builder->add('title', TextType::class, [
-            'label' => $this->__('Title') . ':',
-            'empty_data' => '',
-            'attr' => [
-                'maxlength' => 255,
-                'class' => '',
-                'title' => $this->__('Enter the title of the comment')
-            ],
-            'required' => false,
-        ]);
-        
         $builder->add('subject', TextType::class, [
             'label' => $this->__('Subject') . ':',
             'empty_data' => '',
@@ -134,7 +123,18 @@ abstract class AbstractCommentType extends AbstractType
                 'class' => '',
                 'title' => $this->__('Enter the subject of the comment')
             ],
-            'required' => true,
+            'required' => false,
+        ]);
+        
+        $builder->add('name', TextType::class, [
+            'label' => $this->__('Name') . ':',
+            'empty_data' => '',
+            'attr' => [
+                'maxlength' => 255,
+                'class' => '',
+                'title' => $this->__('Enter the name of the comment')
+            ],
+            'required' => false,
         ]);
         
         $builder->add('yourMailAddress', EmailType::class, [
@@ -142,10 +142,10 @@ abstract class AbstractCommentType extends AbstractType
             'label_attr' => [
                 'class' => 'tooltips',
                 'title' => $this->__('Not public.
-                If the mailing feature is enabled, you get mails for commented items or comments.')
+                If the mailing feature is enabled, you get mails for the the commented item or your comment.')
             ],
             'help' => $this->__('Not public.
-            If the mailing feature is enabled, you get mails for commented items or comments.'),
+            If the mailing feature is enabled, you get mails for the the commented item or your comment.'),
             'empty_data' => '',
             'attr' => [
                 'maxlength' => 255,
@@ -157,10 +157,10 @@ abstract class AbstractCommentType extends AbstractType
         
         $builder->add('text', TextareaType::class, [
             'label' => $this->__('Text') . ':',
-            'help' => $this->__f('Note: this value must not exceed %amount% characters.', ['%amount%' => 20000]),
+            'help' => $this->__f('Note: this value must not exceed %amount% characters.', ['%amount%' => 10000]),
             'empty_data' => '',
             'attr' => [
-                'maxlength' => 20000,
+                'maxlength' => 10000,
                 'class' => '',
                 'title' => $this->__('Enter the text of the comment')
             ],
@@ -219,9 +219,9 @@ abstract class AbstractCommentType extends AbstractType
             'label' => $this->__('Send mails') . ':',
             'label_attr' => [
                 'class' => 'tooltips',
-                'title' => $this->__('Do want to get a mail, when someone answers to your comment?')
+                'title' => $this->__('Do you want to get a mail, when someone answers to your comment?')
             ],
-            'help' => $this->__('Do want to get a mail, when someone answers to your comment?'),
+            'help' => $this->__('Do you want to get a mail, when someone answers to your comment?'),
             'attr' => [
                 'class' => '',
                 'title' => $this->__('send mails ?')

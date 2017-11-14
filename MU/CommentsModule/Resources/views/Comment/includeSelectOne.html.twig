@@ -14,8 +14,8 @@
             {% set subFields = attribute(form, alias) %}
             <fieldset>
                 <legend>{{ __('Content') }}</legend>
-                {{ form_row(attribute(subFields, 'title')) }}
                 {{ form_row(attribute(subFields, 'subject')) }}
+                {{ form_row(attribute(subFields, 'name')) }}
                 {{ form_row(attribute(subFields, 'yourMailAddress')) }}
                 {{ form_row(attribute(subFields, 'text')) }}
                 <div class="hidden">

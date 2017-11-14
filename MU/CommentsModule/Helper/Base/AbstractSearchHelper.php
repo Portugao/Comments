@@ -165,8 +165,8 @@ abstract class AbstractSearchHelper implements SearchableInterface
             switch ($objectType) {
                 case 'comment':
                     $whereArray[] = 'tbl.workflowState';
-                    $whereArray[] = 'tbl.title';
                     $whereArray[] = 'tbl.subject';
+                    $whereArray[] = 'tbl.name';
                     $whereArray[] = 'tbl.yourMailAddress';
                     $whereArray[] = 'tbl.text';
                     $whereArray[] = 'tbl.ipOfComment';

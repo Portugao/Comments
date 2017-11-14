@@ -205,8 +205,8 @@ abstract class AbstractCommentQuickNavType extends AbstractType
                 ],
                 'choices' =>             [
                     $this->__('Workflow state') => 'workflowState',
-                    $this->__('Title') => 'title',
                     $this->__('Subject') => 'subject',
+                    $this->__('Name') => 'name',
                     $this->__('Your mail address') => 'yourMailAddress',
                     $this->__('Text') => 'text',
                     $this->__('Send mails') => 'sendMails',

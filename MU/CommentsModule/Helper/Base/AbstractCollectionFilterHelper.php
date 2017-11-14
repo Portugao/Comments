@@ -247,10 +247,10 @@ abstract class AbstractCollectionFilterHelper
         if ($objectType == 'comment') {
             $filters[] = 'tbl.workflowState = :searchWorkflowState';
             $parameters['searchWorkflowState'] = $fragment;
-            $filters[] = 'tbl.title LIKE :searchTitle';
-            $parameters['searchTitle'] = '%' . $fragment . '%';
             $filters[] = 'tbl.subject LIKE :searchSubject';
             $parameters['searchSubject'] = '%' . $fragment . '%';
+            $filters[] = 'tbl.name LIKE :searchName';
+            $parameters['searchName'] = '%' . $fragment . '%';
             $filters[] = 'tbl.yourMailAddress = :searchYourMailAddress';
             $parameters['searchYourMailAddress'] = $fragment;
             $filters[] = 'tbl.text LIKE :searchText';

@@ -71,7 +71,6 @@ abstract class AbstractEntityDisplayHelper
     protected function formatComment(CommentEntity $entity)
     {
         return $this->translator->__f('%title%', [
-            '%title%' => $entity->getTitle()
         ]);
     }
     
@@ -85,7 +84,7 @@ abstract class AbstractEntityDisplayHelper
     public function getTitleFieldName($objectType)
     {
         if ($objectType == 'comment') {
-            return 'title';
+            return 'subject';
         }
     
         return '';
