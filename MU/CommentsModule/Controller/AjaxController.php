@@ -138,7 +138,7 @@ class AjaxController extends AbstractAjaxController
     	if ($subject != '') {
     	    $comment->setSubject($subject);	
     	} else {
-    	    $comment->setSubject('hello');
+    	    $comment->setSubject('');
     	}
     	$comment->setText($text);
     	if (is_Object($parentEntity)) {
@@ -167,6 +167,7 @@ class AjaxController extends AbstractAjaxController
     	
     	$controllerHelper = $this->get('mu_comments_module.controller_helper');
     	$profileLink = $controllerHelper->getProfileLink($comment->getCreatedBy()->getUid());
+    	$avatar = $controllerHelper->getAvatar($comment->getCreatedBy()->getUid());
     	$link = '<a href="' . $profileLink . '" >' . $comment->getCreatedBy()->getUname() . '</a>';
     
     	// return response
@@ -175,6 +176,7 @@ class AjaxController extends AbstractAjaxController
     			'subject' => $comment->getSubject(),
     			'text' => $comment->getText(),
     			'user' => $comment->getCreatedBy()->getUname(),
+    			'avatar' => $avatar,
     			'created' => $comment->getCreatedDate(),
     			'link' => $link
     	]);
