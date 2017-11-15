@@ -17,6 +17,7 @@ use MU\CommentsModule\Entity\Repository\Base\AbstractCommentRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use InvalidArgumentException;
+use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 
 /**
  * Repository class used to implement own convenience methods for performing certain DQL queries.
@@ -25,6 +26,16 @@ use InvalidArgumentException;
  */
 class CommentRepository extends AbstractCommentRepository
 {    
+	/**
+	 * @var string The default sorting field/expression
+	 */
+	protected $defaultSortingField = 'createdDate';
+	
+	/**
+	 * @var VariableApiInterface
+	 */
+	protected $variableApi;
+	
     /**
      * Adds an array of id filters to given query instance.
      *
@@ -47,9 +58,12 @@ class CommentRepository extends AbstractCommentRepository
     
     		$orX->add($qb->expr()->eq('tbl.id', $id));
     	}
+    	
+    	//$sortDir = $this->variableApi->get('MUCommentsModule', 'orderComments');
     
     	$qb->andWhere($orX);
     	$qb->andWhere('tbl.comment is NULL');
+    	$qb->add('orderBy', 'tbl.createdDate DESC');
     
     	return $qb;
     }
