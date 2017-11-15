@@ -7,7 +7,7 @@
         - 'hookDisplayDelete': list of comments assigned using an UI hook (delete template)
 #}
 {% set hasAdminPermission = hasPermission('MUCommentsModule:Comment:', '::', 'ACCESS_ADMIN') %}
-{% set hasEditPermission = hasPermission('MUCommentsModule:Comment:', '::', 'ACCESS_COMMENT') %}
+{% set hasEditPermission = hasPermission('MUCommentsModule:Comment:', '::', 'ACCESS_EDIT') %}
 {% if context != 'display' %}
     <h3>{{ __('Comments') }}</h3>
     {{ pageAddAsset('stylesheet', zasset('@MUCommentsModule:css/style.css')) }}
@@ -36,7 +36,7 @@
     </div>
 {% endif %}
 {% else %}
-{{ __('Creating comments only for registered users') }}
+<div class="alert alert-info">{{ __('No permissions for you, to create comments.') }}</div>
 {% endif %}
 {% set levels = getModVar('MUCommentsModule', 'levelsOfComments') %}
 {% if items|default and items|length > 0 %}
@@ -92,13 +92,16 @@
     </div>  
     </div>
     <div class="col-md-12">
-    <noscript>
-        {{ __('For answering to comments Javascript enabled is needed. Without you only can create new comments!') }}
-    </noscript>
-   </div>
+    </div>
     </div>
 {% endfor %}<br style="clear: both;" />
+{% set pos = getModVar('MUCommentsModule', 'positionOfForm') %}
+{% if context == 'hookDisplayView' and hasEditPermission %}
+    <noscript>
+        <div class="alert alert-info">{{ __('For answering to comments Javascript enabled is needed. Without you only can create new comments!') }}</div>
+    </noscript>
 </div>
+{% endif %}
 {% endif %}
 {% if context == 'hookDisplayView' and hasEditPermission %}
 {% if pos == 'below' %}
@@ -132,7 +135,7 @@
                 var text = MU(this).find('#answer-form-text').val();
                 var commentId = MU(this).find('#parentcomment').val();
                 if(MU('#anser-form-text').val() != '') {
-                    MU('.this-answer-form').parent().append('<img class="commentimg" src="/images/ajax/indicator_circle.gif" />');
+                    MU('.this-answer-form').parent().append('<img class="commentimg" src="/images/ajax/large_square_white.gif" />');
                     MU('.this-answer-form').remove();
                     MU.ajax({
                         method: 'POST',
@@ -148,7 +151,7 @@
                             assignedEntity: 'comment'
                         },
                         success: function(data) {
-                        var out = '<div class="comments-answers"><span class="answer-avatar"></span>' + data.link + ' ' + data.text + '</div>';
+                        var out = '<div class="comments-answers"><span class="answer-avatar">' + data.avatar + '</span>' + data.link + ' ' + data.text + '</div>';
                             MU('#commenttext' + commentId).append(out);
                             MU('.commentimg').hide('slow');
                         }
@@ -165,7 +168,7 @@
                 var subject = MU(this).find('#mucommentsmodule_comment_subject').val();
                 var name = MU(this).find('#mucommentsmodule_comment_name').val();
                 var text = MU(this).find('#mucommentsmodule_comment_text').val();
-                if(MU('#mucommentsmodule_comment_title').val() != '' && MU('#mucommentsmodule_comment_text').val() != '') {
+                if(MU('#mucommentsmodule_comment_text').val() != '') {
                     MU('#commentEditForm').parent().append('<img class="commentimg" src="/images/ajax/indicator_circle.gif" />');
                     MU.ajax({
                         method: 'POST',
@@ -183,7 +186,19 @@
                             assignedEntity: 'comment'
                         },
                         success: function(data) {
-                        var out = '<div class="comments-answers"><span class="answer-avatar"></span>' + data.link + ' ' + data.text + '</div>';
+                        var out = '<div id="comment' + data.id + '" class="comment-container">';
+                            out = out + '<div class="col-md-2"><div class="comment-user">';
+                            out = out + data.link + '<br />';
+                            out = out + '<span class="comment-avatar">' + data.avatar + '</span></div></div>';
+                            out = out + '<div class="col-md-10"><div class="comment-content"><div class="comment-header">';
+                            if(data.subject != '') {
+                                out = out + data.subject + ' - ';
+                            }   
+                            //out = out + data.created;
+                            out = out + '<a title="edit" href=""><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a></div>';
+                            out = out + '<div id="commenttext' + data.id + '" class="comment-text">' + data.text;
+                            out = out + '<span class="answer-container hidden"><a title="3" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>';
+                            out = out + '</div></div><div class="col-md-12"></div></div>';
                             MU('.comment').append(out);
                             MU('.commentimg').hide('slow');
                         }
