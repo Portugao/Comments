@@ -89,3 +89,4 @@ services:
             - "@zikula_users_module.current_user"
             - "@mu_comments_module.entity_factory"
             - "@mu_comments_module.listentries_helper"
+            - "@zikula_extensions_module.api.variable"
