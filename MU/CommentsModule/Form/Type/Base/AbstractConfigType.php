@@ -216,7 +216,7 @@ abstract class AbstractConfigType extends AbstractType
                 Like (sex,porno) for example.')
             ],
             'help' => $this->__('Enter commaseparated words, that has to push an entry to moderate.
-            Like (sex,porno,gays) for example.'),
+            Like (sex,porno) for example.'),
             'empty_data' => '',
             'attr' => [
                 'maxlength' => 255,
@@ -234,7 +234,7 @@ abstract class AbstractConfigType extends AbstractType
                 Like (sex,porno) for example.')
             ],
             'help' => $this->__('Enter commaseparated words, that has to push an entry to block and not saved.
-            Like (sex,porno,gays) for example.'),
+            Like (sex,porno) for example.'),
             'empty_data' => '',
             'attr' => [
                 'maxlength' => 255,
