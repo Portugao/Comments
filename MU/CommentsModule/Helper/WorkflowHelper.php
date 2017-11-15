@@ -15,12 +15,59 @@ namespace MU\CommentsModule\Helper;
 use MU\CommentsModule\Helper\Base\AbstractWorkflowHelper;
 
 use Zikula\Core\Doctrine\EntityAccess;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Workflow\Registry;
+use Zikula\Common\Translator\TranslatorInterface;
+use Zikula\PermissionsModule\Api\ApiInterface\PermissionApiInterface;
+use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
+use MU\CommentsModule\Entity\Factory\EntityFactory;
+use MU\CommentsModule\Helper\ListEntriesHelper;
+use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 
 /**
  * Helper implementation class for workflow methods.
  */
 class WorkflowHelper extends AbstractWorkflowHelper
 {
+	/**
+	 * @var VariableApiInterface
+	 */
+	protected $variableApi;
+	
+	/**
+	 * WorkflowHelper constructor.
+	 *
+	 * @param TranslatorInterface     $translator        Translator service instance
+	 * @param Registry                $registry          Workflow registry service instance
+	 * @param LoggerInterface         $logger            Logger service instance
+	 * @param PermissionApiInterface  $permissionApi     PermissionApi service instance
+	 * @param CurrentUserApiInterface $currentUserApi    CurrentUserApi service instance
+	 * @param EntityFactory           $entityFactory     EntityFactory service instance
+	 * @param ListEntriesHelper       $listEntriesHelper ListEntriesHelper service instance
+	 * @param VariableApiInterface    $variableApi       VariableApiInterface
+	 *
+	 * @return void
+	 */
+	public function __construct(
+			TranslatorInterface $translator,
+			Registry $registry,
+			LoggerInterface $logger,
+			PermissionApiInterface $permissionApi,
+			CurrentUserApiInterface $currentUserApi,
+			EntityFactory $entityFactory,
+			ListEntriesHelper $listEntriesHelper,
+			VariableApiInterface $variableApi
+			) {
+				$this->translator = $translator;
+				$this->workflowRegistry = $registry;
+				$this->logger = $logger;
+				$this->permissionApi = $permissionApi;
+				$this->currentUserApi = $currentUserApi;
+				$this->entityFactory = $entityFactory;
+				$this->listEntriesHelper = $listEntriesHelper;
+				$this->variableApi = $variableApi;		
+	}
+	
     /**
      * Executes a certain workflow action for a given entity object.
      *
@@ -49,11 +96,23 @@ class WorkflowHelper extends AbstractWorkflowHelper
             if ($actionId == 'delete') {
                 $entityManager->remove($entity);
             } else {
+            	if ($entity['content'] != '') {
+            		$result = false;
+            	} else {
+            	$toModeration = $this->variableApi->get('MUCommentsModule', 'toModeration');
+            	if ($toModeration != '') {
+            		
+            	}
+            	$toNotSaved = $this->variableApi->get('MUCommentsModule', 'toNotSaved');
+            	if ($toNotSaved != '') {
+            		
+            	}
                 $entityManager->persist($entity);
+                $entityManager->flush();
+                $result = true;
+            	}
             }
-            $entityManager->flush();
-    
-            $result = true;
+
             if ($actionId == 'delete') {
                 $this->logger->notice('{app}: User {user} deleted an entity.', $logArgs);
             } else {
