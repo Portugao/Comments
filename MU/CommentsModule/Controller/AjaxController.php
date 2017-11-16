@@ -126,6 +126,7 @@ class AjaxController extends AbstractAjaxController
     	$subject = $request->request->get('subject', '');
     	$name = $request->request->get('name', '');
     	$text = $request->request->get('text');
+    	$message = $request->request->get('message');
     	$parentid = $request->request->get('parentcomment');
     	if ($parentid > 0) {
     	$parentEntity = $repository->selectById($parentid);
@@ -140,6 +141,7 @@ class AjaxController extends AbstractAjaxController
     	} else {
     	    $comment->setSubject('');
     	}
+    	$comment->setName($name);
     	$comment->setText($text);
     	if (is_Object($parentEntity)) {
     	$comment->setComment($parentEntity);
