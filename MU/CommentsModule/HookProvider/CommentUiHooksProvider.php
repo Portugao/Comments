@@ -16,12 +16,44 @@ use MU\CommentsModule\HookProvider\Base\AbstractCommentUiHooksProvider;
 
 use Zikula\Bundle\HookBundle\Hook\DisplayHookResponse;
 use Zikula\Bundle\HookBundle\Hook\Hook;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Twig_Environment;
+use Zikula\Common\Translator\TranslatorInterface;
+use MU\CommentsModule\Entity\Factory\EntityFactory;
+use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
 
 /**
  * Implementation class for ui hooks provider.
  */
 class CommentUiHooksProvider extends AbstractCommentUiHooksProvider
 {
+	/**
+	 * @var CurrentUserApiInterface
+	 */
+	protected $currentUser;
+	
+	/**
+	 * CommentUiHooksProvider constructor.
+	 *
+	 * @param TranslatorInterface $translator
+	 * @param RequestStack        $requestStack
+	 * @param EntityFactory       $entityFactory
+	 * @param Twig_Environment    $twig
+	 */
+	public function __construct(
+			TranslatorInterface $translator,
+			RequestStack $requestStack,
+			EntityFactory $entityFactory,
+			Twig_Environment $twig,
+			CurrentUserApiInterface $currentUser
+			) {
+				$this->translator = $translator;
+				$this->requestStack = $requestStack;
+				$this->entityFactory = $entityFactory;
+				$this->templating = $twig;
+				$this->currentUser = $currentUser;
+	}
+	
     /**
      * Returns the response for a display hook of a given context.
      *
@@ -51,6 +83,8 @@ class CommentUiHooksProvider extends AbstractCommentUiHooksProvider
             $url = $hook->getUrl();
             $templateParameters['subscriberUrl'] = (null !== $url && is_object($url)) ? $url->serialize() : serialize([]);
         }
+        
+        $templateParameters['uid'] = $this->currentUser->get('Uid');
 
         $output = $this->templating->render($template, $templateParameters);
 

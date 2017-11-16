@@ -49,12 +49,11 @@
         {{ profileLink|raw }}<br />
         <span class="comment-avatar">{{ userAvatar(item.createdBy.getUid(), {rating: 'g'}) }}</span>
         {{ item.yourMailAdress }}
-        {{ item.homepage }}
         </div>
     </div>
     <div class="col-md-10">
     <div class="comment-content">
-        <div class="comment-header">{% if item.subject != '' %}{{ item.subject }} - {% endif %}{{ item.createdDate|localizeddate('medium', 'short')|raw }} <a title="{{ __('edit') }}" href=""><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a> </div>
+        <div class="comment-header">{% if item.subject != '' %}{{ item.subject }} - {% endif %}{{ item.createdDate|localizeddate('medium', 'short')|raw }} {% if uid > 1 and uid == item.createdBy.getUid() %}<a class="edit-comment" data-id="{{ item.id }}" data-subject="{{ item.subject }}" data-text="{{ item.text }}" title="{{ __('edit') }}" href="{{path('mucommentsmodule_comment_edit', {'id': item.id}) }}"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a>{% endif %}</div>
         <div id="commenttext{{ item.id }}" class="comment-text">{{ item.text }} 
         {% if levels == 'one' or levels == 'two' or levels == 'three' and context == 'hookDisplayView' and hasEditPermission %}
         <span class="answer-container hidden"><a title="{{ item.id }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
@@ -81,6 +80,17 @@
                     {% if levels == 'three' and context == 'hookDisplayView' and hasEditPermission %}
                     <span class="answer-container hidden"><a title="{{ answer.id }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
                     {% endif %}
+                        {% if answer.comments %}
+                        {% for answer in answer.comments %}
+                        <div class="comments-answers second-level">
+                        <span class="answer-avatar">
+                        {{ userAvatar(answer.createdBy.getUid(), {rating: 'g'}) }}</span> 
+                        {% set profileLink = answer.createdBy.getUid()|profileLinkByUserId() %} 
+                        {{ profileLink|raw }} 
+                        {{ answer.text }} 
+                        </div>
+                        {% endfor %}
+                        {% endif %}
                     </div>
                     {% endfor %}
                 {% endif %}
@@ -124,17 +134,30 @@
         MU('.comment-answer').click(function(e) {
             e.preventDefault();
             MU('.this-answer-form').remove();
-            var formCommentId = 'form' + MU(this).attr('subject');
+            var formCommentId = 'form' + MU(this).attr('title');
             var commentId = MU(this).attr('title');
-            MU(this).parent().children('.answer-form').append('<form id="' + formCommentId + '" class="this-answer-form"><textarea id="answer-form-text" name="answer-form-text" class="form-control" rows=1 placeholder="{{ __('Enter your comment') }}"></textarea><input type="hidden" id="parentcomment" name="parentcomment" value="' + commentId + '" /></form>');
+            MU(this).parent().children('.answer-form').append('<form id="' + formCommentId + '" class="this-answer-form"><textarea id="answer-form-text" name="answer-form-text" class="form-control" rows=1 placeholder="{{ __('Enter your comment') }}"></textarea><input type="checkbox" id="answer-form-message" /> {{ __('Get message?') }}<input type="hidden" id="parentcomment" name="parentcomment" value="' + commentId + '" /></form>');
         });
+        
+        MU('.edit-comment').click(function(e) {
+            e.preventDefault();
+            MU('.this-answer-form').remove();
+            var formCommentId = 'form' + MU(this).attr('data-id');
+            var commentId = MU(this).attr('data-id');
+            var subject = MU(this).attr('data-subject');
+            var text = MU(this).attr('data-text');
+            MU(this).parents('.comment-content').append('<form id="' + formCommentId + '" class="this-comment-edit-form"><input class="form-control" type="text" value="' + subject + '"><textarea id="answer-form-text" name="answer-form-text" class="form-control" rows="1" placeholder="' + text + '"></textarea><input type="checkbox" id="answer-form-message"> {{ __('Get message?') }}<input type="hidden" id="parentcomment" name="parentcomment" value="' + commentId + '" /></form>');
+            MU('#answer-form-text').val(text);
+        });
+        
         MU('.this-answer-form').live('keydown', function(e) {
            if (e.which == '13') {
            if(e.shiftKey == 0) {
                 e.preventDefault();
                 var text = MU(this).find('#answer-form-text').val();
+                var message = MU(this).find('#answer-form-message').val();
                 var commentId = MU(this).find('#parentcomment').val();
-                if(MU('#anser-form-text').val() != '') {
+                if(MU('#answer-form-text').val() != '') {
                     MU('.this-answer-form').parent().append('<img class="commentimg" src="/images/ajax/large_square_white.gif" />');
                     MU('.this-answer-form').remove();
                     MU.ajax({
@@ -199,7 +222,7 @@
                             out = out + '<div id="commenttext' + data.id + '" class="comment-text">' + data.text;
                             out = out + '<span class="answer-container hidden"><a title="3" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>';
                             out = out + '</div></div><div class="col-md-12"></div></div>';
-                            MU('.comment').append(out);
+                            MU('.comment').prepend(out);
                             MU('.commentimg').hide('slow');
                         }
                     });

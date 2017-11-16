@@ -43,6 +43,7 @@ services:
             - "@request_stack"
             - "@mu_comments_module.entity_factory"
             - "@twig"
+            - "@zikula_users_module.current_user"
         tags:
             - { name: zikula.hook_provider, areaName: 'provider.mucommentsmodule.ui_hooks.comments' }
 
