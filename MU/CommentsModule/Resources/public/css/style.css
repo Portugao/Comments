@@ -188,3 +188,9 @@ div.mucommentsmodule-view .avatar img {
 .second-level {
 	margin: 5px 0 0 0;
 }
+
+/**************jQuery******************/
+
+#answer-form-text {
+	margin: 5px 0;
+}
