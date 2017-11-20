@@ -79,6 +79,23 @@ class AjaxController extends AbstractAjaxController
     /**
      * Detachs a given hook assignment by removing the corresponding assignment data record.
      *
+     * @Route("/edit", options={"expose"=true})
+     * @Method("POST")
+     *
+     * @param Request $request Current request instance
+     *
+     * @return JsonResponse
+     *
+     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
+     */
+    public function editAction(Request $request)
+    {
+    	return $this->editInternal($request);
+    }
+    
+    /**
+     * Detachs a given hook assignment by removing the corresponding assignment data record.
+     *
      * @Route("/answer", options={"expose"=true})
      * @Method("POST")
      *
@@ -91,6 +108,102 @@ class AjaxController extends AbstractAjaxController
     public function answerAction(Request $request)
     {
     	return $this->answerInternal($request);
+    }
+    
+    /**
+     * Attachs a given hook assignment by creating the corresponding assignment data record.
+     *
+     * @param Request $request Current request instance
+     *
+     * @return JsonResponse
+     *
+     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
+     */
+    public function editInternal(Request $request)
+    {
+    	if (!$this->hasPermission('MUCommentsModule::Ajax', '::', ACCESS_EDIT)) {
+    		throw new AccessDeniedException();
+    	}
+    
+    	$subscriberOwner = $request->request->get('owner', '');
+    	$subscriberAreaId = $request->request->get('areaId', '');
+    	$subscriberObjectId = $request->request->getInt('objectId', 0);
+    	//$subscriberUrl = $request->request->get('url', '');
+    	$assignedEntity = $request->request->get('assignedEntity', '');
+    
+    	if (!$subscriberOwner || !$subscriberAreaId || !$subscriberObjectId || !$assignedEntity) {
+    		return new JsonResponse($this->__('Error: invalid input.'), JsonResponse::HTTP_BAD_REQUEST);
+    	}
+    
+    	//$subscriberUrl = !empty($subscriberUrl) ? unserialize($subscriberUrl) : [];
+    	 
+    	$entityManager = $this->get('mu_comments_module.entity_factory')->getObjectManager();
+    	$repository = $this->get('mu_comments_module.entity_factory')->getRepository('comment');
+    	$parentEntity = '';
+    	$subject = $request->request->get('subject', '');
+    	$name = $request->request->get('name', '');
+    	$text = $request->request->get('text');
+    	$message = $request->request->get('message');
+    	$thisId = $request->request->get('thisComment');
+    	$parentid = $request->request->get('parentcomment', 0);
+    	if ($thisId == 0) {
+    		return new JsonResponse($this->__('No comment id for editing.'), JsonResponse::HTTP_BAD_REQUEST);
+    	}
+    	if ($parentid > 0) {
+    		$parentEntity = $repository->selectById($parentid);
+    		if (!is_object($parentEntity)) {
+    			return new JsonResponse($this->__('Error: no object.'), JsonResponse::HTTP_BAD_REQUEST);
+    		}
+    	}
+    	
+    	$thisComment = $repository->find($thisId);
+
+    	if ($subject != '') {
+    		$thisComment->setSubject($subject);
+    	} else {
+    		$thisComment->setSubject('');
+    	}
+    	$thisComment->setName($name);
+    	$thisComment->setText($text);
+    	if (is_Object($parentEntity)) {
+    		$thisComment->setComment($parentEntity);
+    	} else {
+    		$thisComment->setComment(NULL);
+    	}
+    	//$thisComment->setWorkflowState('approved');
+    	 
+    	$qb = $entityManager->persist($thisComment);
+    	$qb = $entityManager->flush();
+    	 
+    	/*$commentId = $comment->getId();
+    
+    	$assignment = new \MU\CommentsModule\Entity\HookAssignmentEntity();
+    	$assignment->setSubscriberOwner($subscriberOwner);
+    	$assignment->setSubscriberAreaId($subscriberAreaId);
+    	$assignment->setSubscriberObjectId($subscriberObjectId);
+    	//$assignment->setSubscriberUrl($subscriberUrl);
+    	$assignment->setAssignedEntity($assignedEntity);
+    	$assignment->setAssignedId($commentId);
+    	$assignment->setUpdatedDate(new \DateTime());
+    
+    	$qb = $entityManager->persist($assignment);
+    	$qb = $entityManager->flush();*/
+    	 
+    	$controllerHelper = $this->get('mu_comments_module.controller_helper');
+    	$profileLink = $controllerHelper->getProfileLink($thisComment->getCreatedBy()->getUid());
+    	$avatar = $controllerHelper->getAvatar($thisComment->getCreatedBy()->getUid());
+    	$link = '<a href="' . $profileLink . '" >' . $thisComment->getCreatedBy()->getUname() . '</a>';
+    
+    	// return response
+    	return new JsonResponse([
+    			'id' => $thisId,
+    			'subject' => $thisComment->getSubject(),
+    			'text' => $thisComment->getText(),
+    			'user' => $thisComment->getCreatedBy()->getUname(),
+    			'avatar' => $avatar,
+    			'created' => $thisComment->getCreatedDate(),
+    			'link' => $link
+    	]);
     }
     
     /**
