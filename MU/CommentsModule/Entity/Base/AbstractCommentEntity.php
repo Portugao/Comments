@@ -111,7 +111,6 @@ abstract class AbstractCommentEntity extends EntityAccess
     /**
      * @ORM\Column(length=255)
      * @Assert\NotNull()
-     * @Assert\Regex(pattern="/\s/", match=false, message="This value must not contain space chars.")
      * @Assert\Length(min="0", max="255")
      * @Assert\Ip(version="all_public")
      * @var string $ipOfComment
@@ -127,7 +126,7 @@ abstract class AbstractCommentEntity extends EntityAccess
     protected $content = '';
     
     /**
-     * Do want to get a mail, when someone answers to your comment?
+     * Do you want to get a mail, when someone answers to your comment?
      *
      * @ORM\Column(type="boolean")
      * @Assert\NotNull()

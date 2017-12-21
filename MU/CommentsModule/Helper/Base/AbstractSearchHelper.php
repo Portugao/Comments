@@ -45,22 +45,22 @@ abstract class AbstractSearchHelper implements SearchableInterface
     /**
      * @var SessionInterface
      */
-    private $session;
+    protected $session;
     
     /**
      * @var Request
      */
-    private $request;
+    protected $request;
     
     /**
      * @var EntityFactory
      */
-    private $entityFactory;
+    protected $entityFactory;
     
     /**
      * @var ControllerHelper
      */
-    private $controllerHelper;
+    protected $controllerHelper;
     
     /**
      * @var EntityDisplayHelper

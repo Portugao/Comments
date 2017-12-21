@@ -116,8 +116,13 @@ function mUCommentsSelectHookItem(objectType, idPrefix, selectedListItem) {
 /**
  * Initialises auto completion for a relation field.
  */
-function mUCommentsInitAutoCompletion(objectType, idPrefix, includeEditing) {
+function mUCommentsInitAutoCompletion(objectType, alias, idPrefix, includeEditing) {
     var acOptions, acDataSet, acUrl, isHookAttacher;
+
+    isHookAttacher = idPrefix.startsWith('hookAssignment');
+    if (isHookAttacher) {
+        idPrefix = alias;
+    }
 
     // update identifier of hidden field for easier usage in JS
     jQuery('#' + idPrefix + 'Multiple').prev().attr('id', idPrefix);
@@ -135,8 +140,6 @@ function mUCommentsInitAutoCompletion(objectType, idPrefix, includeEditing) {
     // clear values and ensure starting state
     mUCommentsResetAutoCompletion(idPrefix);
 
-
-    isHookAttacher = idPrefix.startsWith('hookAssignment');
     jQuery.each(mUCommentsInlineEditHandlers, function (key, editHandler) {
         if (editHandler.prefix !== (idPrefix + 'SelectorDoNew') || editHandler.inputType !== 'autocomplete') {
             return;

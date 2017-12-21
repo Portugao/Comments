@@ -558,6 +558,7 @@ abstract class AbstractCommentRepository extends EntityRepository
             // but for the slim version we select only the basic fields, and no joins
     
             $selection = 'tbl.id';
+            $selection .= ', tbl.subject';
             $useJoins = false;
         }
     

@@ -56,45 +56,9 @@ function mUCommentsSimpleAlert(anchorElement, title, content, alertId, cssClass)
 function mUCommentsInitMassToggle() {
     if (jQuery('.mucomments-mass-toggle').length > 0) {
         jQuery('.mucomments-mass-toggle').unbind('click').click(function (event) {
-            if (jQuery('.table.fixed-columns').length > 0) {
-                jQuery('.mucomments-toggle-checkbox').prop('checked', false);
-                jQuery('.table.fixed-columns .mucomments-toggle-checkbox').prop('checked', jQuery(this).prop('checked'));
-            } else {
-                jQuery('.mucomments-toggle-checkbox').prop('checked', jQuery(this).prop('checked'));
-            }
+            jQuery('.mucomments-toggle-checkbox').prop('checked', jQuery(this).prop('checked'));
         });
     }
-}
-
-/**
- * Initialises fixed table columns.
- */
-function mUCommentsInitFixedColumns() {
-    jQuery('.table.fixed-columns').remove();
-    jQuery('.table').each(function () {
-        var originalTable, fixedColumnsTable, fixedTableWidth;
-
-        originalTable = jQuery(this);
-        fixedTableWidth = 0;
-        if (originalTable.find('.fixed-column').length > 0) {
-            fixedColumnsTable = originalTable.clone().insertBefore(originalTable).addClass('fixed-columns').removeAttr('id');
-            originalTable.find('.dropdown').addClass('hidden');
-            fixedColumnsTable.find('.dropdown').removeClass('hidden');
-            fixedColumnsTable.css('left', originalTable.parent().position().left);
-
-            fixedColumnsTable.find('th, td').not('.fixed-column').remove();
-            fixedColumnsTable.find('th').each(function (i, elem) {
-                jQuery(this).css('width', originalTable.find('th').eq(i).css('width'));
-                fixedTableWidth += originalTable.find('th').eq(i).width();
-            });
-            fixedColumnsTable.css('width', fixedTableWidth + 'px');
-
-            fixedColumnsTable.find('tr').each(function (i, elem) {
-                jQuery(this).height(originalTable.find('tr:eq(' + i + ')').height());
-            });
-        }
-    });
-    mUCommentsInitMassToggle();
 }
 
 /**
@@ -103,36 +67,24 @@ function mUCommentsInitFixedColumns() {
 function mUCommentsInitItemActions(context) {
     var containerSelector;
     var containers;
-    var listClasses;
-
+    
     containerSelector = '';
     if (context == 'view') {
         containerSelector = '.mucommentsmodule-view';
-        listClasses = 'list-unstyled dropdown-menu';
     } else if (context == 'display') {
         containerSelector = 'h2, h3';
-        listClasses = 'list-unstyled dropdown-menu';
     }
-
+    
     if (containerSelector == '') {
         return;
     }
-
+    
     containers = jQuery(containerSelector);
     if (containers.length < 1) {
         return;
     }
-
-    containers.find('.dropdown > ul').removeClass('list-inline').addClass(listClasses);
-    containers.find('.dropdown > ul a').each(function (index) {
-        var title;
-
-        title = jQuery(this).find('i').first().attr('title');
-        if (title == '') {
-            title = jQuery(this).find('i').first().data('original-title');
-        }
-        jQuery(this).html(jQuery(this).html() + title);
-    });
+    
+    containers.find('.dropdown > ul').removeClass('list-inline').addClass('list-unstyled dropdown-menu');
     containers.find('.dropdown > ul a i').addClass('fa-fw');
     containers.find('.dropdown-toggle').removeClass('hidden').dropdown();
 }
@@ -205,9 +157,6 @@ jQuery(document).ready(function () {
     if (isViewPage) {
         mUCommentsInitQuickNavigation();
         mUCommentsInitMassToggle();
-        jQuery(window).resize(mUCommentsInitFixedColumns);
-        mUCommentsInitFixedColumns();
-        window.setTimeout(mUCommentsInitFixedColumns, 1000);
         mUCommentsInitItemActions('view');
     } else if (isDisplayPage) {
         mUCommentsInitItemActions('display');

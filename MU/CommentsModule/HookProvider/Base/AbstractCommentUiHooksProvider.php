@@ -326,7 +326,7 @@ abstract class AbstractCommentUiHooksProvider implements HookProviderInterface
             $templateParameters['subscriberOwner'] = $hook->getCaller();
             $templateParameters['subscriberAreaId'] = $hook->getAreaId();
             $templateParameters['subscriberObjectId'] = $hook->getId();
-            $url = $hook->getUrl();
+            $url = method_exists($hook, 'getUrl') ? $hook->getUrl() : null;
             $templateParameters['subscriberUrl'] = (null !== $url && is_object($url)) ? $url->serialize() : serialize([]);
         }
 

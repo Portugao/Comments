@@ -310,7 +310,13 @@ abstract class AbstractControllerHelper
                 $url = 'javascript:void(0);';
                 $subscriberUrl = $assignment->getSubscriberUrl();
                 if (null !== $subscriberUrl && !empty($subscriberUrl)) {
-                    $url = $this->router->generate($subscriberUrl['route'], $subscriberUrl['args']);
+                    if (!isset($subscriberUrl['route'])) {
+                        // legacy module
+                        $url = \ModUtil::url($subscriberUrl['application'], $subscriberUrl['controller'], $subscriberUrl['action'], $subscriberUrl['args'], null, null, true, true);
+                    } else {
+                        $url = $this->router->generate($subscriberUrl['route'], $subscriberUrl['args']);
+                    }
+    
                     $fragment = $subscriberUrl['fragment'];
                     if (!empty($fragment)) {
                         if ($fragment[0] != '#') {

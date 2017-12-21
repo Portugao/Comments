@@ -193,11 +193,11 @@ abstract class AbstractCommentType extends AbstractType
         
         $builder->add('ipOfComment', TextType::class, [
             'label' => $this->__('Ip of comment') . ':',
-            'help' => [$this->__('Note: this value must not contain spaces.'), $this->__('Note: this value must be a valid IP address. Allowed IPv4 and IPv6 addresses using only public ranges (without private and reserved ranges).')],
+            'help' => $this->__('Note: this value must be a valid IP address. Allowed IPv4 and IPv6 addresses using only public ranges (without private and reserved ranges).'),
             'empty_data' => '',
             'attr' => [
                 'maxlength' => 255,
-                'class' => ' validate-nospace',
+                'class' => '',
                 'title' => $this->__('Enter the ip of comment of the comment')
             ],
             'required' => false,

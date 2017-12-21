@@ -1,12 +1,9 @@
-application "Comments" {
+application "Comments" targets ZK15  {
     vendor "MU"
     author "Michael Ueberschaer"
     email "info@homepages-mit-zikula.de"
     url "https://homepages-mit-zikula.de"
     prefix "comments"
-    generatorSettings {
-        settingsContainer "Settings"
-        targetCoreVersion ZK15
         generatePendingContentSupport false
         generateExternalControllerAndFinder true
         generateScribitePlugins false
@@ -22,12 +19,12 @@ application "Comments" {
         versionAllGeneratedFiles false
         generatePoweredByBacklinksIntoFooterTemplates false
     generateTests false
-        markFiles "Controller/AjaxController.php,\r\nEntity/Repository/CommentRepository.php,\r\nHelper/ControllerHelper.php,\r\nHookProvider/CommentUiHooksProvider.php,\r\nResources/config/helpers.yml,\r\nResources/public/css/style.css,\r\nResources/views/base.html.twig,\r\nResources/views/Comment/edit.html.twig,\r\nTwig/TwigExtension.php"
-    }
+        markFiles "Controller/AjaxController.php,\r\nEntity/Repository/CommentRepository.php,\r\nHelper/ControllerHelper.php,\r\nHelper/Workflowhelper.php,\r\nHookProvider/CommentUiHooksProvider.php,\r\nResources/config/helpers.yml,\r\nResources/config/hooks.yml,\r\nResources/public/css/style.css,\r\nResources/views/base.html.twig,\r\nResources/views/Comment/edit.html.twig,\r\nTwig/TwigExtension.php"
+
     entities {
         entity "comment" leading {
             nameMultiple "comments"
-            displayPattern "#title#"
+            displayPattern "#subject#"
             slugUpdatable false
             slugUnique false
             workflow STANDARD
@@ -74,7 +71,7 @@ application "Comments" {
                 }
             ,
                 boolean "sendMails" {
-                    documentation "Do want to get a mail, when someone answers to your comment?"
+                    documentation "Do you want to get a mail, when someone answers to your comment?"
                     mandatory false
                 }
             }
@@ -130,11 +127,12 @@ variables {
                     mandatory false
                 },
                 string "toModeration" {
-                    documentation "Enter commaseparated words, that has to push an entry to moderate.\r\nLike (sex,porno,gays) for example."
+                    documentation "Enter commaseparated words, that has to push an entry to moderate.\r\nLike (sex,porno) for example."
                     mandatory false
                 },
                 string "toNotSaved" {
-                    documentation "Enter commaseparated words, that has to push an entry to block and not saved.\r\nLike (sex,porno,gays) for example."
+                    documentation "Enter commaseparated words, that has to push an entry to block and not saved.\r\nLike (sex,porno) for example."
+                mandatory false
                 }
             }
         },
@@ -142,7 +140,7 @@ variables {
             sortOrder 2
             fields {
                 boolean "sendMails" {
-                    documentation "Enable, if you want activate the mailing feature.\r\nIf someone check the field send mails, he gets a mail, when someone answers to his comment."
+                    documentation "Enable, if you want to activate the mailing feature.\r\nIf someone checks the field send mails, he gets a mail, when someone answers to his comment."
                     mandatory false
                 }
             }

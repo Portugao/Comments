@@ -19,6 +19,7 @@
     {% if context == 'hookDisplayView' and hasEditPermission %}
         {% set entityNameTranslated = __('comment') %}
         {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.HookAssignment.js'), 99) }}
+        {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.EditFunctions.js'), 99) }}
         {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.InlineEditing.js'), 99) }}
         {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.AutoCompletion.js'), 99) }}
     {% endif %}

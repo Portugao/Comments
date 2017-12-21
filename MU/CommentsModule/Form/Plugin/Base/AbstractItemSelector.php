@@ -68,7 +68,7 @@ class AbstractItemSelector extends Zikula_Form_Plugin_TextInput implements Conta
      *
      * @return void
      */
-    public function create(Zikula_Form_View $view, array &$params = [])
+    public function create(Zikula_Form_View $view, &$params)
     {
         $params['maxLength'] = 11;
         /*$params['width'] = '8em';*/

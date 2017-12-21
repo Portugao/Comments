@@ -285,10 +285,16 @@ abstract class AbstractHookAssignmentEntity extends EntityAccess
     public function setUpdatedDate($updatedDate)
     {
         if ($this->updatedDate !== $updatedDate) {
-            if (is_object($updatedDate) && $updatedDate instanceOf \DateTime) {
+            if (!(null == $updatedDate && empty($updatedDate)) && !(is_object($updatedDate) && $updatedDate instanceOf \DateTimeInterface)) {
+                $updatedDate = new \DateTime($updatedDate);
+            }
+            
+            if (null === $updatedDate || empty($updatedDate)) {
+                $updatedDate = new \DateTime();
+            }
+            
+            if ($this->updatedDate != $updatedDate) {
                 $this->updatedDate = $updatedDate;
-            } else {
-                $this->updatedDate = new \DateTime($updatedDate);
             }
         }
     }

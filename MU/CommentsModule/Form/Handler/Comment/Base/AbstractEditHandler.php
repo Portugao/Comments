@@ -92,6 +92,16 @@ abstract class AbstractEditHandler extends EditHandler
      */
     protected function createForm()
     {
+        return $this->formFactory->create(CommentType::class, $this->entityRef, $this->getFormOptions());
+    }
+    
+    /**
+     * Returns the form options.
+     *
+     * @return array
+     */
+    protected function getFormOptions()
+    {
         $options = [
             'mode' => $this->templateParameters['mode'],
             'actions' => $this->templateParameters['actions'],
@@ -103,7 +113,7 @@ abstract class AbstractEditHandler extends EditHandler
         $workflowRoles = $this->prepareWorkflowAdditions(false);
         $options = array_merge($options, $workflowRoles);
     
-        return $this->formFactory->create(CommentType::class, $this->entityRef, $options);
+        return $options;
     }
 
 
@@ -189,7 +199,7 @@ abstract class AbstractEditHandler extends EditHandler
                 $args['commandName'] = $action['id'];
             }
         }
-        if ($this->templateParameters['mode'] == 'create' && $this->form->get('submitrepeat')->isClicked()) {
+        if ($this->templateParameters['mode'] == 'create' && $this->form->has('submitrepeat') && $this->form->get('submitrepeat')->isClicked()) {
             $args['commandName'] = 'submit';
             $this->repeatCreateAction = true;
         }

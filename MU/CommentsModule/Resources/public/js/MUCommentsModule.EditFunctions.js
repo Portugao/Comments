@@ -86,7 +86,7 @@ function mUCommentsInitEditForm(mode, entityId) {
  */
 function mUCommentsInitRelationHandling(objectType, alias, idPrefix, includeEditing, inputType, createUrl) {
     if (inputType == 'autocomplete') {
-        mUCommentsInitAutoCompletion(objectType, idPrefix, includeEditing);
+        mUCommentsInitAutoCompletion(objectType, alias, idPrefix, includeEditing);
     }
     if (includeEditing) {
         mUCommentsInitInlineEditingButtons(objectType, alias, idPrefix, inputType, createUrl);
