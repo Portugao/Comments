@@ -124,6 +124,16 @@ class AjaxController extends AbstractAjaxController
     	if (!$this->hasPermission('MUCommentsModule::Ajax', '::', ACCESS_EDIT)) {
     		throw new AccessDeniedException();
     	}
+    	
+    	$content = $request->request->get('content', '');
+    	
+    	$variableApi = $this->get('zikula_extensions_module.api.variable');
+    	$spam = $variableApi->get('enableInternSpamHandling');
+    	if ($spam == 1) {
+    		if ($content != '') {
+    			return new JsonResponse($this->__('Wrong input'), JsonResponse::HTTP_FORBIDDEN);
+    		}
+    	}
     
     	$subscriberOwner = $request->request->get('owner', '');
     	$subscriberAreaId = $request->request->get('areaId', '');
@@ -143,6 +153,32 @@ class AjaxController extends AbstractAjaxController
     	$subject = $request->request->get('subject', '');
     	$name = $request->request->get('name', '');
     	$text = $request->request->get('text');
+    	
+    	$kindOfModeration = '';
+    	
+    	if ($spam == 1) {    	
+	    	$toModeration = $variableApi->get('toModeration');
+	    	if ($toModeration != '') {
+	    		$toModeration = explode(',', $toModeration);
+	    		foreach ($toModeration as $moderation) {
+	    			if(strpos($moderation,$subject) !== false || strpos($moderation,$name) !== false || strpos($moderation,$text) !== false) {
+	    			    $kindOfModeration = 'moderate';
+	    			    break;
+	    			}
+	    		}
+	    	}
+	    	$toNotSaved = $variableApi->get('toNotSaved');
+	    	if ($toNotSaved != '') {
+	    		$toNotSaved = explode(',', $toNotSaved);
+	    		foreach ($toNotSaved as $notsaved) {
+	    			if(strpos($notsaved,$subject) !== false || strpos($notsaved,$name) !== false || strpos($notsaved,$text) !== false) {
+	    				$kindOfModeration = 'block';
+	    				break;
+	    			}
+	    		}
+	    	}
+    	}
+    	
     	$message = $request->request->get('message');
     	$thisId = $request->request->get('thisComment');
     	$parentid = $request->request->get('parentcomment', 0);
@@ -170,24 +206,15 @@ class AjaxController extends AbstractAjaxController
     	} else {
     		$thisComment->setComment(NULL);
     	}
-    	//$thisComment->setWorkflowState('approved');
-    	 
+
+    	if ($kindOfModeration == 'moderate') {
+    		$thisComment->setWorkflowState('waiting');
+    	}
+    	
+    	if ($kindOfModeration != 'block') {
     	$qb = $entityManager->persist($thisComment);
     	$qb = $entityManager->flush();
-    	 
-    	/*$commentId = $comment->getId();
-    
-    	$assignment = new \MU\CommentsModule\Entity\HookAssignmentEntity();
-    	$assignment->setSubscriberOwner($subscriberOwner);
-    	$assignment->setSubscriberAreaId($subscriberAreaId);
-    	$assignment->setSubscriberObjectId($subscriberObjectId);
-    	//$assignment->setSubscriberUrl($subscriberUrl);
-    	$assignment->setAssignedEntity($assignedEntity);
-    	$assignment->setAssignedId($commentId);
-    	$assignment->setUpdatedDate(new \DateTime());
-    
-    	$qb = $entityManager->persist($assignment);
-    	$qb = $entityManager->flush();*/
+    	
     	 
     	$controllerHelper = $this->get('mu_comments_module.controller_helper');
     	$profileLink = $controllerHelper->getProfileLink($thisComment->getCreatedBy()->getUid());
@@ -204,6 +231,11 @@ class AjaxController extends AbstractAjaxController
     			'created' => $thisComment->getCreatedDate(),
     			'link' => $link
     	]);
+    	} else {
+    	return new JsonResponse([
+    			'id' => 0
+    	]);
+    	}
     }
     
     /**
@@ -219,6 +251,16 @@ class AjaxController extends AbstractAjaxController
     {
     	if (!$this->hasPermission('MUCommentsModule::Ajax', '::', ACCESS_EDIT)) {
     		throw new AccessDeniedException();
+    	}
+    	
+    	$content = $request->request->get('content', '');
+    	 
+    	$variableApi = $this->get('zikula_extensions_module.api.variable');
+    	$spam = $variableApi->get('enableInternSpamHandling');
+    	if ($spam == 1) {
+    		if ($content != '') {
+    			return new JsonResponse($this->__('Wrong input'), JsonResponse::HTTP_FORBIDDEN);
+    		}
     	}
     
     	$subscriberOwner = $request->request->get('owner', '');
@@ -239,15 +281,52 @@ class AjaxController extends AbstractAjaxController
     	$subject = $request->request->get('subject', '');
     	$name = $request->request->get('name', '');
     	$text = $request->request->get('text');
-    	$message = $request->request->get('message');
+    	$message = $request->request->get('message', 0);
     	$parentid = $request->request->get('parentcomment');
-    	if ($parentid > 0) {
-    	$parentEntity = $repository->selectById($parentid);
-    	if (!is_object($parentEntity)) {
-    		return new JsonResponse($this->__('Error: no object.'), JsonResponse::HTTP_BAD_REQUEST);
+    	$mainId = $request->request->get('maincomment');
+    	if ($mainId == 0) {
+    		$mainId = $parentid;
     	}
+    	if ($parentid > 0) {
+    	    $parentEntity = $repository->selectById($parentid);
+    	    if (!is_object($parentEntity)) {
+    		    return new JsonResponse($this->__('Error: no parent object.'), JsonResponse::HTTP_BAD_REQUEST);
+    	    }
+    	}
+    	
+    	if ($mainId > 0) {
+    		$mainEntity = $repository->selectById($mainId);
+    		if (!is_object($mainEntity)) {
+    			return new JsonResponse($this->__('Error: no main object.'), JsonResponse::HTTP_BAD_REQUEST);
+    		}
+    	}
+    	
+    	$kindOfModeration = '';
+    	 
+    	if ($spam == 1) {
+    		$toModeration = $variableApi->get('toModeration');
+    		if ($toModeration != '') {
+    			$toModeration = explode(',', $toModeration);
+    			foreach ($toModeration as $moderation) {
+    				if(strpos($moderation,$subject) !== false || strpos($moderation,$name) !== false || strpos($moderation,$text) !== false) {
+    					$kindOfModeration = 'moderate';
+    					break;
+    				}
+    			}
+    		}
+    		$toNotSaved = $variableApi->get('toNotSaved');
+    		if ($toNotSaved != '') {
+    			$toNotSaved = explode(',', $toNotSaved);
+    			foreach ($toNotSaved as $notsaved) {
+    				if(strpos($notsaved,$subject) !== false || strpos($notsaved,$name) !== false || strpos($notsaved,$text) !== false) {
+    					$kindOfModeration = 'block';
+    					break;
+    				}
+    			}
+    		}
     	}
  	
+    	if ($kindOfModeration != 'block') {
     	$comment = new \MU\CommentsModule\Entity\CommentEntity();
     	if ($subject != '') {
     	    $comment->setSubject($subject);	
@@ -261,8 +340,13 @@ class AjaxController extends AbstractAjaxController
     	} else {
     		$comment->setComment(NULL);
     	}
+    	$comment->setMainId($mainId);
+    	$comment->setSendMails($message);
+    	if ($kindOfModeration == 'moderate') {
+    		$comment->setWorkflowState('waiting');
+    	} else {
     	$comment->setWorkflowState('approved');
-    	
+    	}
     	$qb = $entityManager->persist($comment);
     	$qb = $entityManager->flush();
     	
@@ -295,6 +379,9 @@ class AjaxController extends AbstractAjaxController
     			'created' => $comment->getCreatedDate(),
     			'link' => $link
     	]);
+    	} else {
+    		return new JsonResponse();
+    	}
     }
 
     // feel free to add your own ajax controller methods here
