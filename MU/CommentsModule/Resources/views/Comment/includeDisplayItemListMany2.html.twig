@@ -55,8 +55,8 @@
     <div class="comment-content">
         <div class="comment-header">{% if item.subject != '' %}{{ item.subject }} - {% endif %}{{ item.createdDate|localizeddate('medium', 'short')|raw }} {% if uid > 1 and uid == item.createdBy.getUid() %}<a class="edit-comment" data-id="{{ item.id }}" data-parentid="0" data-subject="{{ item.subject }}" data-text="{{ item.text }}" title="{{ __('edit') }}" href="{{path('mucommentsmodule_comment_edit', {'id': item.id}) }}"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a>{% endif %}</div>
         <div id="commenttext{{ item.id }}" class="comment-text">{{ item.text }} 
-        {% if levels == 'one' or levels == 'two' or levels == 'three' and context == 'hookDisplayView' and hasEditPermission %}
-        <span class="answer-container hidden"><a data-id="{{ item.id }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
+        {% if levels == 'two' or levels == 'three' or levels == 'four' and context == 'hookDisplayView' and hasEditPermission %}
+            <span class="answer-container hidden"><a data-id="{{ item.id }}" main-Id="{{ item.mainId }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
         {% endif %}
         {% if item.comments %}
             {% for answer in item.comments %}
@@ -65,10 +65,10 @@
                 {{ userAvatar(answer.createdBy.getUid(), {rating: 'g'}) }}</span> 
                 {% set profileLink = answer.createdBy.getUid()|profileLinkByUserId() %} 
                 {{ profileLink|raw }} 
-                {{ answer.text }} 
-                {% if levels == 'two' or levels == 'three' and context == 'hookDisplayView' and hasEditPermission %}
-                <span class="answer-container hidden"><a data-id="{{ answer.id }}" title="{{ answer.id }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
-                {% endif %}
+                {{ answer.text }}
+                {% if levels == 'three' or levels == 'four' and context == 'hookDisplayView' and hasEditPermission %}
+                    <span class="answer-container hidden"><a data-id="{{ answer.id }}" main-Id="{{ answer.mainId }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
+                {% endif %}<span class="answer-date">{{ answer.createdDate|localizeddate('medium', 'short')|raw }}</span>
                 {% if answer.comments %}
                     {% for answer in answer.comments %}
                     <div class="comments-answers second-level">
@@ -77,8 +77,8 @@
                     {% set profileLink = answer.createdBy.getUid()|profileLinkByUserId() %} 
                     {{ profileLink|raw }} 
                     {{ answer.text }} 
-                    {% if levels == 'three' and context == 'hookDisplayView' and hasEditPermission %}
-                    <span class="answer-container hidden"><a data-id="{{ answer.id }}" title="{{ answer.id }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
+                    {% if levels == 'four' and context == 'hookDisplayView' and hasEditPermission %}
+                        <span class="answer-container hidden"><a data-id="{{ answer.id }}" main-Id="{{ answer.mainId }}" title="{{ answer.id }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
                     {% endif %}
                         {% if answer.comments %}
                         {% for answer in answer.comments %}
@@ -87,7 +87,7 @@
                         {{ userAvatar(answer.createdBy.getUid(), {rating: 'g'}) }}</span> 
                         {% set profileLink = answer.createdBy.getUid()|profileLinkByUserId() %} 
                         {{ profileLink|raw }} 
-                        {{ answer.text }} 
+                        {{ answer.text }}
                         </div>
                         {% endfor %}
                         {% endif %}
@@ -126,7 +126,6 @@
 {% endif %}
 {% endif %}
 {% if context == 'hookDisplayView' and hasEditPermission %}
-
         <script>
         var MU = jQuery.noConflict();
         MU().ready(function() {
@@ -136,8 +135,7 @@
             e.preventDefault();
             MU('.this-answer-form').remove();
             MU('.this-comment-edit-form').remove();
-        });
-        
+        });       
         
         MU('.comment-answer').click(function(e) {
             e.preventDefault();
@@ -145,7 +143,8 @@
             MU('.this-comment-edit-form').remove();
             var formCommentId = 'form' + MU(this).attr('data-id');
             var commentId = MU(this).attr('data-id');
-            MU(this).parent().children('.answer-form').append('<form id="' + formCommentId + '" class="this-answer-form"><textarea id="answer-form-text" name="answer-form-text" class="form-control" rows=1 placeholder="{{ __('Enter your comment') }}"></textarea><input type="checkbox" id="answer-form-message" /> {{ __('Get message?') }}<input type="hidden" id="parentcomment" name="parentcomment" value="' + commentId + '" /></form>');
+            var mainId = MU(this).attr('main-Id');
+            MU(this).parent().children('.answer-form').append('<form id="' + formCommentId + '" class="this-answer-form"><textarea id="answer-form-text" name="answer-form-text" class="form-control" rows=1 placeholder="{{ __('Enter your comment') }}"></textarea><input type="checkbox" id="answer-form-message" /> {{ __('Get message?') }}<input type="hidden" id="parentcomment" name="parentcomment" value="' + commentId + '" /><input type="hidden" id="maincomment" name="maincomment" value="' + mainId + '" /></form>');
         });
         
         MU('.edit-comment').click(function(e) {
@@ -168,6 +167,10 @@
                 var text = MU(this).find('#answer-form-text').val();
                 var message = MU(this).find('#answer-form-message').val();
                 var commentId = MU(this).find('#parentcomment').val();
+                var mainId = MU(this).find('#maincomment').val();
+                if (mainId == 0) {
+                    mainId = commentId;
+                }
                 if(MU('#answer-form-text').val() != '') {
                     MU('.this-answer-form').parent().append('<img class="commentimg" src="/images/ajax/large_square_white.gif" />');
                     MU('.this-answer-form').remove();
@@ -181,7 +184,9 @@
                             objectId: '{{ subscriberObjectId|e('html_attr') }}',
                             url: '{{ subscriberUrl }}',
                             text: text,
+                            message: message,
                             parentcomment: commentId,
+                            maincomment: mainId,
                             assignedEntity: 'comment'
                         },
                         success: function(data) {
@@ -220,6 +225,7 @@
                             assignedEntity: 'comment'
                         },
                         success: function(data) {
+                        if (data.id > 0) {
                         var out = '<div id="comment' + data.id + '" class="comment-container">';
                             out = out + '<div class="col-md-2"><div class="comment-user">';
                             out = out + data.link + '<br />';
@@ -235,6 +241,7 @@
                             out = out + '</div></div><div class="col-md-12"></div></div>';
                             MU('.comment').prepend(out);
                             MU('.commentimg').hide('slow');
+                            }
                         }
                     });
                 }
@@ -268,7 +275,7 @@
                             assignedEntity: 'comment'
                         },
                         success: function(data) {
-                         //out = '<div id="comment' + data.id + '" class="comment-container">';
+                        //out = '<div id="comment' + data.id + '" class="comment-container">';
                         var out = out + '<div class="col-md-2"><div class="comment-user">';
                             out = out + data.link + '<br />';
                             out = out + '<span class="comment-avatar">' + data.avatar + '</span></div></div>';
@@ -290,7 +297,6 @@
               }
            }
         });
-        
         
         MU('.comment-submit').click(function(e) {
             e.preventDefault();
