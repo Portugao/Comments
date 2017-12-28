@@ -18,6 +18,7 @@ use Zikula\UsersModule\Collector\ProfileModuleCollector;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
+use Zikula\Component\SortableColumns\SortableColumns;
 use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 use MU\CommentsModule\Entity\Factory\EntityFactory;
 use MU\CommentsModule\Helper\CollectionFilterHelper;
@@ -62,6 +63,28 @@ class ControllerHelper extends AbstractControllerHelper
         $this->collectionFilterHelper = $collectionFilterHelper;
         $this->modelHelper = $modelHelper;
         $this->collector = $collector;
+    }
+    
+    /**
+     * Processes the parameters for a view action.
+     * This includes handling pagination, quick navigation forms and other aspects.
+     *
+     * @param string          $objectType         Name of treated entity type
+     * @param SortableColumns $sortableColumns    Used SortableColumns instance
+     * @param array           $templateParameters Template data
+     * @param boolean         $hasHookSubscriber  Whether hook subscribers are supported or not
+     *
+     * @return array Enriched template parameters used for creating the response
+     */
+    public function processViewActionParameters($objectType, SortableColumns $sortableColumns, array $templateParameters = [], $hasHookSubscriber = false)
+    {
+    	$templateParameters = parent::processViewActionParameters($objectType, $sortableColumns, $templateParameters);
+
+    	if ($templateParameters['routeArea'] == '') {
+    		$templateParameters['own'] = 1;
+    	}
+    	
+    	return $templateParameters;
     }
     
     public function getProfileLink($uid)
