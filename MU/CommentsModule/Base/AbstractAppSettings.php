@@ -62,8 +62,8 @@ abstract class AbstractAppSettings
     protected $positionOfForm = 'above';
     
     /**
-     * Enable, if you want activate the mailing feature.
-     If someone check the field send mails, he gets a mail, when someone answers to his comment.
+     * Enable, if you want to activate the mailing feature.
+     If someone checks the field send mails, he gets a mail, when someone answers to his comment.
      *
      * @Assert\NotNull()
      * @Assert\Type(type="bool")
@@ -80,7 +80,7 @@ abstract class AbstractAppSettings
     
     /**
      * Enter commaseparated words, that has to push an entry to moderate.
-     Like (sex,porno,gays) for example.
+     Like (sex,porno) for example.
      *
      * @Assert\NotNull()
      * @Assert\Length(min="0", max="255")
@@ -90,9 +90,9 @@ abstract class AbstractAppSettings
     
     /**
      * Enter commaseparated words, that has to push an entry to block and not saved.
-     Like (sex,porno,gays) for example.
+     Like (sex,porno) for example.
      *
-     * @Assert\NotBlank()
+     * @Assert\NotNull()
      * @Assert\Length(min="0", max="255")
      * @var string $toNotSaved
      */
