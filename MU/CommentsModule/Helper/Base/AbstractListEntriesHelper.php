@@ -300,11 +300,11 @@ abstract class AbstractListEntriesHelper
             'default' => false
         ];
         $states[] = [
-        	'value'   => 'four',
-        	'text'    => $this->__('Four'),
-        	'title'   => '',
-        	'image'   => '',
-        	'default' => false
+            'value'   => 'four',
+            'text'    => $this->__('Four'),
+            'title'   => '',
+            'image'   => '',
+            'default' => false
         ];
     
         return $states;

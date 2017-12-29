@@ -95,6 +95,7 @@ class WorkflowHelper extends AbstractWorkflowHelper
 	
 			if ($actionId == 'delete') {
 				$entityManager->remove($entity);
+				$entityManager->flush();
 			} else {
 				if ($entity['content'] != '') {
 					$result = false;

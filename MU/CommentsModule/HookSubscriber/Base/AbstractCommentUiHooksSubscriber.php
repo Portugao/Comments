@@ -74,6 +74,8 @@ abstract class AbstractCommentUiHooksSubscriber implements HookSubscriberInterfa
             UiHooksCategory::TYPE_VALIDATE_EDIT => 'mucommentsmodule.ui_hooks.comments.validate_edit',
             // Perform the final update actions for an edited item.
             UiHooksCategory::TYPE_PROCESS_EDIT => 'mucommentsmodule.ui_hooks.comments.process_edit',
+            // Display hook for delete forms.
+            UiHooksCategory::TYPE_FORM_DELETE => 'mucommentsmodule.ui_hooks.comments.form_delete',
             // Validate input from an item to be deleted.
             UiHooksCategory::TYPE_VALIDATE_DELETE => 'mucommentsmodule.ui_hooks.comments.validate_delete',
             // Perform the final delete actions for a deleted item.

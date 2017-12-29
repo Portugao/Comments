@@ -203,6 +203,54 @@ class CommentController extends AbstractCommentController
     {
         return parent::editAction($request);
     }
+    /**
+     * @inheritDoc
+     *
+     * @Route("/admin/comment/delete/{id}.{_format}",
+     *        requirements = {"id" = "\d+", "_format" = "html"},
+     *        defaults = {"_format" = "html"},
+     *        methods = {"GET", "POST"}
+     * )
+     * @ParamConverter("comment", class="MUCommentsModule:CommentEntity", options = {"repository_method" = "selectById", "mapping": {"id": "id"}, "map_method_signature" = true})
+     * @Theme("admin")
+     *
+     * @param Request $request Current request instance
+     * @param CommentEntity $comment Treated comment instance
+     *
+     * @return Response Output
+     *
+     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
+     * @throws NotFoundHttpException Thrown by param converter if comment to be deleted isn't found
+     * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
+     */
+    public function adminDeleteAction(Request $request, CommentEntity $comment)
+    {
+        return parent::adminDeleteAction($request, $comment);
+    }
+    
+    /**
+     * @inheritDoc
+     *
+     * @Route("/comment/delete/{id}.{_format}",
+     *        requirements = {"id" = "\d+", "_format" = "html"},
+     *        defaults = {"_format" = "html"},
+     *        methods = {"GET", "POST"}
+     * )
+     * @ParamConverter("comment", class="MUCommentsModule:CommentEntity", options = {"repository_method" = "selectById", "mapping": {"id": "id"}, "map_method_signature" = true})
+     *
+     * @param Request $request Current request instance
+     * @param CommentEntity $comment Treated comment instance
+     *
+     * @return Response Output
+     *
+     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
+     * @throws NotFoundHttpException Thrown by param converter if comment to be deleted isn't found
+     * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
+     */
+    public function deleteAction(Request $request, CommentEntity $comment)
+    {
+        return parent::deleteAction($request, $comment);
+    }
 
     /**
      * Process status changes for multiple items.

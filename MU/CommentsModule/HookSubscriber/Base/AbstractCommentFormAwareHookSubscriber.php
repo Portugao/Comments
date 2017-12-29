@@ -69,7 +69,11 @@ abstract class AbstractCommentFormAwareHookSubscriber implements HookSubscriberI
             // Display hook for create/edit forms.
             FormAwareCategory::TYPE_EDIT => 'mucommentsmodule.form_aware_hook.comments.edit',
             // Process the results of the edit form after the main form is processed.
-            FormAwareCategory::TYPE_PROCESS_EDIT => 'mucommentsmodule.form_aware_hook.comments.process_edit'
+            FormAwareCategory::TYPE_PROCESS_EDIT => 'mucommentsmodule.form_aware_hook.comments.process_edit',
+            // Display hook for delete forms.
+            FormAwareCategory::TYPE_DELETE => 'mucommentsmodule.form_aware_hook.comments.delete',
+            // Process the results of the delete form after the main form is processed.
+            FormAwareCategory::TYPE_PROCESS_DELETE => 'mucommentsmodule.form_aware_hook.comments.process_delete'
         ];
     }
 }

@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Zikula\Bundle\HookBundle\Category\FormAwareCategory;
 use Zikula\Bundle\HookBundle\Category\UiHooksCategory;
 use Zikula\Component\SortableColumns\Column;
 use Zikula\Component\SortableColumns\SortableColumns;
@@ -290,6 +291,133 @@ abstract class AbstractCommentController extends AbstractController
         
         // fetch and return the appropriate template
         return $this->get('mu_comments_module.view_helper')->processTemplate($objectType, 'edit', $templateParameters);
+    }
+    /**
+     * This action provides a handling of simple delete requests in the admin area.
+     *
+     * @param Request $request Current request instance
+     * @param CommentEntity $comment Treated comment instance
+     *
+     * @return Response Output
+     *
+     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
+     * @throws NotFoundHttpException Thrown by param converter if comment to be deleted isn't found
+     * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
+     */
+    public function adminDeleteAction(Request $request, CommentEntity $comment)
+    {
+        return $this->deleteInternal($request, $comment, true);
+    }
+    
+    /**
+     * This action provides a handling of simple delete requests.
+     *
+     * @param Request $request Current request instance
+     * @param CommentEntity $comment Treated comment instance
+     *
+     * @return Response Output
+     *
+     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
+     * @throws NotFoundHttpException Thrown by param converter if comment to be deleted isn't found
+     * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
+     */
+    public function deleteAction(Request $request, CommentEntity $comment)
+    {
+        return $this->deleteInternal($request, $comment, false);
+    }
+    
+    /**
+     * This method includes the common implementation code for adminDelete() and delete().
+     */
+    protected function deleteInternal(Request $request, CommentEntity $comment, $isAdmin = false)
+    {
+        // parameter specifying which type of objects we are treating
+        $objectType = 'comment';
+        $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_DELETE;
+        if (!$this->hasPermission('MUCommentsModule:' . ucfirst($objectType) . ':', '::', $permLevel)) {
+            throw new AccessDeniedException();
+        }
+        $logger = $this->get('logger');
+        $logArgs = ['app' => 'MUCommentsModule', 'user' => $this->get('zikula_users_module.current_user')->get('uname'), 'entity' => 'comment', 'id' => $comment->getKey()];
+        
+        // determine available workflow actions
+        $workflowHelper = $this->get('mu_comments_module.workflow_helper');
+        $actions = $workflowHelper->getActionsForObject($comment);
+        if (false === $actions || !is_array($actions)) {
+            $this->addFlash('error', $this->__('Error! Could not determine workflow actions.'));
+            $logger->error('{app}: User {user} tried to delete the {entity} with id {id}, but failed to determine available workflow actions.', $logArgs);
+            throw new \RuntimeException($this->__('Error! Could not determine workflow actions.'));
+        }
+        
+        // redirect to the list of comments
+        $redirectRoute = 'mucommentsmodule_comment_' . ($isAdmin ? 'admin' : '') . 'view';
+        
+        // check whether deletion is allowed
+        $deleteActionId = 'delete';
+        $deleteAllowed = false;
+        foreach ($actions as $actionId => $action) {
+            if ($actionId != $deleteActionId) {
+                continue;
+            }
+            $deleteAllowed = true;
+            break;
+        }
+        if (!$deleteAllowed) {
+            $this->addFlash('error', $this->__('Error! It is not allowed to delete this comment.'));
+            $logger->error('{app}: User {user} tried to delete the {entity} with id {id}, but this action was not allowed.', $logArgs);
+        
+            return $this->redirectToRoute($redirectRoute);
+        }
+        
+        $form = $this->createForm('Zikula\Bundle\FormExtensionBundle\Form\Type\DeletionType', $comment);
+        $hookHelper = $this->get('mu_comments_module.hook_helper');
+        
+        // Call form aware display hooks
+        $formHook = $hookHelper->callFormDisplayHooks($form, $comment, FormAwareCategory::TYPE_DELETE);
+        
+        if ($form->handleRequest($request)->isValid()) {
+            if ($form->get('delete')->isClicked()) {
+                // Let any ui hooks perform additional validation actions
+                $validationErrors = $hookHelper->callValidationHooks($comment, UiHooksCategory::TYPE_VALIDATE_DELETE);
+                if (count($validationErrors) > 0) {
+                    foreach ($validationErrors as $message) {
+                        $this->addFlash('error', $message);
+                    }
+                } else {
+                    // execute the workflow action
+                    $success = $workflowHelper->executeAction($comment, $deleteActionId);
+                    if ($success) {
+                        $this->addFlash('status', $this->__('Done! Item deleted.'));
+                        $logger->notice('{app}: User {user} deleted the {entity} with id {id}.', $logArgs);
+                    }
+                    
+                    // Call form aware processing hooks
+                    $hookHelper->callFormProcessHooks($form, $comment, FormAwareCategory::TYPE_PROCESS_DELETE);
+                    
+                    // Let any ui hooks know that we have deleted the comment
+                    $hookHelper->callProcessHooks($comment, UiHooksCategory::TYPE_PROCESS_DELETE);
+                    
+                    return $this->redirectToRoute($redirectRoute);
+                }
+            } elseif ($form->get('cancel')->isClicked()) {
+                $this->addFlash('status', $this->__('Operation cancelled.'));
+        
+                return $this->redirectToRoute($redirectRoute);
+            }
+        }
+        
+        $templateParameters = [
+            'routeArea' => $isAdmin ? 'admin' : '',
+            'deleteForm' => $form->createView(),
+            $objectType => $comment,
+            'formHookTemplates' => $formHook->getTemplates()
+        ];
+        
+        $controllerHelper = $this->get('mu_comments_module.controller_helper');
+        $templateParameters = $controllerHelper->processDeleteActionParameters($objectType, $templateParameters, true);
+        
+        // fetch and return the appropriate template
+        return $this->get('mu_comments_module.view_helper')->processTemplate($objectType, 'delete', $templateParameters);
     }
 
     /**

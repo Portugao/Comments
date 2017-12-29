@@ -106,6 +106,15 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
                 $menu[$title]->setLinkAttribute('title', $this->__('Reuse for new comment', 'mucommentsmodule'));
                 $menu[$title]->setAttribute('icon', 'fa fa-files-o');
             }
+            if ($permissionApi->hasPermission($component, $instance, ACCESS_DELETE)) {
+                $title = $this->__('Delete', 'mucommentsmodule');
+                $menu->addChild($title, [
+                    'route' => $routePrefix . $routeArea . 'delete',
+                    'routeParameters' => $entity->createUrlArgs()
+                ]);
+                $menu[$title]->setLinkAttribute('title', $this->__('Delete this comment', 'mucommentsmodule'));
+                $menu[$title]->setAttribute('icon', 'fa fa-trash-o');
+            }
             if ($context == 'display') {
                 $title = $this->__('Back to overview', 'mucommentsmodule');
                 $menu->addChild($title, [

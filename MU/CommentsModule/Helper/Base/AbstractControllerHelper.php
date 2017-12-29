@@ -356,6 +356,25 @@ abstract class AbstractControllerHelper
     }
 
     /**
+     * Processes the parameters for a delete action.
+     *
+     * @param string  $objectType         Name of treated entity type
+     * @param array   $templateParameters Template data
+     * @param boolean $hasHookSubscriber  Whether hook subscribers are supported or not
+     *
+     * @return array Enriched template parameters used for creating the response
+     */
+    public function processDeleteActionParameters($objectType, array $templateParameters = [], $hasHookSubscriber = false)
+    {
+        $contextArgs = ['controller' => $objectType, 'action' => 'delete'];
+        if (!in_array($objectType, $this->getObjectTypes('controllerAction', $contextArgs))) {
+            throw new \Exception($this->__('Error! Invalid object type received.'));
+        }
+    
+        return $this->addTemplateParameters($objectType, $templateParameters, 'controllerAction', $contextArgs);
+    }
+
+    /**
      * Returns an array of additional template variables which are specific to the object type.
      *
      * @param string $objectType Name of treated entity type
