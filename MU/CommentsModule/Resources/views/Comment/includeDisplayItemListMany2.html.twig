@@ -190,10 +190,14 @@
                             assignedEntity: 'comment'
                         },
                         success: function(data) {
-                        var out = '<div class="comments-answers"><span class="answer-avatar">' + data.avatar + '</span>' + data.link + ' ' + data.text + '</div>';
-                            if (data.id > 0) {
+                                if (data.id > 0) {
+                                    if (data.moderate == 'no') {
+                                        var out = '<div class="comments-answers"><span class="answer-avatar">' + data.avatar + '</span>' + data.link + ' ' + data.text + '</div>';
+                                    } else {
+                                        var out = '<div class="comments-feedback">Thank you for your comment. We will check as soon as possible.</div>';
+                                    }
                                 MU('#commenttext' + commentId).append(out);
-                            }
+                            } 
                             MU('.commentimg').hide('slow');
                         }
                     });
@@ -224,23 +228,28 @@
                             name: name,
                             text: text,
                             parentcomment: 0,
+                            maincomment: 0,
                             assignedEntity: 'comment'
                         },
                         success: function(data) {
                         if (data.id > 0) {
-                        var out = '<div id="comment' + data.id + '" class="comment-container">';
-                            out = out + '<div class="col-md-2"><div class="comment-user">';
-                            out = out + data.link + '<br />';
-                            out = out + '<span class="comment-avatar">' + data.avatar + '</span></div></div>';
-                            out = out + '<div class="col-md-10"><div class="comment-content"><div class="comment-header">';
-                            if(data.subject != '') {
-                                out = out + data.subject + ' - ';
-                            }   
-                            //out = out + data.created;
-                            out = out + '<a title="edit" href=""><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a></div>';
-                            out = out + '<div id="commenttext' + data.id + '" class="comment-text">' + data.text;
-                            out = out + '<span class="answer-container hidden"><a title="3" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>';
-                            out = out + '</div></div><div class="col-md-12"></div></div>';
+                        if (data.moderate == 'no') {
+	                        var out = '<div id="comment' + data.id + '" class="comment-container">';
+	                            out = out + '<div class="col-md-2"><div class="comment-user">';
+	                            out = out + data.link + '<br />';
+	                            out = out + '<span class="comment-avatar">' + data.avatar + '</span></div></div>';
+	                            out = out + '<div class="col-md-10"><div class="comment-content"><div class="comment-header">';
+	                            if(data.subject != '') {
+	                                out = out + data.subject + ' - ';
+	                            }   
+	                            //out = out + data.created;
+	                            out = out + '<a title="edit" href=""><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a></div>';
+	                            out = out + '<div id="commenttext' + data.id + '" class="comment-text">' + data.text;
+	                            out = out + '<span class="answer-container hidden"><a title="3" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>';
+	                            out = out + '</div></div><div class="col-md-12"></div></div>';
+                            } else {
+                                var out = '<div class="comments-feedback">Thank you for your comment. We will check as soon as possible.</div>';
+                            }
                             MU('.comment').prepend(out);
                             }
                             MU('.commentimg').hide('slow');

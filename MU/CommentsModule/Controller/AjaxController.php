@@ -369,6 +369,7 @@ class AjaxController extends AbstractAjaxController
     	$avatar = $controllerHelper->getAvatar($comment->getCreatedBy()->getUid());
     	$link = '<a href="' . $profileLink . '" >' . $comment->getCreatedBy()->getUname() . '</a>';
     
+    	if($kindOfModeration == '') {
     	// return response
     	return new JsonResponse([
     			'id' => $commentId,
@@ -377,8 +378,16 @@ class AjaxController extends AbstractAjaxController
     			'user' => $comment->getCreatedBy()->getUname(),
     			'avatar' => $avatar,
     			'created' => $comment->getCreatedDate(),
-    			'link' => $link
+    			'link' => $link,
+    			'moderate' => 'no'
     	]);
+    	} elseif ($kindOfModeration == 'moderate') {
+    		// return response
+    		return new JsonResponse([
+    				'id' => $commentId,
+    				'moderate' => 'yes'
+    		]);    		
+    	}
     	} else {
     	return new JsonResponse([
     			'id' => 0
