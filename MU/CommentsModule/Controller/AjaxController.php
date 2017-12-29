@@ -128,7 +128,7 @@ class AjaxController extends AbstractAjaxController
     	$content = $request->request->get('content', '');
     	
     	$variableApi = $this->get('zikula_extensions_module.api.variable');
-    	$spam = $variableApi->get('enableInternSpamHandling');
+    	$spam = $variableApi->get('MUCommentsModule', 'enableInternSpamHandling');
     	if ($spam == 1) {
     		if ($content != '') {
     			return new JsonResponse($this->__('Wrong input'), JsonResponse::HTTP_FORBIDDEN);
@@ -157,7 +157,7 @@ class AjaxController extends AbstractAjaxController
     	$kindOfModeration = '';
     	
     	if ($spam == 1) {    	
-	    	$toModeration = $variableApi->get('toModeration');
+	    	$toModeration = $variableApi->get('MUCommentsModule', 'toModeration');
 	    	if ($toModeration != '') {
 	    		$toModeration = explode(',', $toModeration);
 	    		foreach ($toModeration as $moderation) {
@@ -167,7 +167,7 @@ class AjaxController extends AbstractAjaxController
 	    			}
 	    		}
 	    	}
-	    	$toNotSaved = $variableApi->get('toNotSaved');
+	    	$toNotSaved = $variableApi->get('MUCommentsModule', 'toNotSaved');
 	    	if ($toNotSaved != '') {
 	    		$toNotSaved = explode(',', $toNotSaved);
 	    		foreach ($toNotSaved as $notsaved) {
@@ -186,7 +186,7 @@ class AjaxController extends AbstractAjaxController
     		return new JsonResponse($this->__('No comment id for editing.'), JsonResponse::HTTP_BAD_REQUEST);
     	}
     	if ($parentid > 0) {
-    		$parentEntity = $repository->selectById($parentid);
+    		$parentEntity = $repository->find($parentid);
     		if (!is_object($parentEntity)) {
     			return new JsonResponse($this->__('Error: no object.'), JsonResponse::HTTP_BAD_REQUEST);
     		}
@@ -256,7 +256,7 @@ class AjaxController extends AbstractAjaxController
     	$content = $request->request->get('content', '');
     	 
     	$variableApi = $this->get('zikula_extensions_module.api.variable');
-    	$spam = $variableApi->get('enableInternSpamHandling');
+    	$spam = $variableApi->get('MUCommentsModule', 'enableInternSpamHandling');
     	if ($spam == 1) {
     		if ($content != '') {
     			return new JsonResponse($this->__('Wrong input'), JsonResponse::HTTP_FORBIDDEN);
@@ -288,14 +288,14 @@ class AjaxController extends AbstractAjaxController
     		$mainId = $parentid;
     	}
     	if ($parentid > 0) {
-    	    $parentEntity = $repository->selectById($parentid);
+    	    $parentEntity = $repository->find($parentid);
     	    if (!is_object($parentEntity)) {
     		    return new JsonResponse($this->__('Error: no parent object.'), JsonResponse::HTTP_BAD_REQUEST);
     	    }
     	}
     	
     	if ($mainId > 0) {
-    		$mainEntity = $repository->selectById($mainId);
+    		$mainEntity = $repository->find($mainId);
     		if (!is_object($mainEntity)) {
     			return new JsonResponse($this->__('Error: no main object.'), JsonResponse::HTTP_BAD_REQUEST);
     		}
@@ -304,21 +304,21 @@ class AjaxController extends AbstractAjaxController
     	$kindOfModeration = '';
     	 
     	if ($spam == 1) {
-    		$toModeration = $variableApi->get('toModeration');
+    		$toModeration = $variableApi->get('MUCommentsModule', 'toModeration');
     		if ($toModeration != '') {
     			$toModeration = explode(',', $toModeration);
     			foreach ($toModeration as $moderation) {
-    				if(strpos($moderation,$subject) !== false || strpos($moderation,$name) !== false || strpos($moderation,$text) !== false) {
+    				if(strpos($subject, $moderation) !== false || strpos($name, $moderation) !== false || strpos($text, $moderation) !== false) {
     					$kindOfModeration = 'moderate';
     					break;
     				}
     			}
     		}
-    		$toNotSaved = $variableApi->get('toNotSaved');
+    		$toNotSaved = $variableApi->get('MUCommentsModule', 'toNotSaved');
     		if ($toNotSaved != '') {
     			$toNotSaved = explode(',', $toNotSaved);
     			foreach ($toNotSaved as $notsaved) {
-    				if(strpos($notsaved,$subject) !== false || strpos($notsaved,$name) !== false || strpos($notsaved,$text) !== false) {
+    				if(strpos($subject, $notsaved) !== false || strpos($name, $notsaved) !== false || strpos($text, $notsaved) !== false) {
     					$kindOfModeration = 'block';
     					break;
     				}
@@ -380,7 +380,9 @@ class AjaxController extends AbstractAjaxController
     			'link' => $link
     	]);
     	} else {
-    		return new JsonResponse();
+    	return new JsonResponse([
+    			'id' => 0
+    	]);
     	}
     }
 
