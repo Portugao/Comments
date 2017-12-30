@@ -70,8 +70,9 @@ abstract class AbstractEntityDisplayHelper
      */
     protected function formatComment(CommentEntity $entity)
     {
-        return $this->translator->__f('%subject%', [
-            '%subject%' => $entity->getSubject()
+        return $this->translator->__f('%subject% %name%', [
+            '%subject%' => $entity->getSubject(),
+            '%name%' => $entity->getName()
         ]);
     }
     

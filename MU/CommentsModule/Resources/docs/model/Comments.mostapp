@@ -24,7 +24,7 @@ application "Comments" targets ZK15  {
     entities {
         entity "comment" leading {
             nameMultiple "comments"
-            displayPattern "#subject#"
+            displayPattern "#subject# #name#"
             slugUpdatable false
             slugUnique false
             workflow STANDARD

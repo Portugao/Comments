@@ -559,6 +559,7 @@ abstract class AbstractCommentRepository extends EntityRepository
     
             $selection = 'tbl.id';
             $selection .= ', tbl.subject';
+            $selection .= ', tbl.name';
             $useJoins = false;
         }
     
