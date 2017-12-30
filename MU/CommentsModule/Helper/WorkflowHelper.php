@@ -95,25 +95,12 @@ class WorkflowHelper extends AbstractWorkflowHelper
 	
 			if ($actionId == 'delete') {
 				$entityManager->remove($entity);
-				$entityManager->flush();
 			} else {
-				if ($entity['content'] != '') {
-					$result = false;
-				} else {
-					$toModeration = $this->variableApi->get('MUCommentsModule', 'toModeration');
-					if ($toModeration != '') {
-	
-					}
-					$toNotSaved = $this->variableApi->get('MUCommentsModule', 'toNotSaved');
-					if ($toNotSaved != '') {
-	
-					}
-					$entityManager->persist($entity);
-					$entityManager->flush();
-					$result = true;
-				}
+				$entityManager->persist($entity);
 			}
+			$entityManager->flush();
 	
+			$result = true;
 			if ($actionId == 'delete') {
 				$this->logger->notice('{app}: User {user} deleted an entity.', $logArgs);
 			} else {

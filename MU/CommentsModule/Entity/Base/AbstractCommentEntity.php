@@ -152,7 +152,7 @@ abstract class AbstractCommentEntity extends EntityAccess
     /**
      * Bidirectional - One comment [comment] has many comments [comments] (INVERSE SIDE).
      *
-     * @ORM\OneToMany(targetEntity="MU\CommentsModule\Entity\CommentEntity", mappedBy="comment")
+     * @ORM\OneToMany(targetEntity="MU\CommentsModule\Entity\CommentEntity", mappedBy="comment", cascade={"remove"})
      * @ORM\JoinTable(name="mu_comments_commentcomments",
      *      joinColumns={@ORM\JoinColumn(name="id", referencedColumnName="id" )},
      *      inverseJoinColumns={@ORM\JoinColumn(name="parentid", referencedColumnName="id" )}
