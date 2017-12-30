@@ -248,11 +248,11 @@
 	                            out = out + '<span class="answer-container hidden"><a title="3" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>';
 	                            out = out + '</div></div><div class="col-md-12"></div></div>';
                             } else {
-                                var out = '<div class="comments-feedback">Thank you for your comment. We will check as soon as possible.</div>';
+                                var out = '<div class="comments-feedback alert-info">Thank you for your comment. We will check as soon as possible.</div>';
                             }
                             MU('.comment').prepend(out);
-                            }
-                            MU('.commentimg').hide('slow');
+                        }
+                        MU('.commentimg').hide('slow');
                             
                         }
                     });
