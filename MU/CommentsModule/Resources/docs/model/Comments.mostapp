@@ -92,6 +92,7 @@ application "Comments" targets ZK15  {
             target "comment"
             targetAlias "comments"
             targetField "parentid"
+        cascade REMOVE
         }
     }
 variables {
