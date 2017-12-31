@@ -183,6 +183,10 @@ div.mucommentsmodule-view .avatar img {
     clear: both;
 }
 
+.comments-feedback {
+	width: 100%;
+}
+
 .answer-form {
 	display: block;
 	margin: 5px 0 0 0;
