@@ -79,7 +79,7 @@
                     {{ answer.text }} 
                     {% if levels == 'four' and context == 'hookDisplayView' and hasEditPermission %}
                         <span class="answer-container hidden"><a data-id="{{ answer.id }}" main-Id="{{ answer.mainId }}" title="{{ answer.id }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
-                    {% endif %}
+                    {% endif %}<span class="answer-date">{{ answer.createdDate|localizeddate('medium', 'short')|raw }}</span>
                         {% if answer.comments %}
                         {% for answer in answer.comments %}
                         <div class="comments-answers second-level">
@@ -87,7 +87,7 @@
                         {{ userAvatar(answer.createdBy.getUid(), {rating: 'g'}) }}</span> 
                         {% set profileLink = answer.createdBy.getUid()|profileLinkByUserId() %} 
                         {{ profileLink|raw }} 
-                        {{ answer.text }}
+                        {{ answer.text }}<span class="answer-date">{{ answer.createdDate|localizeddate('medium', 'short')|raw }}</span>
                         </div>
                         {% endfor %}
                         {% endif %}
@@ -190,15 +190,19 @@
                             assignedEntity: 'comment'
                         },
                         success: function(data) {
-                                if (data.id > 0) {
-                                    if (data.moderate == 'no') {
-                                        var out = '<div class="comments-answers"><span class="answer-avatar">' + data.avatar + '</span>' + data.link + ' ' + data.text + '</div>';
-                                    } else {
-                                        var out = '<div class="comments-feedback">Thank you for your comment. We will check as soon as possible.</div>';
-                                    }
+                            if (data.id > 0) {
+                                if (data.moderate == 'no') {
+                                    var out = '<div class="comments-answers"><span class="answer-avatar">' + data.avatar + '</span>' + data.link + ' ' + data.text + '</div>';
+                                } else {
+                                    var out = '<div class="comments-feedback alert alert-info">Thank you for your comment. We will check as soon as possible.</div>';
+                                }
                                 MU('#commenttext' + commentId).append(out);
                             } 
                             MU('.commentimg').hide('slow');
+                            if(data.moderate == 'yes') {
+                                MU('.comments-feedback').delay(10000).hide('slow');
+                            } 
+                            MU('.this-answer-form input, .this-answer-form input textarea').val('');
                         }
                     });
                 }
@@ -248,12 +252,15 @@
 	                            out = out + '<span class="answer-container hidden"><a title="3" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>';
 	                            out = out + '</div></div><div class="col-md-12"></div></div>';
                             } else {
-                                var out = '<div class="comments-feedback alert-info">Thank you for your comment. We will check as soon as possible.</div>';
+                                var out = '<div class="comments-feedback alert alert-info">Thank you for your comment. We will check as soon as possible.</div>';
                             }
                             MU('.comment').prepend(out);
                         }
                         MU('.commentimg').hide('slow');
-                            
+                        if(data.moderate == 'yes') {
+                            MU('.comments-feedback').delay(10000).hide('slow');
+                        }
+                        MU('#commentEditForm input, #commentEditForm textarea').val('');
                         }
                     });
                 }
