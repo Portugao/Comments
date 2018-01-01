@@ -181,6 +181,7 @@ div.mucommentsmodule-view .avatar img {
     border-left: 5px solid #eee;
     float: left;
     clear: both;
+    width: 100%;
 }
 
 .comments-feedback {

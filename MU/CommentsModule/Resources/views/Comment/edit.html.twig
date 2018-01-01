@@ -30,12 +30,14 @@
                 {{ form_row(form.parentid) }}
                 {{ form_row(form.mainId) }}
                 {{ form_row(form.ipOfComment) }}
+                {{ form_row(form.content) }}
             {% if routeArea != 'admin' %}
             </div>
             {% endif %}
-            {{ form_row(form.content) }}
             {{ form_row(form.sendMails) }}
+
         </fieldset>
+        
             {% if routeArea != 'admin' %}
             <div class="hidden">
             {% endif %}
@@ -62,7 +64,7 @@
             <legend>{{ __('Communication') }}</legend>
             {{ form_row(form.additionalNotificationRemarks) }}
         </fieldset>
-        </div>
+
         
         {% if form.moderationSpecificCreator is defined %}
             <fieldset id="moderationFieldsSection">
@@ -73,7 +75,7 @@
                 </div>
             </fieldset>
         {% endif %}
-        
+        </div>       
         
         {# include possible submit actions #}
         <div class="form-group form-buttons">
@@ -81,7 +83,7 @@
                 {% for action in actions %}
                     {{ form_widget(attribute(form, action.id)) }}
                     {% if mode == 'create' and action.id == 'submit' and form.submitrepeat is defined %}
-                        {{ form_widget(attribute(form, 'submitrepeat')) }}
+                        <div class="hidden">{{ form_widget(attribute(form, 'submitrepeat')) }}</div>
                     {% endif %}
                 {% endfor %}
                 {{ form_widget(form.reset) }}
