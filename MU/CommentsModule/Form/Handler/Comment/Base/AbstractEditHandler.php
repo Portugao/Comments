@@ -203,9 +203,6 @@ abstract class AbstractEditHandler extends EditHandler
             $args['commandName'] = 'submit';
             $this->repeatCreateAction = true;
         }
-        if ($this->form->get('cancel')->isClicked()) {
-            $args['commandName'] = 'cancel';
-        }
     
         return new RedirectResponse($this->getRedirectUrl($args), 302);
     }
@@ -290,7 +287,7 @@ abstract class AbstractEditHandler extends EditHandler
      */
     protected function getRedirectUrl(array $args = [])
     {
-        if (true === $this->templateParameters['inlineUsage']) {
+        if (isset($this->templateParameters['inlineUsage']) && true === $this->templateParameters['inlineUsage']) {
             $commandName = substr($args['commandName'], 0, 6) == 'submit' ? 'create' : $args['commandName'];
             $urlArgs = [
                 'idPrefix' => $this->idPrefix,

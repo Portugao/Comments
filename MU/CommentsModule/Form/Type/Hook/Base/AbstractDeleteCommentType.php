@@ -42,7 +42,6 @@ abstract class AbstractDeleteCommentType extends AbstractType
                     $translator->__('Option A') => 'B',
                     $translator->__('Option A') => 'C'
                 ],
-                'choices_as_values' => true,
                 'required' => true,
                 'multiple' => true,
                 'expanded' => true

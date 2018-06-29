@@ -1,0 +1,13 @@
+{# Purpose of this template: Display comments within an external context #}
+<dl>
+    {% for comment in items %}
+        <dt>{{ comment|mucommentsmodule_formattedTitle }}</dt>
+        {% if comment.text %}
+            <dd>{{ comment.text|striptags|truncate(200, true, '&hellip;') }}</dd>
+        {% endif %}
+        <dd><a href="{{ path('mucommentsmodule_comment_display', {'id': comment.getId()}) }}" title="{{ __('Read more')|e('html_attr') }}">{{ __('Read more') }}</a>
+        </dd>
+    {% else %}
+        <dt>{{ __('No entries found.') }}</dt>
+    {% endfor %}
+</dl>

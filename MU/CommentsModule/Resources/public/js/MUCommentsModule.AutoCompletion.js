@@ -68,7 +68,7 @@ function mUCommentsSelectResultItem(objectType, idPrefix, selectedListItem, incl
 
     li = jQuery('<li />', {
         id: elemPrefix,
-        text: newTitle
+        text: newTitle + ' '
     });
     if (true === includeEditing) {
         li.append(mUCommentsCreateInlineEditLink(objectType, idPrefix, elemPrefix, newItemId));
@@ -77,10 +77,10 @@ function mUCommentsSelectResultItem(objectType, idPrefix, selectedListItem, incl
     li.append(
         jQuery('<a />', {
             id: elemPrefix + 'Remove',
-            href: 'javascript:mUCommentsRemoveRelatedItem(\'' + idPrefix + '\', ' + newItemId + ');',
-            text: 'remove'
+            href: 'javascript:mUCommentsRemoveRelatedItem(\'' + idPrefix + '\', ' + newItemId + ');'
         }).append(
             jQuery('<span />', { class: 'fa fa-trash-o' })
+                .append(' ' + Translator.__('remove'))
         )
     );
 

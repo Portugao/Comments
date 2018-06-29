@@ -65,6 +65,7 @@ class CommentController extends AbstractCommentController
     {
         return parent::indexAction($request);
     }
+    
     /**
      * @inheritDoc
      *
@@ -113,6 +114,7 @@ class CommentController extends AbstractCommentController
     {
         return parent::viewAction($request, $sort, $sortdir, $pos, $num);
     }
+    
     /**
      * @inheritDoc
      *
@@ -159,6 +161,7 @@ class CommentController extends AbstractCommentController
     {
         return parent::displayAction($request, $comment);
     }
+    
     /**
      * @inheritDoc
      *
@@ -203,6 +206,7 @@ class CommentController extends AbstractCommentController
     {
         return parent::editAction($request);
     }
+    
     /**
      * @inheritDoc
      *
@@ -251,7 +255,7 @@ class CommentController extends AbstractCommentController
     {
         return parent::deleteAction($request, $comment);
     }
-
+    
     /**
      * Process status changes for multiple items.
      *
@@ -294,7 +298,7 @@ class CommentController extends AbstractCommentController
     {
         return parent::handleSelectedEntriesAction($request);
     }
-
+    
     /**
      * This method cares for a redirect within an inline frame.
      *
@@ -314,6 +318,6 @@ class CommentController extends AbstractCommentController
     {
         return parent::handleInlineRedirectAction($idPrefix, $commandName, $id);
     }
-
+    
     // feel free to add your own controller methods here
 }

@@ -113,7 +113,6 @@ abstract class AbstractConfigType extends AbstractType
             ],
             'required' => true,
             'choices' => $choices,
-            'choices_as_values' => true,
             'choice_attr' => $choiceAttributes,
             'multiple' => false,
             'expanded' => false
@@ -135,7 +134,6 @@ abstract class AbstractConfigType extends AbstractType
             ],
             'required' => true,
             'choices' => $choices,
-            'choices_as_values' => true,
             'choice_attr' => $choiceAttributes,
             'multiple' => false,
             'expanded' => false
@@ -157,7 +155,6 @@ abstract class AbstractConfigType extends AbstractType
             ],
             'required' => true,
             'choices' => $choices,
-            'choices_as_values' => true,
             'choice_attr' => $choiceAttributes,
             'multiple' => false,
             'expanded' => false
@@ -221,7 +218,7 @@ abstract class AbstractConfigType extends AbstractType
             'attr' => [
                 'maxlength' => 255,
                 'class' => '',
-                'title' => $this->__('Enter the to moderation')
+                'title' => $this->__('Enter the to moderation.')
             ],
             'required' => false,
         ]);
@@ -239,7 +236,7 @@ abstract class AbstractConfigType extends AbstractType
             'attr' => [
                 'maxlength' => 255,
                 'class' => '',
-                'title' => $this->__('Enter the to not saved')
+                'title' => $this->__('Enter the to not saved.')
             ],
             'required' => false,
         ]);
@@ -347,7 +344,6 @@ abstract class AbstractConfigType extends AbstractType
             'required' => false,
             'placeholder' => $this->__('Choose an option'),
             'choices' => $choices,
-            'choices_as_values' => true,
             'choice_attr' => $choiceAttributes,
             'multiple' => true,
             'expanded' => false

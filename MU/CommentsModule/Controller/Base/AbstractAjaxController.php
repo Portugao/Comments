@@ -81,7 +81,7 @@ abstract class AbstractAjaxController extends AbstractController
         }
         
         // return response
-        return new JsonResponse($slimItems);
+        return $this->json($slimItems);
     }
     
     /**
@@ -151,7 +151,10 @@ abstract class AbstractAjaxController extends AbstractController
             $routeParams['sort'] = $sort;
             $request->attributes->set('_route_params', $routeParams);
         }
-        $sortParam = $sort . ' asc';
+        $sortParam = $sort;
+        if (false === strpos(strtolower($sort), ' asc') && false === strpos(strtolower($sort), ' desc')) {
+            $sortParam .= ' asc';
+        }
         
         $currentPage = 1;
         $resultsPerPage = 20;
@@ -168,7 +171,7 @@ abstract class AbstractAjaxController extends AbstractController
                 $itemTitle = $entityDisplayHelper->getFormattedTitle($item);
                 $itemDescription = isset($item[$descriptionFieldName]) && !empty($item[$descriptionFieldName]) ? $item[$descriptionFieldName] : '';//$this->__('No description yet.')
                 if (!empty($itemDescription)) {
-                    $itemDescription = substr($itemDescription, 0, 50) . '&hellip;';
+                    $itemDescription = substr(strip_tags($itemDescription), 0, 50) . '&hellip;';
                 }
         
                 $resultItem = [
@@ -182,7 +185,7 @@ abstract class AbstractAjaxController extends AbstractController
             }
         }
         
-        return new JsonResponse($resultItems);
+        return $this->json($resultItems);
     }
     
     /**
@@ -208,7 +211,7 @@ abstract class AbstractAjaxController extends AbstractController
         $assignedId = $request->request->getInt('assignedId', 0);
         
         if (!$subscriberOwner || !$subscriberAreaId || !$subscriberObjectId || !$assignedEntity || !$assignedId) {
-            return new JsonResponse($this->__('Error: invalid input.'), JsonResponse::HTTP_BAD_REQUEST);
+            return $this->json($this->__('Error: invalid input.'), JsonResponse::HTTP_BAD_REQUEST);
         }
         
         $subscriberUrl = !empty($subscriberUrl) ? unserialize($subscriberUrl) : [];
@@ -227,7 +230,7 @@ abstract class AbstractAjaxController extends AbstractController
         $entityManager->flush();
         
         // return response
-        return new JsonResponse([
+        return $this->json([
             'id' => $assignment->getId()
         ]);
     }
@@ -249,7 +252,7 @@ abstract class AbstractAjaxController extends AbstractController
         
         $id = $request->request->getInt('id', 0);
         if (!$id) {
-            return new JsonResponse($this->__('Error: invalid input.'), JsonResponse::HTTP_BAD_REQUEST);
+            return $this->json($this->__('Error: invalid input.'), JsonResponse::HTTP_BAD_REQUEST);
         }
         
         $entityFactory = $this->get('mu_comments_module.entity_factory');
@@ -262,7 +265,7 @@ abstract class AbstractAjaxController extends AbstractController
         $query->execute();
         
         // return response
-        return new JsonResponse([
+        return $this->json([
             'id' => $id
         ]);
     }

@@ -5,5 +5,4 @@ services:
         class: MU\CommentsModule\Form\Type\Field\MultiListType
         arguments:
             - "@mu_comments_module.listentries_helper"
-        tags:
-            - { name: form.type }
+        tags: ['form.type']

@@ -121,7 +121,7 @@ abstract class AbstractCommentType extends AbstractType
             'attr' => [
                 'maxlength' => 255,
                 'class' => '',
-                'title' => $this->__('Enter the subject of the comment')
+                'title' => $this->__('Enter the subject of the comment.')
             ],
             'required' => false,
         ]);
@@ -132,7 +132,7 @@ abstract class AbstractCommentType extends AbstractType
             'attr' => [
                 'maxlength' => 255,
                 'class' => '',
-                'title' => $this->__('Enter the name of the comment')
+                'title' => $this->__('Enter the name of the comment.')
             ],
             'required' => false,
         ]);
@@ -150,7 +150,7 @@ abstract class AbstractCommentType extends AbstractType
             'attr' => [
                 'maxlength' => 255,
                 'class' => '',
-                'title' => $this->__('Enter the your mail address of the comment')
+                'title' => $this->__('Enter the your mail address of the comment.')
             ],
             'required' => false,
         ]);
@@ -162,21 +162,9 @@ abstract class AbstractCommentType extends AbstractType
             'attr' => [
                 'maxlength' => 10000,
                 'class' => '',
-                'title' => $this->__('Enter the text of the comment')
+                'title' => $this->__('Enter the text of the comment.')
             ],
             'required' => true,
-        ]);
-        
-        $builder->add('parentid', IntegerType::class, [
-            'label' => $this->__('Parentid') . ':',
-            'empty_data' => '0',
-            'attr' => [
-                'maxlength' => 11,
-                'class' => '',
-                'title' => $this->__('Enter the parentid of the comment.') . ' ' . $this->__('Only digits are allowed.')
-            ],
-            'required' => false,
-            'scale' => 0
         ]);
         
         $builder->add('mainId', IntegerType::class, [
@@ -198,7 +186,7 @@ abstract class AbstractCommentType extends AbstractType
             'attr' => [
                 'maxlength' => 255,
                 'class' => '',
-                'title' => $this->__('Enter the ip of comment of the comment')
+                'title' => $this->__('Enter the ip of comment of the comment.')
             ],
             'required' => false,
         ]);
@@ -210,7 +198,7 @@ abstract class AbstractCommentType extends AbstractType
             'attr' => [
                 'maxlength' => 1000,
                 'class' => '',
-                'title' => $this->__('Enter the content of the comment')
+                'title' => $this->__('Enter the content of the comment.')
             ],
             'required' => false,
         ]);
@@ -252,11 +240,11 @@ abstract class AbstractCommentType extends AbstractType
             'multiple' => false,
             'expanded' => false,
             'query_builder' => $queryBuilder,
-            'placeholder' => $this->__('Please choose an option'),
+            'placeholder' => $this->__('Please choose an option.'),
             'required' => false,
             'label' => $this->__('Comment'),
             'attr' => [
-                'title' => $this->__('Choose the comment')
+                'title' => $this->__('Choose the comment.')
             ]
         ]);
     }
@@ -311,25 +299,25 @@ abstract class AbstractCommentType extends AbstractType
             'label' => $this->__('Creator') . ':',
             'attr' => [
                 'maxlength' => 11,
-                'title' => $this->__('Here you can choose a user which will be set as creator')
+                'title' => $this->__('Here you can choose a user which will be set as creator.')
             ],
             'empty_data' => 0,
             'required' => false,
-            'help' => $this->__('Here you can choose a user which will be set as creator')
+            'help' => $this->__('Here you can choose a user which will be set as creator.')
         ]);
         $builder->add('moderationSpecificCreationDate', DateTimeType::class, [
             'mapped' => false,
             'label' => $this->__('Creation date') . ':',
             'attr' => [
                 'class' => '',
-                'title' => $this->__('Here you can choose a custom creation date')
+                'title' => $this->__('Here you can choose a custom creation date.')
             ],
             'empty_data' => '',
             'required' => false,
             'with_seconds' => true,
             'date_widget' => 'single_text',
             'time_widget' => 'single_text',
-            'help' => $this->__('Here you can choose a custom creation date')
+            'help' => $this->__('Here you can choose a custom creation date.')
         ]);
     }
 

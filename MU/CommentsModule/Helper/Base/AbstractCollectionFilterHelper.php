@@ -160,7 +160,9 @@ abstract class AbstractCollectionFilterHelper
                 if (!empty($v)) {
                     $qb = $this->addSearchFilter('comment', $qb, $v);
                 }
-            } elseif (in_array($k, ['sendMails'])) {
+                continue;
+            }
+            if (in_array($k, ['sendMails'])) {
                 // boolean filter
                 if ($v == 'no') {
                     $qb->andWhere('tbl.' . $k . ' = 0');
@@ -168,6 +170,7 @@ abstract class AbstractCollectionFilterHelper
                     $qb->andWhere('tbl.' . $k . ' = 1');
                 }
             }
+    
             if (is_array($v)) {
                 continue;
             }

@@ -8,8 +8,7 @@ services:
             - "@request_stack"
             - "@mu_comments_module.entity_display_helper"
             - "@mu_comments_module.listentries_helper"
-        tags:
-            - { name: form.type }
+        tags: ['form.type']
     
     mu_comments_module.form.handler.common:
         abstract: true
@@ -45,15 +44,13 @@ services:
             - "@mu_comments_module.collection_filter_helper"
             - "@mu_comments_module.entity_display_helper"
             - "@mu_comments_module.listentries_helper"
-        tags:
-            - { name: form.type }
+        tags: ['form.type']
     
     mu_comments_module.form.type.block.itemlist:
         class: MU\CommentsModule\Block\Form\Type\ItemListBlockType
         arguments:
             - "@translator.default"
-        tags:
-            - { name: form.type }
+        tags: ['form.type']
     
     mu_comments_module.form.type.block.item:
         class: MU\CommentsModule\Block\Form\Type\ItemBlockType
@@ -61,20 +58,17 @@ services:
             - "@translator.default"
             - "@mu_comments_module.entity_factory"
             - "@mu_comments_module.entity_display_helper"
-        tags:
-            - { name: form.type }
+        tags: ['form.type']
     
     mu_comments_module.form.type.commentfinder:
         class: MU\CommentsModule\Form\Type\Finder\CommentFinderType
         arguments:
             - "@translator.default"
-        tags:
-            - { name: form.type }
+        tags: ['form.type']
     
     mu_comments_module.form.type.config:
         class: MU\CommentsModule\Form\Type\ConfigType
         arguments:
             - "@translator.default"
             - "@mu_comments_module.listentries_helper"
-        tags:
-            - { name: form.type }
+        tags: ['form.type']

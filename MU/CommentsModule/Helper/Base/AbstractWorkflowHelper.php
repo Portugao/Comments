@@ -116,6 +116,11 @@ abstract class AbstractWorkflowHelper
              'ui' => 'success'
          ];
          $states[] = [
+             'value' => 'trashed',
+             'text' => $this->translator->__('Trashed'),
+             'ui' => 'danger'
+         ];
+         $states[] = [
              'value' => 'deleted',
              'text' => $this->translator->__('Deleted'),
              'ui' => 'danger'
@@ -190,13 +195,25 @@ abstract class AbstractWorkflowHelper
             case 'approve':
                 $title = $currentState == 'initial' ? $this->translator->__('Submit and approve') : $this->translator->__('Approve');
                 break;
+            case 'trash':
+                $title = $this->translator->__('Trash');
+                break;
+            case 'recover':
+                $title = $this->translator->__('Recover');
+                break;
             case 'delete':
                 $title = $this->translator->__('Delete');
                 break;
         }
     
-        if ($title == '' && substr($actionId, 0, 6) == 'update') {
-            $title = $this->translator->__('Update');
+        if ($title == '') {
+            if ($actionId == 'update') {
+                $title = $this->translator->__('Update');
+            } elseif ($actionId == 'trash') {
+                $title = $this->translator->__('Trash');
+            } elseif ($actionId == 'recover') {
+                $title = $this->translator->__('Recover');
+        	}
         }
     
         return $title;
@@ -219,12 +236,18 @@ abstract class AbstractWorkflowHelper
             case 'approve':
                 $buttonClass = '';
                 break;
+            case 'trash':
+                $buttonClass = '';
+                break;
+            case 'recover':
+                $buttonClass = '';
+                break;
             case 'delete':
                 $buttonClass = 'danger';
                 break;
         }
     
-        if ($buttonClass == '' && substr($actionId, 0, 6) == 'update') {
+        if ($buttonClass == '' && $actionId == 'update') {
             $buttonClass = 'success';
     	}
     

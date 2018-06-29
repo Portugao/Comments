@@ -28,7 +28,6 @@ abstract class AbstractEntityInitialiser
      */
     public function initComment(CommentEntity $entity)
     {
-
         return $entity;
     }
 

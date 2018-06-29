@@ -12,6 +12,7 @@
 
 namespace MU\CommentsModule\Form\Type\QuickNavigation\Base;
 
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -119,6 +120,10 @@ abstract class AbstractCommentQuickNavType extends AbstractType
             $this->request->query->remove('q');
         }
     
+        $queryBuilder = function(EntityRepository $er) {
+            // select without joins
+            return $er->getListQueryBuilder('', '', false);
+        };
         $entityDisplayHelper = $this->entityDisplayHelper;
         $choiceLabelClosure = function ($entity) use ($entityDisplayHelper) {
             return $entityDisplayHelper->getFormattedTitle($entity);
@@ -126,6 +131,7 @@ abstract class AbstractCommentQuickNavType extends AbstractType
         $builder->add('comment', EntityType::class, [
             'class' => 'MUCommentsModule:CommentEntity',
             'choice_label' => $choiceLabelClosure,
+            'query_builder' => $queryBuilder,
             'placeholder' => $this->__('All'),
             'required' => false,
             'label' => $this->__('Comment'),
@@ -163,7 +169,6 @@ abstract class AbstractCommentQuickNavType extends AbstractType
             'required' => false,
             'placeholder' => $this->__('All'),
             'choices' => $choices,
-            'choices_as_values' => true,
             'choice_attr' => $choiceAttributes,
             'multiple' => false,
             'expanded' => false
@@ -215,7 +220,6 @@ abstract class AbstractCommentQuickNavType extends AbstractType
                     $this->__('Update date') => 'updatedDate',
                     $this->__('Updater') => 'updatedBy'
                 ],
-                'choices_as_values' => true,
                 'required' => true,
                 'expanded' => false
             ])
@@ -229,7 +233,6 @@ abstract class AbstractCommentQuickNavType extends AbstractType
                     $this->__('Ascending') => 'asc',
                     $this->__('Descending') => 'desc'
                 ],
-                'choices_as_values' => true,
                 'required' => true,
                 'expanded' => false
             ])
@@ -259,7 +262,6 @@ abstract class AbstractCommentQuickNavType extends AbstractType
                 $this->__('50') => 50,
                 $this->__('100') => 100
             ],
-            'choices_as_values' => true,
             'required' => false,
             'expanded' => false
         ]);
@@ -283,8 +285,7 @@ abstract class AbstractCommentQuickNavType extends AbstractType
             'choices' => [
                 $this->__('No') => 'no',
                 $this->__('Yes') => 'yes'
-            ],
-            'choices_as_values' => true
+            ]
         ]);
     }
 

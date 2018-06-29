@@ -76,6 +76,7 @@ abstract class AbstractCommentController extends AbstractController
         
         return $this->redirectToRoute('mucommentsmodule_comment_' . $templateParameters['routeArea'] . 'view');
     }
+    
     /**
      * This action provides an item list overview in the admin area.
      *
@@ -164,6 +165,7 @@ abstract class AbstractCommentController extends AbstractController
         // fetch and return the appropriate template
         return $viewHelper->processTemplate($objectType, 'view', $templateParameters);
     }
+    
     /**
      * This action provides a item detail view in the admin area.
      *
@@ -230,6 +232,7 @@ abstract class AbstractCommentController extends AbstractController
         
         return $response;
     }
+    
     /**
      * This action provides a handling of edit requests in the admin area.
      *
@@ -292,6 +295,7 @@ abstract class AbstractCommentController extends AbstractController
         // fetch and return the appropriate template
         return $this->get('mu_comments_module.view_helper')->processTemplate($objectType, 'edit', $templateParameters);
     }
+    
     /**
      * This action provides a handling of simple delete requests in the admin area.
      *
@@ -419,7 +423,7 @@ abstract class AbstractCommentController extends AbstractController
         // fetch and return the appropriate template
         return $this->get('mu_comments_module.view_helper')->processTemplate($objectType, 'delete', $templateParameters);
     }
-
+    
     /**
      * Process status changes for multiple items.
      *
@@ -536,7 +540,7 @@ abstract class AbstractCommentController extends AbstractController
         
         return $this->redirectToRoute('mucommentsmodule_comment_' . ($isAdmin ? 'admin' : '') . 'index');
     }
-
+    
     /**
      * This method cares for a redirect within an inline frame.
      *
@@ -573,4 +577,5 @@ abstract class AbstractCommentController extends AbstractController
         
         return new PlainResponse($this->get('twig')->render('@MUCommentsModule/Comment/inlineRedirectHandler.html.twig', $templateParameters));
     }
+    
 }

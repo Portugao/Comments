@@ -6,7 +6,7 @@ To create a new translation follow the steps below:
 2. Open a console and navigate to the Zikula root directory.
 3. Execute this command replacing `en` by your desired locale code:
 
-`php app/console translation:extract en --bundle=MUCommentsModule --enable-extractor=jms_i18n_routing --output-format=po`
+`php -dmemory_limit=2G bin/console translation:extract en --bundle=MUCommentsModule --enable-extractor=jms_i18n_routing --output-format=po`
 
 You can also use multiple locales at once, for example `de fr es`.
 
@@ -14,7 +14,7 @@ You can also use multiple locales at once, for example `de fr es`.
 
 Note you can even include custom views in `app/Resources/MUCommentsModule/views/` and JavaScript files in `app/Resources/MUCommentsModule/public/js/` like this:
 
-`php app/console translation:extract en --bundle=MUCommentsModule --enable-extractor=jms_i18n_routing --output-format=po --dir=./modules/MU/CommentsModule --dir=./app/Resources/MUCommentsModule`
+`php -dmemory_limit=2G bin/console translation:extract en --bundle=MUCommentsModule --enable-extractor=jms_i18n_routing --output-format=po --dir=./modules/MU/CommentsModule --dir=./app/Resources/MUCommentsModule`
 
 For questions and other remarks visit our homepage https://homepages-mit-zikula.de.
 

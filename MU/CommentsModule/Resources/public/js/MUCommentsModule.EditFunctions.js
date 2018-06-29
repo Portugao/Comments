@@ -16,7 +16,7 @@ function mUCommentsTriggerFormValidation() {
     }
 }
 
-function mUCommentsHandleFormSubmit (event) {
+function mUCommentsHandleFormSubmit(event) {
     if (triggerValidation) {
         mUCommentsTriggerFormValidation();
         if (!editForm.get(0).checkValidity()) {
@@ -72,7 +72,7 @@ function mUCommentsInitEditForm(mode, entityId) {
         });
     }
     editForm.find('button[type=submit]').bind('click keypress', function (event) {
-        triggerValidation = !jQuery(this).prop('formnovalidate');
+        triggerValidation = !jQuery(this).attr('formnovalidate');
     });
     editForm.submit(mUCommentsHandleFormSubmit);
 
