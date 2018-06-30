@@ -75,6 +75,10 @@ application "Comments" targets ZK20  {
                     documentation "Do you want to get a mail, when someone answers to your comment?"
                     mandatory false
                 }
+            ,
+                boolean "privacyPolicy" {
+                    mandatory false
+                }
             }
             actions {
                 mainAction "Index",
@@ -122,6 +126,11 @@ variables {
                         default listItem "above" ( "above" ),
                         listItem "below" ( "below" )
                     }
+                }
+            ,
+                string "linkToPrivacyPolicy" {
+                    documentation "If empty this feature is disabled."
+                    mandatory false
                 }
             }
         },

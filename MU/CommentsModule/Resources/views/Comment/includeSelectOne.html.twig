@@ -24,6 +24,7 @@
                 {{ form_row(attribute(subFields, 'ipOfComment')) }}
                 {{ form_row(attribute(subFields, 'content')) }}
                 {{ form_row(attribute(subFields, 'sendMails')) }}
+                {{ form_row(attribute(subFields, 'privacyPolicy')) }}
             </fieldset>
         {% elseif displayMode == 'choices' %}
             {{ form_row(attribute(form, alias)) }}

@@ -54,6 +54,13 @@
             {% if sendMailsFilter is defined and sendMailsFilter != true %}
                 </div>
             {% endif %}
+            {% if privacyPolicyFilter is defined and privacyPolicyFilter != true %}
+                <div class="hidden">
+            {% endif %}
+                {{ form_row(quickNavForm.privacyPolicy) }}
+            {% if privacyPolicyFilter is defined and privacyPolicyFilter != true %}
+                </div>
+            {% endif %}
             {{ form_widget(quickNavForm.updateview) }}
         </fieldset>
     </div>

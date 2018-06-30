@@ -216,6 +216,15 @@ abstract class AbstractCommentType extends AbstractType
             ],
             'required' => false,
         ]);
+        
+        $builder->add('privacyPolicy', CheckboxType::class, [
+            'label' => $this->__('Privacy policy') . ':',
+            'attr' => [
+                'class' => '',
+                'title' => $this->__('privacy policy ?')
+            ],
+            'required' => false,
+        ]);
     }
 
     /**

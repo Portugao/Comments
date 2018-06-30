@@ -249,7 +249,7 @@ class AjaxController extends AbstractAjaxController
      */
     public function answerInternal(Request $request)
     {
-    	if (!$this->hasPermission('MUCommentsModule::Ajax', '::', ACCESS_EDIT)) {
+    	if (!$this->hasPermission('MUCommentsModule::Ajax', '::', ACCESS_COMMENT)) {
     		throw new AccessDeniedException();
     	}
     	

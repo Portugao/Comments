@@ -143,6 +143,7 @@ abstract class AbstractCommentController extends AbstractController
             new Column('yourMailAddress'),
             new Column('text'),
             new Column('sendMails'),
+            new Column('privacyPolicy'),
             new Column('comment'),
             new Column('createdBy'),
             new Column('createdDate'),

@@ -128,6 +128,7 @@ abstract class AbstractCommentFinderType extends AbstractType
                     $this->__('Your mail address') => 'yourMailAddress',
                     $this->__('Text') => 'text',
                     $this->__('Send mails') => 'sendMails',
+                    $this->__('Privacy policy') => 'privacyPolicy',
                     $this->__('Creation date') => 'createdDate',
                     $this->__('Creator') => 'createdBy',
                     $this->__('Update date') => 'updatedDate',

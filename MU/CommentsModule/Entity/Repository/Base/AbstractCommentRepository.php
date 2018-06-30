@@ -61,6 +61,7 @@ abstract class AbstractCommentRepository extends EntityRepository
             'yourMailAddress',
             'text',
             'sendMails',
+            'privacyPolicy',
             'createdBy',
             'createdDate',
             'updatedBy',

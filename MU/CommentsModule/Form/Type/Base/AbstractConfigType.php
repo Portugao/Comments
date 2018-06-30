@@ -159,6 +159,22 @@ abstract class AbstractConfigType extends AbstractType
             'multiple' => false,
             'expanded' => false
         ]);
+        
+        $builder->add('linkToPrivacyPolicy', TextType::class, [
+            'label' => $this->__('Link to privacy policy') . ':',
+            'label_attr' => [
+                'class' => 'tooltips',
+                'title' => $this->__('If empty this feature is disabled.')
+            ],
+            'help' => $this->__('If empty this feature is disabled.'),
+            'empty_data' => '',
+            'attr' => [
+                'maxlength' => 255,
+                'class' => '',
+                'title' => $this->__('Enter the link to privacy policy.')
+            ],
+            'required' => false,
+        ]);
     }
 
     /**

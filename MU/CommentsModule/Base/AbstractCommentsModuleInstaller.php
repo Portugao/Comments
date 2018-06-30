@@ -47,6 +47,7 @@ abstract class AbstractCommentsModuleInstaller extends AbstractExtensionInstalle
         $this->setVar('orderComments', 'desc');
         $this->setVar('levelsOfComments', '');
         $this->setVar('positionOfForm', 'above');
+        $this->setVar('linkToPrivacyPolicy', '');
         $this->setVar('enableInternSpamHandling', false);
         $this->setVar('toModeration', '');
         $this->setVar('toNotSaved', '');

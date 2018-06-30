@@ -135,6 +135,14 @@ abstract class AbstractCommentEntity extends EntityAccess
      */
     protected $sendMails = false;
     
+    /**
+     * @ORM\Column(type="boolean")
+     * @Assert\NotNull()
+     * @Assert\Type(type="bool")
+     * @var boolean $privacyPolicy
+     */
+    protected $privacyPolicy = false;
+    
     
     /**
      * Bidirectional - Many comments [comments] are linked by one comment [comment] (OWNING SIDE).
@@ -460,6 +468,30 @@ abstract class AbstractCommentEntity extends EntityAccess
     {
         if (boolval($this->sendMails) !== boolval($sendMails)) {
             $this->sendMails = boolval($sendMails);
+        }
+    }
+    
+    /**
+     * Returns the privacy policy.
+     *
+     * @return boolean
+     */
+    public function getPrivacyPolicy()
+    {
+        return $this->privacyPolicy;
+    }
+    
+    /**
+     * Sets the privacy policy.
+     *
+     * @param boolean $privacyPolicy
+     *
+     * @return void
+     */
+    public function setPrivacyPolicy($privacyPolicy)
+    {
+        if (boolval($this->privacyPolicy) !== boolval($privacyPolicy)) {
+            $this->privacyPolicy = boolval($privacyPolicy);
         }
     }
     

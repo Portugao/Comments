@@ -55,6 +55,15 @@
             {% endif %}
             </dd>
         {% endif %}
+        {% if comment.privacyPolicy is not empty %}
+            <dt>{{ __('Privacy policy') }}</dt>
+            <dd>{% if comment.privacyPolicy %}
+                <i class="fa fa-check" title="{{ __('Yes') }}"></i>
+            {% else %}
+                <i class="fa fa-times" title="{{ __('No') }}"></i>
+            {% endif %}
+            </dd>
+        {% endif %}
         {% if comment.comment|default %}
             <dt>{{ __('Comment') }}</dt>
             <dd>

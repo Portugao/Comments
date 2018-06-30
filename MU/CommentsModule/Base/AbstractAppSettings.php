@@ -62,6 +62,15 @@ abstract class AbstractAppSettings
     protected $positionOfForm = 'above';
     
     /**
+     * If empty this feature is disabled.
+     *
+     * @Assert\NotNull()
+     * @Assert\Length(min="0", max="255")
+     * @var string $linkToPrivacyPolicy
+     */
+    protected $linkToPrivacyPolicy = '';
+    
+    /**
      * Enable, if you want to activate the mailing feature.
      If someone checks the field send mails, he gets a mail, when someone answers to his comment.
      *
@@ -245,6 +254,30 @@ abstract class AbstractAppSettings
     {
         if ($this->positionOfForm !== $positionOfForm) {
             $this->positionOfForm = isset($positionOfForm) ? $positionOfForm : '';
+        }
+    }
+    
+    /**
+     * Returns the link to privacy policy.
+     *
+     * @return string
+     */
+    public function getLinkToPrivacyPolicy()
+    {
+        return $this->linkToPrivacyPolicy;
+    }
+    
+    /**
+     * Sets the link to privacy policy.
+     *
+     * @param string $linkToPrivacyPolicy
+     *
+     * @return void
+     */
+    public function setLinkToPrivacyPolicy($linkToPrivacyPolicy)
+    {
+        if ($this->linkToPrivacyPolicy !== $linkToPrivacyPolicy) {
+            $this->linkToPrivacyPolicy = isset($linkToPrivacyPolicy) ? $linkToPrivacyPolicy : '';
         }
     }
     
@@ -460,6 +493,9 @@ abstract class AbstractAppSettings
         if (isset($moduleVars['positionOfForm'])) {
             $this->setPositionOfForm($moduleVars['positionOfForm']);
         }
+        if (isset($moduleVars['linkToPrivacyPolicy'])) {
+            $this->setLinkToPrivacyPolicy($moduleVars['linkToPrivacyPolicy']);
+        }
         if (isset($moduleVars['sendMails'])) {
             $this->setSendMails($moduleVars['sendMails']);
         }
@@ -509,6 +545,7 @@ abstract class AbstractAppSettings
         $this->variableApi->set('MUCommentsModule', 'orderComments', $this->getOrderComments());
         $this->variableApi->set('MUCommentsModule', 'levelsOfComments', $this->getLevelsOfComments());
         $this->variableApi->set('MUCommentsModule', 'positionOfForm', $this->getPositionOfForm());
+        $this->variableApi->set('MUCommentsModule', 'linkToPrivacyPolicy', $this->getLinkToPrivacyPolicy());
         $this->variableApi->set('MUCommentsModule', 'sendMails', $this->getSendMails());
         $this->variableApi->set('MUCommentsModule', 'enableInternSpamHandling', $this->getEnableInternSpamHandling());
         $this->variableApi->set('MUCommentsModule', 'toModeration', $this->getToModeration());

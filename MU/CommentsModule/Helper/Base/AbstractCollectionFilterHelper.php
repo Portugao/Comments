@@ -132,6 +132,7 @@ abstract class AbstractCollectionFilterHelper
         $parameters['workflowState'] = $this->request->query->get('workflowState', '');
         $parameters['q'] = $this->request->query->get('q', '');
         $parameters['sendMails'] = $this->request->query->get('sendMails', '');
+        $parameters['privacyPolicy'] = $this->request->query->get('privacyPolicy', '');
     
         return $parameters;
     }
@@ -162,7 +163,7 @@ abstract class AbstractCollectionFilterHelper
                 }
                 continue;
             }
-            if (in_array($k, ['sendMails'])) {
+            if (in_array($k, ['sendMails', 'privacyPolicy'])) {
                 // boolean filter
                 if ($v == 'no') {
                     $qb->andWhere('tbl.' . $k . ' = 0');

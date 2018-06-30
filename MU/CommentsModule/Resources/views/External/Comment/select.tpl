@@ -25,6 +25,7 @@
                     <option value="yourMailAddress"{if $sort eq 'yourMailAddress'} selected="selected"{/if}>{gt text='Your mail address'}</option>
                     <option value="text"{if $sort eq 'text'} selected="selected"{/if}>{gt text='Text'}</option>
                     <option value="sendMails"{if $sort eq 'sendMails'} selected="selected"{/if}>{gt text='Send mails'}</option>
+                    <option value="privacyPolicy"{if $sort eq 'privacyPolicy'} selected="selected"{/if}>{gt text='Privacy policy'}</option>
                     <option value="createdDate"{if $sort eq 'createdDate'} selected="selected"{/if}>{gt text='Creation date'}</option>
                     <option value="createdBy"{if $sort eq 'createdBy'} selected="selected"{/if}>{gt text='Creator'}</option>
                     <option value="updatedDate"{if $sort eq 'updatedDate'} selected="selected"{/if}>{gt text='Update date'}</option>

@@ -215,6 +215,7 @@ abstract class AbstractCommentQuickNavType extends AbstractType
                     $this->__('Your mail address') => 'yourMailAddress',
                     $this->__('Text') => 'text',
                     $this->__('Send mails') => 'sendMails',
+                    $this->__('Privacy policy') => 'privacyPolicy',
                     $this->__('Creation date') => 'createdDate',
                     $this->__('Creator') => 'createdBy',
                     $this->__('Update date') => 'updatedDate',
@@ -277,6 +278,18 @@ abstract class AbstractCommentQuickNavType extends AbstractType
     {
         $builder->add('sendMails', ChoiceType::class, [
             'label' => $this->__('Send mails'),
+            'attr' => [
+                'class' => 'input-sm'
+            ],
+            'required' => false,
+            'placeholder' => $this->__('All'),
+            'choices' => [
+                $this->__('No') => 'no',
+                $this->__('Yes') => 'yes'
+            ]
+        ]);
+        $builder->add('privacyPolicy', ChoiceType::class, [
+            'label' => $this->__('Privacy policy'),
             'attr' => [
                 'class' => 'input-sm'
             ],
