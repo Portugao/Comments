@@ -29,6 +29,8 @@
 {# Form for creating a comment #}
     <h2>Create new comment</h2>
     <div class="mucommentsmodule-comment mucommentsmodule-edit">
+    {% set owner = subscriberOwner|e('html_attr') %}
+    {#{ mucommentsmodule_showEditForm(owner)  }#}
         {{ include(
             '@MUCommentsModule/Comment/includeFrontendForm.html.twig',
             {group: 'comment'}
@@ -42,6 +44,7 @@
 {% if items|default and items|length > 0 %}
 <div class="list-group mucommentsmodule-related-item-list comment">
 {% for item in items %}
+{% if item.comment is null %}
     <div id="comment{{ item.id }}" class="comment-container">
     <div class="col-md-2">
         <div class="comment-user">
@@ -104,9 +107,10 @@
     <div class="col-md-12">
     </div>
     </div>
+    {% endif %}
 {% endfor %}<br style="clear: both;" />
-{% set pos = getModVar('MUCommentsModule', 'positionOfForm') %}
-{% if context == 'hookDisplayView' and hasEditPermission %}
+{% set level = getModVar('MUCommentsModule', 'levelOfComments') %}
+{% if context == 'hookDisplayView' and hasEditPermission and level != 'one' %}
     <noscript>
         <div class="alert alert-info">{{ __('For answering to comments Javascript enabled is needed. Without you only can create new comments!') }}</div>
     </noscript>
@@ -126,55 +130,58 @@
 {% endif %}
 {% endif %}
 {% if context == 'hookDisplayView' and hasEditPermission %}
+
+    {% set commentInitScript %}
         <script>
-        var MU = jQuery.noConflict();
-        MU().ready(function() {
-        MU('.answer-container').removeClass('hidden');
+        /* <![CDATA[ */
+            ( function($) {
+                $(document).ready(function() {
+        $('.answer-container').removeClass('hidden');
         
-        MU('#commentEditForm #mucommentsmodule_comment_text').focus(function(e) {
+        $('#commentEditForm #mucommentsmodule_comment_text').focus(function(e) {
             e.preventDefault();
-            MU('.this-answer-form').remove();
-            MU('.this-comment-edit-form').remove();
+            $('.this-answer-form').remove();
+            $('.this-comment-edit-form').remove();
         });       
         
-        MU('.comment-answer').click(function(e) {
+        $('.comment-answer').click(function(e) {
             e.preventDefault();
-            MU('.this-answer-form').remove();
-            MU('.this-comment-edit-form').remove();
-            var formCommentId = 'form' + MU(this).attr('data-id');
-            var commentId = MU(this).attr('data-id');
-            var mainId = MU(this).attr('main-Id');
-            MU(this).parent().children('.answer-form').append('<form id="' + formCommentId + '" class="this-answer-form"><textarea id="answer-form-text" name="answer-form-text" class="form-control" rows=1 placeholder="{{ __('Enter your comment') }}"></textarea><input type="checkbox" id="answer-form-message" /> {{ __('Get message?') }}<input type="hidden" id="parentcomment" name="parentcomment" value="' + commentId + '" /><input type="hidden" id="maincomment" name="maincomment" value="' + mainId + '" /></form>');
+            $('.this-answer-form').remove();
+            $('.this-comment-edit-form').remove();
+            var formCommentId = 'form' + $(this).attr('data-id');
+            var commentId = $(this).attr('data-id');
+            var mainId = $(this).attr('main-Id');
+            $(this).parent().children('.answer-form').append('<form id="' + formCommentId + '" class="this-answer-form"><textarea id="answer-form-text" name="answer-form-text" class="form-control" rows=1 placeholder="{{ __('Enter your comment') }}"></textarea><input type="checkbox" id="answer-form-message" /> {{ __('Get message?') }}<input type="hidden" id="parentcomment" name="parentcomment" value="' + commentId + '" /><input type="hidden" id="maincomment" name="maincomment" value="' + mainId + '" /></form>');
         });
         
-        MU('.edit-comment').click(function(e) {
+        $('.edit-comment').click(function(e) {
             e.preventDefault();
-            MU('.this-answer-form').remove();
-            MU('.this-comment-edit-form').remove();
-            var formCommentId = 'form' + MU(this).attr('data-id');
-            var commentId = MU(this).attr('data-id');
-            var parentid = MU(this).attr('data-parentid');
-            var subject = MU(this).attr('data-subject');
-            var text = MU(this).attr('data-text');
-            MU(this).parents('.comment-content').find('.comment-text').append('<form id="' + formCommentId + '" class="this-comment-edit-form"><input id="this-comment-edit-subject" class="form-control" type="text" value="' + subject + '"><textarea id="this-comment-edit-text" name="this-comment-form-text" class="form-control" rows="1" placeholder="' + text + '"></textarea><input type="checkbox" id="answer-form-message"> {{ __('Get message?') }}<input type="hidden" id="parentcomment" name="parentcomment" value="' + commentId + '" /><input type="hidden" id="thisComment" name="thisComment" value="' + commentId + '" /></form>');
-            MU('#this-comment-edit-text').val(text);
+            $('.this-answer-form').remove();
+            $('.this-comment-edit-form').remove();
+            var formCommentId = 'form' + $(this).attr('data-id');
+            var commentId = $(this).attr('data-id');
+            var parentid = $(this).attr('data-parentid');
+            var subject = $(this).attr('data-subject');
+            var text = $(this).attr('data-text');
+            $(this).parents('.comment-content').find('.comment-text').prepend('<form id="' + formCommentId + '" class="this-comment-edit-form"><input id="this-comment-edit-subject" class="form-control" type="text" value="' + subject + '"><textarea id="this-comment-edit-text" name="this-comment-form-text" class="form-control" rows="1" placeholder="' + text + '"></textarea><input type="checkbox" id="answer-form-message"> {{ __('Get message?') }}<input type="hidden" id="parentcomment" name="parentcomment" value="' + commentId + '" /><input type="hidden" id="thisComment" name="thisComment" value="' + commentId + '" /></form>');
+            $('#this-comment-edit-text').val(text);
         });
         
-        MU('.this-answer-form').live('keydown', function(e) {
+        $('.answer-form').on('keydown','.this-answer-form', function(e) {
            if (e.which == '13') {
            if(e.shiftKey == 0) {
                 e.preventDefault();
-                var text = MU(this).find('#answer-form-text').val();
-                var message = MU(this).find('#answer-form-message').val();
-                var commentId = MU(this).find('#parentcomment').val();
-                var mainId = MU(this).find('#maincomment').val();
+                var text = $(this).find('#answer-form-text').val();
+                var message = $(this).find('#answer-form-message').val();
+                var commentId = $(this).find('#parentcomment').val();
+                var mainId = $(this).find('#maincomment').val();
                 if (mainId == 0) {
                     mainId = commentId;
                 }
-                if(MU('#answer-form-text').val() != '') {
-                    MU('.this-answer-form').parent().append('<img class="commentimg" src="/images/ajax/large_square_white.gif" />');
-                    MU('.this-answer-form').remove();
-                    MU.ajax({
+                if($('#answer-form-text').val() != '') {
+                    $('.this-answer-form').parent().append('<img class="commentimg" src="/images/ajax/large_square_white.gif" />');
+                    $('.this-answer-form').remove();
+                    $.ajax({
                         method: 'POST',
                         url: '{{ path('mucommentsmodule_ajax_' ~ routeArea ~ 'answer') }}',
 
@@ -196,13 +203,13 @@
                                 } else {
                                     var out = '<div class="comments-feedback alert alert-info">Thank you for your comment. We will check as soon as possible.</div>';
                                 }
-                                MU('#commenttext' + commentId).append(out);
+                                $('#commenttext' + commentId).append(out);
                             } 
-                            MU('.commentimg').hide('slow');
+                            $('.commentimg').hide('slow');
                             if(data.moderate == 'yes') {
-                                MU('.comments-feedback').delay(10000).hide('slow');
+                                $('.comments-feedback').delay(10000).hide('slow');
                             } 
-                            MU('.this-answer-form input, .this-answer-form input textarea').val('');
+                            $('.this-answer-form input, .this-answer-form input textarea').val('');
                         }
                     });
                 }
@@ -210,16 +217,16 @@
            }
         });
         
-        MU('#commentEditForm').live('keydown', function(e) {
+        $('#commentEditForm').on('keydown', function(e) {
            if (e.which == '13') {
            if(e.shiftKey == 0) {
                 e.preventDefault();
-                var subject = MU(this).find('#mucommentsmodule_comment_subject').val();
-                var name = MU(this).find('#mucommentsmodule_comment_name').val();
-                var text = MU(this).find('#mucommentsmodule_comment_text').val();
-                if(MU('#mucommentsmodule_comment_text').val() != '') {
-                    MU('#commentEditForm').parent().append('<img class="commentimg" src="/images/ajax/indicator_circle.gif" />');
-                    MU.ajax({
+                var subject = $(this).find('#mucommentsmodule_comment_subject').val();
+                var name = $(this).find('#mucommentsmodule_comment_name').val();
+                var text = $(this).find('#mucommentsmodule_comment_text').val();
+                if($('#mucommentsmodule_comment_text').val() != '') {
+                    $('#commentEditForm').parent().append('<img class="commentimg" src="/images/ajax/indicator_circle.gif" />');
+                    $.ajax({
                         method: 'POST',
                         url: '{{ path('mucommentsmodule_ajax_' ~ routeArea ~ 'answer') }}',
 
@@ -254,13 +261,13 @@
                             } else {
                                 var out = '<div class="comments-feedback alert alert-info">Thank you for your comment. We will check as soon as possible.</div>';
                             }
-                            MU('.comment').prepend(out);
+                            $('.comment').prepend(out);
                         }
-                        MU('.commentimg').hide('slow');
+                        $('.commentimg').hide('slow');
                         if(data.moderate == 'yes') {
-                            MU('.comments-feedback').delay(10000).hide('slow');
+                            $('.comments-feedback').delay(10000).hide('slow');
                         }
-                        MU('#commentEditForm input, #commentEditForm textarea').val('');
+                        $('#commentEditForm input, #commentEditForm textarea').val('');
                         }
                     });
                 }
@@ -268,17 +275,18 @@
            }
         });
         
-           MU('.this-comment-edit-form').live('keydown', function(e) {
+           $('.comment-text').on('keydown','.this-comment-edit-form', function(e) {
            if (e.which == '13') {
            if(e.shiftKey == 0) {
                 e.preventDefault();
-                var subject = MU(this).find('#this-comment-edit-subject').val();
-                var text = MU(this).find('#this-comment-edit-text').val();
-                var commentId = MU(this).find('#parentcomment').val();
-                var thisId = MU(this).find('#thisComment').val();
-                if(MU('#this-comment-edit-text').val() != '') {
-                    MU('#commentEditForm').parent().append('<img class="commentimg" src="/images/ajax/indicator_circle.gif" />');
-                    MU.ajax({
+                var subject = $(this).find('#this-comment-edit-subject').val();
+                var text = $(this).find('#this-comment-edit-text').val();
+                var commentId = $(this).find('#parentcomment').val();
+                var thisId = $(this).find('#thisComment').val();
+                if($('#this-comment-edit-text').val() != '') {
+                    $('#commentEditForm').parent().append('<img class="commentimg" src="/images/ajax/indicator_circle.gif" />');
+                    $('.this-comment-edit-form').remove();
+                    $.ajax({
                         method: 'POST',
                         url: '{{ path('mucommentsmodule_ajax_' ~ routeArea ~ 'edit') }}',
 
@@ -307,9 +315,9 @@
                             out = out + '<div id="commenttext' + data.id + '" class="comment-text">' + data.text;
                             out = out + '<span class="answer-container hidden"><a title="3" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>';
                             out = out + '</div></div><div class="col-md-12"></div>';
-                            MU(this).parent('.comment-container').html(out);
-                            //MU('.comment').prepend(out);
-                            MU('.commentimg').hide('slow');
+                            $(this).parent('.comment-container').html(out);
+                            //$('.comment').prepend(out);
+                            $('.commentimg').hide('slow');
                         }
                     });
                 }
@@ -317,18 +325,22 @@
            }
         });
         
-        MU('.comment-submit').click(function(e) {
+        $('.comment-submit').click(function(e) {
             e.preventDefault();
-            var container = MU(this).parent('.comment-container');
-            if(MU('#answer-form-text').val() != '') {
+            var container = $(this).parent('.comment-container');
+            if($('#answer-form-text').val() != '') {
                 alert('gesendet');
-                MU.get('{{ path('mucommentsmodule_ajax_' ~ routeArea ~ 'answer') }}', function(result) {
+                $.get('{{ path('mucommentsmodule_ajax_' ~ routeArea ~ 'answer') }}', function(result) {
                     if(result) {
-                        MU('#commenttext1').append('Hallo');
+                        $('#commenttext1').append('Hallo');
                     }
                 });
             }
         });
         });
+        })(jQuery);
+       /* ]]> */
         </script>
+        {% endset %}
+    {{ pageAddAsset('footer', commentInitScript) }}
 {% endif %}
