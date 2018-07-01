@@ -7,9 +7,10 @@
         - 'hookDisplayDelete': list of comments assigned using an UI hook (delete template)
 #}
 {% set hasAdminPermission = hasPermission('MUCommentsModule:Comment:', '::', 'ACCESS_ADMIN') %}
-{% set hasEditPermission = hasPermission('MUCommentsModule:Comment:', '::', 'ACCESS_EDIT') %}
+{% set hasEditPermission = hasPermission('MUCommentsModule:Comment:', '::', 'ACCESS_COMMENT') %}
 {% if context != 'display' %}
-    <h3>{{ __('Comments') }}</h3>
+<h3>{{ __('Comments') }}</h3>
+<div id="comments-container">
     {{ pageAddAsset('stylesheet', zasset('@MUCommentsModule:css/style.css')) }}
     {{ pageAddAsset('stylesheet', asset('jquery-ui/themes/base/jquery-ui.min.css')) }}
     {{ pageAddAsset('stylesheet', asset('bootstrap-jqueryui/bootstrap-jqueryui.min.css')) }}
@@ -25,6 +26,7 @@
 
 {% set pos = getModVar('MUCommentsModule', 'positionOfForm') %}
 {% if context == 'hookDisplayView' and hasEditPermission %}
+
 {% if pos == 'above' %}
 {# Form for creating a comment #}
     <h2>Create new comment</h2>
@@ -41,6 +43,7 @@
 <div class="alert alert-info">{{ __('No permissions for you to create comments.') }}</div>
 {% endif %}
 {% set levels = getModVar('MUCommentsModule', 'levelsOfComments') %}
+{% set privacy = getModVar('MUComentsModule', 'linkToPrivacyPolicy') %}
 {% if items|default and items|length > 0 %}
 <div class="list-group mucommentsmodule-related-item-list comment">
 {% for item in items %}
@@ -128,6 +131,7 @@
         ) }}
     </div>
 {% endif %}
+</div>
 {% endif %}
 {% if context == 'hookDisplayView' and hasEditPermission %}
 
@@ -151,7 +155,7 @@
             var formCommentId = 'form' + $(this).attr('data-id');
             var commentId = $(this).attr('data-id');
             var mainId = $(this).attr('main-Id');
-            $(this).parent().children('.answer-form').append('<form id="' + formCommentId + '" class="this-answer-form"><textarea id="answer-form-text" name="answer-form-text" class="form-control" rows=1 placeholder="{{ __('Enter your comment') }}"></textarea><input type="checkbox" id="answer-form-message" /> {{ __('Get message?') }}<input type="hidden" id="parentcomment" name="parentcomment" value="' + commentId + '" /><input type="hidden" id="maincomment" name="maincomment" value="' + mainId + '" /></form>');
+            $(this).parent().children('.answer-form').append('<form id="' + formCommentId + '" class="this-answer-form"><textarea id="answer-form-text" name="answer-form-text" class="form-control" rows=1 placeholder="{{ __('Enter your comment') }}"></textarea><input type="checkbox" id="answer-form-message" /> {{ __('Get message?') }}<input type="checkbox" id="answer-form-privacy" /> {{ __('Accept privacy policy?') }}<input type="hidden" id="parentcomment" name="parentcomment" value="' + commentId + '" /><input type="hidden" id="maincomment" name="maincomment" value="' + mainId + '" /></form>');
         });
         
         $('.edit-comment').click(function(e) {
@@ -163,7 +167,7 @@
             var parentid = $(this).attr('data-parentid');
             var subject = $(this).attr('data-subject');
             var text = $(this).attr('data-text');
-            $(this).parents('.comment-content').find('.comment-text').prepend('<form id="' + formCommentId + '" class="this-comment-edit-form"><input id="this-comment-edit-subject" class="form-control" type="text" value="' + subject + '"><textarea id="this-comment-edit-text" name="this-comment-form-text" class="form-control" rows="1" placeholder="' + text + '"></textarea><input type="checkbox" id="answer-form-message"> {{ __('Get message?') }}<input type="hidden" id="parentcomment" name="parentcomment" value="' + commentId + '" /><input type="hidden" id="thisComment" name="thisComment" value="' + commentId + '" /></form>');
+            $(this).parents('.comment-content').find('.comment-text').prepend('<form id="' + formCommentId + '" class="this-comment-edit-form"><input id="this-comment-edit-subject" class="form-control" type="text" value="' + subject + '"><textarea id="this-comment-edit-text" name="this-comment-form-text" class="form-control" rows="1" placeholder="' + text + '"></textarea><input type="checkbox" id="answer-form-message"> {{ __('Get message?') }} <input type="checkbox" id="answer-form-privacy" /> {{ __('Accept privacy policy?') }}<input type="hidden" id="parentcomment" name="parentcomment" value="' + commentId + '" /><input type="hidden" id="thisComment" name="thisComment" value="' + commentId + '" /></form>');
             $('#this-comment-edit-text').val(text);
         });
         
@@ -253,7 +257,7 @@
 	                            if(data.subject != '') {
 	                                out = out + data.subject + ' - ';
 	                            }   
-	                            //out = out + data.created;
+	                            out = out + data.created;
 	                            out = out + '<a title="edit" href=""><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a></div>';
 	                            out = out + '<div id="commenttext' + data.id + '" class="comment-text">' + data.text;
 	                            out = out + '<span class="answer-container hidden"><a title="3" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>';
@@ -261,7 +265,11 @@
                             } else {
                                 var out = '<div class="comments-feedback alert alert-info">Thank you for your comment. We will check as soon as possible.</div>';
                             }
-                            $('.comment').prepend(out);
+                            {% if pos == 'below' %}
+                            $('#comments-container').prepend(out);
+                            {% else %}
+                            $('#commentEditForm').append(out);
+                            {% endif %}
                         }
                         $('.commentimg').hide('slow');
                         if(data.moderate == 'yes') {
@@ -310,7 +318,7 @@
                             if(data.subject != '') {
                                 out = out + data.subject + ' - ';
                             }   
-                            //out = out + data.created;
+                            out = out + data.created;
                             out = out + '<a title="edit" href=""><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a></div>';
                             out = out + '<div id="commenttext' + data.id + '" class="comment-text">' + data.text;
                             out = out + '<span class="answer-container hidden"><a title="3" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>';
