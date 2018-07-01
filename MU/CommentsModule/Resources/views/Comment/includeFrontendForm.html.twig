@@ -38,13 +38,25 @@
             <input type="number" id="mucommentsmodule_comment_mainId" name="mucommentsmodule_comment[mainId]" maxlength="11" class="form-control" title="Enter the main id of the comment. Only digits are allowed." value="0" />     
 			</div>
 			</div>
-			
+			</div>			
 			<div class="form-group"><label class="tooltips col-sm-3 control-label" title="Do you want to get a mail, when someone answers to your comment?" for="mucommentsmodule_comment_sendMails">Send mails:</label><div class="col-sm-9"><div class="checkbox">
 			<input type="checkbox" id="mucommentsmodule_comment_sendMails" name="mucommentsmodule_comment[sendMails]" class="" title="send mails ?" style="margin-left: auto" value="1" /></div><em class="help-block small">Do you want to get a mail, when someone answers to your comment?</em>
 			</div>
 			</div>
-			
+			{% set privacy = getModVar('MUCommentsModule', 'linkToPrivacyPolicy') %}
+			{% if privacy == '' %}
+			<div class="hidden">
+			{% endif %}
+			<div class="form-group"><label class="tooltips col-sm-3 control-label" title="You have to accept the privacy policy!" for="mucommentsmodule_comment_privacyPolicy">Privacy policy:</label><div class="col-sm-9"><div class="checkbox">
+			<input type="checkbox" id="mucommentsmodule_comment_privacyPolicy" required="required" name="mucommentsmodule_comment[privacyPolicy]" class="" title="Accept privacy policy" style="margin-left: auto" value="1" /></div><em class="help-block small">You have to accept the privacy policy!</em>
+			<a href="{{ privacy }}">{{ __('Privacy policy') }}</a>			
 			</div>
+			</div>
+		    {% if privacy == '' %}
+			</div>
+			{% endif %}
+			
+
         </fieldset>
         <noscript>
         <div class="form-group form-buttons">
