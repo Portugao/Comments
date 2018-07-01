@@ -377,7 +377,7 @@ class AjaxController extends AbstractAjaxController
     			'text' => $comment->getText(),
     			'user' => $comment->getCreatedBy()->getUname(),
     			'avatar' => $avatar,
-    			'created' => $comment->getCreatedDate(),
+    			'created' => $comment->getCreatedDate()->format('d:m:Y, H:i'),
     			'link' => $link,
     			'moderate' => 'no'
     	]);
