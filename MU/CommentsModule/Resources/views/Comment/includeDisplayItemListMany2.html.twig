@@ -62,7 +62,7 @@
         <div class="comment-header">{% if item.subject != '' %}{{ item.subject }} - {% endif %}{{ item.createdDate|localizeddate('medium', 'short')|raw }} {% if uid > 1 and uid == item.createdBy.getUid() %}<a class="edit-comment" data-id="{{ item.id }}" data-parentid="0" data-subject="{{ item.subject }}" data-text="{{ item.text }}" title="{{ __('edit') }}" href="{{path('mucommentsmodule_comment_edit', {'id': item.id}) }}"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a>{% endif %}</div>
         <div id="commenttext{{ item.id }}" class="comment-text">{{ item.text }} 
         {% if levels == 'two' or levels == 'three' or levels == 'four' and context == 'hookDisplayView' and hasEditPermission %}
-            <span class="answer-container hidden"><a data-id="{{ item.id }}" main-Id="{{ item.mainId }}" sendMail={{ item.sendMail }} privacy={{ item.privacyPolicy }} class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
+            <span class="answer-container hidden"><a data-id="{{ item.id }}" main-Id="{{ item.mainId }}" sendMail="{{ item.sendMail }}" privacy="{{ item.privacyPolicy }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
         {% endif %}
         {% if item.comments %}
             {% for answer in item.comments %}
@@ -125,11 +125,11 @@
 {# Form for creating a comment #}
     <h2>Create new comment</h2>
     <div class="mucommentsmodule-comment mucommentsmodule-edit">
-     {{ mucommentsmodule_showEditForm() }}
-        {#{ include(
+     {#{ mucommentsmodule_showEditForm() }#}
+        {{ include(
             '@MUCommentsModule/Comment/includeFrontendForm.html.twig',
             {group: 'comment'}
-        ) }#}
+        ) }}
     </div>
 {% endif %}
 </div>
