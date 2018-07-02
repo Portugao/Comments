@@ -87,6 +87,42 @@ class ControllerHelper extends AbstractControllerHelper
     	return $templateParameters;
     }
     
+    /**
+     * Determines the default sorting criteria.
+     *
+     * @param string $objectType Name of treated entity type
+     *
+     * @return array with sort field and sort direction
+     */
+    protected function determineDefaultViewSorting($objectType)
+    {
+    	$request = $this->request;
+    	$repository = $this->entityFactory->getRepository($objectType);
+    
+    	$sort = $request->query->get('sort', '');
+    	$sortdir = '';
+    	if (empty($sort) || !in_array($sort, $repository->getAllowedSortingFields())) {
+    		$sort = $repository->getDefaultSortingField();
+    		
+    		$sortdir = $this->variableApi->get('MUNewsModule', 'orderComments', 'desc');
+    		
+    		$request->query->set('sort', $sort);
+    		// set default sorting in route parameters (e.g. for the pager)
+    		$routeParams = $request->attributes->get('_route_params');
+    		$routeParams['sort'] = $sort;
+    		$request->attributes->set('_route_params', $routeParams);
+    	}
+    	if ('' === $sortdir) {
+    	$sortdir = $request->query->get('sortdir', 'ASC');
+    	if (false !== strpos($sort, ' DESC')) {
+    		$sort = str_replace(' DESC', '', $sort);
+    		$sortdir = 'desc';
+    	}
+    	}
+    
+    	return [$sort, $sortdir];
+    }
+    
     public function getProfileLink($uid)
     {
     	$selected = $this->collector->getSelected();
