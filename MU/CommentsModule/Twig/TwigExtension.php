@@ -14,13 +14,60 @@ namespace MU\CommentsModule\Twig;
 
 use MU\CommentsModule\Twig\Base\AbstractTwigExtension;
 use Symfony\Component\HttpKernel\Controller\ControllerReference;
-use ServiceUtil;
+
+use Zikula\Common\Translator\TranslatorInterface;
+use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
+use MU\CommentsModule\Helper\ListEntriesHelper;
+use MU\CommentsModule\Helper\EntityDisplayHelper;
+use MU\CommentsModule\Helper\WorkflowHelper;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
 
 /**
  * Twig extension implementation class.
  */
 class TwigExtension extends AbstractTwigExtension
 {
+	/**
+	 * @var Request
+	 */
+	protected $request;
+	
+	/**
+	 * @var FragmentHandler
+	 */
+	protected $fragmentHandler;
+	
+	/**
+	 * TwigExtension constructor.
+	 *
+	 * @param TranslatorInterface $translator     Translator service instance
+	 * @param VariableApiInterface   $variableApi    VariableApi service instance
+	 * @param EntityDisplayHelper $entityDisplayHelper EntityDisplayHelper service instance
+	 * @param WorkflowHelper      $workflowHelper WorkflowHelper service instance
+	 * @param ListEntriesHelper   $listHelper     ListEntriesHelper service instance
+	 * @param RequestStack           $requestStack     RequestStack service instance
+	 * @param FragmentHandler    $fragmentHandler FragmentHandler service instance
+	 */
+	public function __construct(
+			TranslatorInterface $translator,
+			VariableApiInterface $variableApi,
+			EntityDisplayHelper $entityDisplayHelper,
+			WorkflowHelper $workflowHelper,
+			ListEntriesHelper $listHelper,
+			RequestStack $requestStack,
+			FragmentHandler $fragmentHandler)
+	{
+		$this->setTranslator($translator);
+		$this->variableApi = $variableApi;
+		$this->entityDisplayHelper = $entityDisplayHelper;
+		$this->workflowHelper = $workflowHelper;
+		$this->listHelper = $listHelper;
+		$this->request = $requestStack->getCurrentRequest();
+		$this->fragmentHandler = $fragmentHandler;
+	}
+	
      /** Returns a list of custom Twig functions.
      *
      * @return array
@@ -35,13 +82,10 @@ class TwigExtension extends AbstractTwigExtension
     
     public function showEditForm()
     {
-    	$request = \ServiceUtil::get('request_stack')->getMasterRequest();
-    	$request->attributes->set('_zkModule', 'MUCommentsModule');
-    
-    	$fragmentHandler = \ServiceUtil::get('fragment.handler');
+    	$this->request->attributes->set('_zkModule', 'MUCommentsModule');
     
     	$ref = new ControllerReference('MUCommentsModule:Comment:edit');
     
-    	return $fragmentHandler->render($ref, 'inline', []);
+    	return $this->fragmentHandler->render($ref, 'inline', []);
     }
 }
