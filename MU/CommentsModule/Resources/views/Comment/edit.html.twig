@@ -34,8 +34,17 @@
             </div>
             {% endif %}
             {{ form_row(form.sendMails) }}
-
+            {% set privacy = getModVar('MUCommentsModule', 'linkToPrivacyPolicy') %}
+			{% if privacy == '' %}
+			<div class="hidden">
+			{% endif %}
+            {{ form_row(form.privacyPolicy) }}
+            <a href="{{ privacy }}">{{ __('Privacy policy') }}</a>	
+            {% if privacy == '' %}
+			</div>
+			{% endif %}
         </fieldset>
+        <input type="" id={{ subscriberOwner|e('html_attr') }} />
         
             {% if routeArea != 'admin' %}
             <div class="hidden">
