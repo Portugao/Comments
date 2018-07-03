@@ -62,7 +62,7 @@
         <div class="comment-header">{% if item.subject != '' %}{{ item.subject }} - {% endif %}{{ item.createdDate|localizeddate('medium', 'short')|raw }} {% if uid > 1 and uid == item.createdBy.getUid() %}<a class="edit-comment" data-id="{{ item.id }}" data-parentid="0" data-subject="{{ item.subject }}" data-text="{{ item.text }}" title="{{ __('edit') }}" href="{{path('mucommentsmodule_comment_edit', {'id': item.id}) }}"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a>{% endif %}</div>
         <div id="commenttext{{ item.id }}" class="comment-text">{{ item.text }} 
         {% if levels == 'two' or levels == 'three' or levels == 'four' and context == 'hookDisplayView' and hasEditPermission %}
-            <span class="answer-container hidden"><a data-id="{{ item.id }}" main-Id="{{ item.mainId }}" sendMail="{{ item.sendMail }}" privacy="{{ item.privacyPolicy }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
+            <span class="answer-container hidden"><a data-id="{{ item.id }}" data-mainId="{{ item.mainId }}" data-sendMail="{{ item.sendMail }}" data-privacy="{{ item.privacyPolicy }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
         {% endif %}
         {% if item.comments %}
             {% for answer in item.comments %}
@@ -73,7 +73,7 @@
                 {{ profileLink|raw }} 
                 {{ answer.text }}
                 {% if levels == 'three' or levels == 'four' and context == 'hookDisplayView' and hasEditPermission %}
-                    <span class="answer-container hidden"><a data-id="{{ answer.id }}" main-Id="{{ answer.mainId }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
+                    <span class="answer-container hidden"><a data-id="{{ answer.id }}" data-mainId="{{ answer.mainId }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
                 {% endif %}<span class="answer-date">{{ answer.createdDate|localizeddate('medium', 'short')|raw }}</span>
                 {% if answer.comments %}
                     {% for answer in answer.comments %}
@@ -84,7 +84,7 @@
                     {{ profileLink|raw }} 
                     {{ answer.text }} 
                     {% if levels == 'four' and context == 'hookDisplayView' and hasEditPermission %}
-                        <span class="answer-container hidden"><a data-id="{{ answer.id }}" main-Id="{{ answer.mainId }}" title="{{ answer.id }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
+                        <span class="answer-container hidden"><a data-id="{{ answer.id }}" data-mainId="{{ answer.mainId }}" title="{{ answer.id }}" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>
                     {% endif %}<span class="answer-date">{{ answer.createdDate|localizeddate('medium', 'short')|raw }}</span>
                         {% if answer.comments %}
                         {% for answer in answer.comments %}
@@ -153,9 +153,9 @@
             e.preventDefault();
             $('.this-answer-form').remove();
             $('.this-comment-edit-form').remove();
-            var formCommentId = 'form' + $(this).attr('data-id');
-            var commentId = $(this).attr('data-id');
-            var mainId = $(this).attr('main-Id');
+            var formCommentId = 'form' + $(this).data('id');
+            var commentId = $(this).data('id');
+            var mainId = $(this).data('mainId');
             $(this).parent().children('.answer-form').append('<form id="' + formCommentId + '" class="this-answer-form"><textarea id="answer-form-text" name="answer-form-text" class="form-control" rows=1 placeholder="{{ __('Enter your comment') }}"></textarea><input type="checkbox" id="answer-form-message" /> {{ __('Get message?') }}<input type="checkbox" id="answer-form-privacy" /> {{ __('Accept privacy policy?') }}<input type="hidden" id="parentcomment" name="parentcomment" value="' + commentId + '" /><input type="hidden" id="maincomment" name="maincomment" value="' + mainId + '" /></form>');
         });
         
@@ -163,11 +163,11 @@
             e.preventDefault();
             $('.this-answer-form').remove();
             $('.this-comment-edit-form').remove();
-            var formCommentId = 'form' + $(this).attr('data-id');
-            var commentId = $(this).attr('data-id');
-            var parentid = $(this).attr('data-parentid');
-            var subject = $(this).attr('data-subject');
-            var text = $(this).attr('data-text');
+            var formCommentId = 'form' + $(this).data('id');
+            var commentId = $(this).data('id');
+            var parentid = $(this).data('parentid');
+            var subject = $(this).data('subject');
+            var text = $(this).data('text');
             $(this).parents('.comment-content').find('.comment-text').prepend('<form id="' + formCommentId + '" class="this-comment-edit-form"><input id="this-comment-edit-subject" class="form-control" type="text" value="' + subject + '"><textarea id="this-comment-edit-text" name="this-comment-form-text" class="form-control" rows="1" placeholder="' + text + '"></textarea><input type="checkbox" id="answer-form-message"> {{ __('Get message?') }} <input type="checkbox" id="answer-form-privacy" /> {{ __('Accept privacy policy?') }}<input type="hidden" id="parentcomment" name="parentcomment" value="' + commentId + '" /><input type="hidden" id="thisComment" name="thisComment" value="' + commentId + '" /></form>');
             $('#this-comment-edit-text').val(text);
         });
