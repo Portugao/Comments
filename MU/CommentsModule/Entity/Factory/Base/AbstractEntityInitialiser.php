@@ -13,12 +13,18 @@
 namespace MU\CommentsModule\Entity\Factory\Base;
 
 use MU\CommentsModule\Entity\CommentEntity;
+use MU\CommentsModule\Helper\PermissionHelper;
 
 /**
  * Entity initialiser class used to dynamically apply default values to newly created entities.
  */
 abstract class AbstractEntityInitialiser
 {
+    /**
+     * @var PermissionHelper
+     */
+    protected $permissionHelper;
+
     /**
      * Initialises a given comment instance.
      *

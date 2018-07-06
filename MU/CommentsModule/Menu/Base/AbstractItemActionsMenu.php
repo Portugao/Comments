@@ -59,15 +59,13 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
         $routeArea = $options['area'];
         $context = $options['context'];
 
-        $permissionApi = $this->container->get('zikula_permissions_module.api.permission');
+        $permissionHelper = $this->container->get('mu_comments_module.permission_helper');
         $currentUserApi = $this->container->get('zikula_users_module.current_user');
         $entityDisplayHelper = $this->container->get('mu_comments_module.entity_display_helper');
         $menu->setChildrenAttribute('class', 'list-inline item-actions');
 
         $currentUserId = $currentUserApi->isLoggedIn() ? $currentUserApi->get('uid') : UsersConstant::USER_ID_ANONYMOUS;
         if ($entity instanceof CommentEntity) {
-            $component = 'MUCommentsModule:Comment:';
-            $instance = $entity->getKey() . '::';
             $routePrefix = 'mucommentsmodule_comment_';
             $isOwner = $currentUserId > 0 && null !== $entity->getCreatedBy() && $currentUserId == $entity->getCreatedBy()->getUid();
         
@@ -90,7 +88,7 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
                 $menu[$title]->setLinkAttribute('title', str_replace('"', '', $entityDisplayHelper->getFormattedTitle($entity)));
                 $menu[$title]->setAttribute('icon', 'fa fa-eye');
             }
-            if ($permissionApi->hasPermission($component, $instance, ACCESS_EDIT)) {
+            if ($permissionHelper->mayEdit($entity)) {
                 $title = $this->__('Edit', 'mucommentsmodule');
                 $menu->addChild($title, [
                     'route' => $routePrefix . $routeArea . 'edit',
@@ -106,7 +104,7 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
                 $menu[$title]->setLinkAttribute('title', $this->__('Reuse for new comment', 'mucommentsmodule'));
                 $menu[$title]->setAttribute('icon', 'fa fa-files-o');
             }
-            if ($permissionApi->hasPermission($component, $instance, ACCESS_DELETE)) {
+            if ($permissionHelper->mayDelete($entity)) {
                 $title = $this->__('Delete', 'mucommentsmodule');
                 $menu->addChild($title, [
                     'route' => $routePrefix . $routeArea . 'delete',
@@ -126,9 +124,7 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
             
             // more actions for adding new related items
             
-            $relatedComponent = 'MUCommentsModule:Comment:';
-            $relatedInstance = $entity->getKey() . '::';
-            if ($isOwner || $permissionApi->hasPermission($relatedComponent, $relatedInstance, ACCESS_COMMENT)) {
+            if ($isOwner || $permissionHelper->hasComponentPermission('comment', ACCESS_COMMENT)) {
                 $title = $this->__('Create comments', 'mucommentsmodule');
                 $menu->addChild($title, [
                     'route' => 'mucommentsmodule_comment_' . $routeArea . 'edit',

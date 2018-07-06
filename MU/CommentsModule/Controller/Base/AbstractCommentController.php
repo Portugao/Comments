@@ -64,12 +64,14 @@ abstract class AbstractCommentController extends AbstractController
      */
     protected function indexInternal(Request $request, $isAdmin = false)
     {
-        // parameter specifying which type of objects we are treating
         $objectType = 'comment';
+        // permission check
         $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_OVERVIEW;
-        if (!$this->hasPermission('MUCommentsModule:' . ucfirst($objectType) . ':', '::', $permLevel)) {
+        $permissionHelper = $this->get('mu_comments_module.permission_helper');
+        if (!$permissionHelper->hasComponentPermission($objectType, $permLevel)) {
             throw new AccessDeniedException();
         }
+        
         $templateParameters = [
             'routeArea' => $isAdmin ? 'admin' : ''
         ];
@@ -118,12 +120,14 @@ abstract class AbstractCommentController extends AbstractController
      */
     protected function viewInternal(Request $request, $sort, $sortdir, $pos, $num, $isAdmin = false)
     {
-        // parameter specifying which type of objects we are treating
         $objectType = 'comment';
+        // permission check
         $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_READ;
-        if (!$this->hasPermission('MUCommentsModule:' . ucfirst($objectType) . ':', '::', $permLevel)) {
+        $permissionHelper = $this->get('mu_comments_module.permission_helper');
+        if (!$permissionHelper->hasComponentPermission($objectType, $permLevel)) {
             throw new AccessDeniedException();
         }
+        
         $templateParameters = [
             'routeArea' => $isAdmin ? 'admin' : ''
         ];
@@ -156,7 +160,7 @@ abstract class AbstractCommentController extends AbstractController
         // filter by permissions
         $filteredEntities = [];
         foreach ($templateParameters['items'] as $comment) {
-            if (!$this->hasPermission('MUCommentsModule:' . ucfirst($objectType) . ':', $comment->getKey() . '::', $permLevel)) {
+            if (!$permissionHelper->hasEntityPermission($comment, $permLevel)) {
                 continue;
             }
             $filteredEntities[] = $comment;
@@ -204,19 +208,15 @@ abstract class AbstractCommentController extends AbstractController
      */
     protected function displayInternal(Request $request, CommentEntity $comment, $isAdmin = false)
     {
-        // parameter specifying which type of objects we are treating
         $objectType = 'comment';
+        // permission check
         $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_READ;
-        if (!$this->hasPermission('MUCommentsModule:' . ucfirst($objectType) . ':', '::', $permLevel)) {
-            throw new AccessDeniedException();
-        }
-        // create identifier for permission check
-        $instanceId = $comment->getKey();
-        if (!$this->hasPermission('MUCommentsModule:' . ucfirst($objectType) . ':', $instanceId . '::', $permLevel)) {
+        $permissionHelper = $this->get('mu_comments_module.permission_helper');
+        if (!$permissionHelper->hasEntityPermission($comment, $permLevel)) {
             throw new AccessDeniedException();
         }
         
-        if ($comment->getWorkflowState() != 'approved' && !$this->hasPermission('MUCommentsModule:' . ucfirst($objectType) . ':', $instanceId . '::', ACCESS_ADMIN)) {
+        if ($comment->getWorkflowState() != 'approved' && !$permissionHelper->hasEntityPermission($comment, ACCESS_ADMIN)) {
             throw new AccessDeniedException();
         }
         
@@ -271,12 +271,14 @@ abstract class AbstractCommentController extends AbstractController
      */
     protected function editInternal(Request $request, $isAdmin = false)
     {
-        // parameter specifying which type of objects we are treating
         $objectType = 'comment';
+        // permission check
         $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_EDIT;
-        if (!$this->hasPermission('MUCommentsModule:' . ucfirst($objectType) . ':', '::', $permLevel)) {
+        $permissionHelper = $this->get('mu_comments_module.permission_helper');
+        if (!$permissionHelper->hasComponentPermission($objectType, $permLevel)) {
             throw new AccessDeniedException();
         }
+        
         $templateParameters = [
             'routeArea' => $isAdmin ? 'admin' : ''
         ];
@@ -336,12 +338,14 @@ abstract class AbstractCommentController extends AbstractController
      */
     protected function deleteInternal(Request $request, CommentEntity $comment, $isAdmin = false)
     {
-        // parameter specifying which type of objects we are treating
         $objectType = 'comment';
+        // permission check
         $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_DELETE;
-        if (!$this->hasPermission('MUCommentsModule:' . ucfirst($objectType) . ':', '::', $permLevel)) {
+        $permissionHelper = $this->get('mu_comments_module.permission_helper');
+        if (!$permissionHelper->hasEntityPermission($comment, $permLevel)) {
             throw new AccessDeniedException();
         }
+        
         $logger = $this->get('logger');
         $logArgs = ['app' => 'MUCommentsModule', 'user' => $this->get('zikula_users_module.current_user')->get('uname'), 'entity' => 'comment', 'id' => $comment->getKey()];
         

@@ -18,8 +18,8 @@ use Zikula\Common\Translator\TranslatorTrait;
 use Zikula\Core\Doctrine\EntityAccess;
 use Zikula\Core\LinkContainer\LinkContainerInterface;
 use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
-use Zikula\PermissionsModule\Api\ApiInterface\PermissionApiInterface;
 use MU\CommentsModule\Helper\ControllerHelper;
+use MU\CommentsModule\Helper\PermissionHelper;
 
 /**
  * This is the link container service implementation class.
@@ -34,11 +34,6 @@ abstract class AbstractLinkContainer implements LinkContainerInterface
     protected $router;
 
     /**
-     * @var PermissionApiInterface
-     */
-    protected $permissionApi;
-
-    /**
      * @var VariableApiInterface
      */
     protected $variableApi;
@@ -49,26 +44,31 @@ abstract class AbstractLinkContainer implements LinkContainerInterface
     protected $controllerHelper;
 
     /**
+     * @var PermissionHelper
+     */
+    protected $permissionHelper;
+
+    /**
      * LinkContainer constructor.
      *
-     * @param TranslatorInterface    $translator       Translator service instance
-     * @param Routerinterface        $router           Router service instance
-     * @param PermissionApiInterface $permissionApi    PermissionApi service instance
-     * @param VariableApiInterface   $variableApi      VariableApi service instance
-     * @param ControllerHelper       $controllerHelper ControllerHelper service instance
+     * @param TranslatorInterface  $translator       Translator service instance
+     * @param Routerinterface      $router           Router service instance
+     * @param VariableApiInterface $variableApi      VariableApi service instance
+     * @param ControllerHelper     $controllerHelper ControllerHelper service instance
+     * @param PermissionHelper     $permissionHelper PermissionHelper service instance
      */
     public function __construct(
         TranslatorInterface $translator,
         RouterInterface $router,
-        PermissionApiInterface $permissionApi,
         VariableApiInterface $variableApi,
-        ControllerHelper $controllerHelper
+        ControllerHelper $controllerHelper,
+        PermissionHelper $permissionHelper
     ) {
         $this->setTranslator($translator);
         $this->router = $router;
-        $this->permissionApi = $permissionApi;
         $this->variableApi = $variableApi;
         $this->controllerHelper = $controllerHelper;
+        $this->permissionHelper = $permissionHelper;
     }
 
     /**
@@ -99,13 +99,13 @@ abstract class AbstractLinkContainer implements LinkContainerInterface
         $links = [];
 
         if (LinkContainerInterface::TYPE_ACCOUNT == $type) {
-            if (!$this->permissionApi->hasPermission($this->getBundleName() . '::', '::', ACCESS_OVERVIEW)) {
+            if (!$this->permissionHelper->hasPermission(ACCESS_OVERVIEW)) {
                 return $links;
             }
 
             if (true === $this->variableApi->get('MUCommentsModule', 'linkOwnCommentsOnAccountPage', true)) {
                 $objectType = 'comment';
-                if ($this->permissionApi->hasPermission($this->getBundleName() . ':' . ucfirst($objectType) . ':', '::', ACCESS_READ)) {
+                if ($this->permissionHelper->hasComponentPermission($objectType, ACCESS_READ)) {
                     $links[] = [
                         'url' => $this->router->generate('mucommentsmodule_' . strtolower($objectType) . '_view', ['own' => 1]),
                         'text' => $this->__('My comments', 'mucommentsmodule'),
@@ -114,7 +114,7 @@ abstract class AbstractLinkContainer implements LinkContainerInterface
                 }
             }
 
-            if ($this->permissionApi->hasPermission($this->getBundleName() . '::', '::', ACCESS_ADMIN)) {
+            if ($this->permissionHelper->hasPermission(ACCESS_ADMIN)) {
                 $links[] = [
                     'url' => $this->router->generate('mucommentsmodule_comment_adminindex'),
                     'text' => $this->__('Comments Backend', 'mucommentsmodule'),
@@ -128,7 +128,7 @@ abstract class AbstractLinkContainer implements LinkContainerInterface
 
         $routeArea = LinkContainerInterface::TYPE_ADMIN == $type ? 'admin' : '';
         if (LinkContainerInterface::TYPE_ADMIN == $type) {
-            if ($this->permissionApi->hasPermission($this->getBundleName() . '::', '::', ACCESS_READ)) {
+            if ($this->permissionHelper->hasPermission(ACCESS_READ)) {
                 $links[] = [
                     'url' => $this->router->generate('mucommentsmodule_comment_index'),
                     'text' => $this->__('Frontend', 'mucommentsmodule'),
@@ -137,7 +137,7 @@ abstract class AbstractLinkContainer implements LinkContainerInterface
                 ];
             }
         } else {
-            if ($this->permissionApi->hasPermission($this->getBundleName() . '::', '::', ACCESS_ADMIN)) {
+            if ($this->permissionHelper->hasPermission(ACCESS_ADMIN)) {
                 $links[] = [
                     'url' => $this->router->generate('mucommentsmodule_comment_adminindex'),
                     'text' => $this->__('Backend', 'mucommentsmodule'),
@@ -148,14 +148,14 @@ abstract class AbstractLinkContainer implements LinkContainerInterface
         }
         
         if (in_array('comment', $allowedObjectTypes)
-            && $this->permissionApi->hasPermission($this->getBundleName() . ':Comment:', '::', $permLevel)) {
+            && $this->permissionHelper->hasComponentPermission('comment', $permLevel)) {
             $links[] = [
                 'url' => $this->router->generate('mucommentsmodule_comment_' . $routeArea . 'view'),
                 'text' => $this->__('Comments', 'mucommentsmodule'),
                 'title' => $this->__('Comments list', 'mucommentsmodule')
             ];
         }
-        if ($routeArea == 'admin' && $this->permissionApi->hasPermission($this->getBundleName() . '::', '::', ACCESS_ADMIN)) {
+        if ($routeArea == 'admin' && $this->permissionHelper->hasPermission(ACCESS_ADMIN)) {
             $links[] = [
                 'url' => $this->router->generate('mucommentsmodule_config_config'),
                 'text' => $this->__('Settings', 'mucommentsmodule'),
