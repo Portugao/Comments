@@ -259,7 +259,7 @@
 	                                out = out + data.subject + ' - ';
 	                            }   
 	                            out = out + data.created;
-	                            out = out + '<a title="edit" href=""><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a></div>';
+	                            out = out + '</div>';
 	                            out = out + '<div id="commenttext' + data.id + '" class="comment-text">' + data.text;
 	                            out = out + '<span class="answer-container hidden"><a title="3" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>';
 	                            out = out + '</div></div><div class="col-md-12"></div></div>';
@@ -284,7 +284,7 @@
            }
         });
         
-           $('.comment-text').on('keydown','.this-comment-edit-form', function(e) {
+           $('body').on('keydown','.this-comment-edit-form', function(e) {
            if (e.which == '13') {
            if(e.shiftKey == 0) {
                 e.preventDefault();
@@ -311,19 +311,27 @@
                             assignedEntity: 'comment'
                         },
                         success: function(data) {
-                        //out = '<div id="comment' + data.id + '" class="comment-container">';
-                        var out = out + '<div class="col-md-2"><div class="comment-user">';
+                        var out = '<div id="comment' + data.id;
+                            out = out + '<div class="col-md-2">';
+                            out = out + '<div class="comment-user">';
                             out = out + data.link + '<br />';
-                            out = out + '<span class="comment-avatar">' + data.avatar + '</span></div></div>';
-                            out = out + '<div class="col-md-10"><div class="comment-content"><div class="comment-header">';
+                            out = out + '<span class="comment-avatar">' + data.avatar + '</span>';
+                            out = out + '</div>',
+                            out = out + '</div>';
+                            out = out + '<div class="col-md-10">',
+                            out = out + '<div class="comment-content">';
+                            out = out + '<div class="comment-header">';
                             if(data.subject != '') {
                                 out = out + data.subject + ' - ';
                             }   
                             out = out + data.created;
-                            out = out + '<a title="edit" href=""><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a></div>';
+                            out = out + '<a title="edit" href=""><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a>';
+                            out = out + '</div>';
                             out = out + '<div id="commenttext' + data.id + '" class="comment-text">' + data.text;
                             out = out + '<span class="answer-container hidden"><a title="3" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>';
-                            out = out + '</div></div><div class="col-md-12"></div>';
+                            out = out + '</div>';
+                            out = out + '</div>';
+                            out = out + '<div class="col-md-12"></div></div>';
                             $(this).parent('.comment-container').html(out);
                             //$('.comment').prepend(out);
                             $('.commentimg').hide('slow');
