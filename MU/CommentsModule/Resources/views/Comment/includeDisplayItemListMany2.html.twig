@@ -156,6 +156,7 @@
             var formCommentId = 'form' + $(this).data('id');
             var commentId = $(this).data('id');
             var mainId = $(this).data('mainId');
+            var privacy = $(this).data('privacy');
             $(this).parent().children('.answer-form').append('<form id="' + formCommentId + '" class="this-answer-form"><textarea id="answer-form-text" name="answer-form-text" class="form-control" rows=1 placeholder="{{ __('Enter your comment') }}"></textarea><input type="checkbox" id="answer-form-message" /> {{ __('Get message?') }}<input type="checkbox" id="answer-form-privacy" /> {{ __('Accept privacy policy?') }}<input type="hidden" id="parentcomment" name="parentcomment" value="' + commentId + '" /><input type="hidden" id="maincomment" name="maincomment" value="' + mainId + '" /></form>');
         });
         
@@ -228,7 +229,10 @@
                 e.preventDefault();
                 var subject = $(this).find('#mucommentsmodule_comment_subject').val();
                 var name = $(this).find('#mucommentsmodule_comment_name').val();
+                var yourMail = $(this).find('#mucommentsmodule_comment_yourMailAddress').val();
                 var text = $(this).find('#mucommentsmodule_comment_text').val();
+                var mail = $(this).find('#mucommentsmodule_comment_sendMails').is(':checked') ? 1 : 0;
+                var privacy = $(this).find('#mucommentsmodule_comment_privacyPolicy').is(':checked') ? 1 : 0;
                 if($('#mucommentsmodule_comment_text').val() != '') {
                     $('#commentEditForm').parent().append('<img class="commentimg" src="/images/ajax/indicator_circle.gif" />');
                     $.ajax({
@@ -242,7 +246,10 @@
                             url: '{{ subscriberUrl }}',
                             subject: subject,
                             name: name,
+                            yourMail: yourMail,
                             text: text,
+                            message: mail,
+                            privacy: privacy,
                             parentcomment: 0,
                             maincomment: 0,
                             assignedEntity: 'comment'
@@ -277,6 +284,7 @@
                             $('.comments-feedback').delay(10000).hide('slow');
                         }
                         $('#commentEditForm input, #commentEditForm textarea').val('');
+                        $('#commentEditForm checkbox').prop('checked', false);
                         }
                     });
                 }

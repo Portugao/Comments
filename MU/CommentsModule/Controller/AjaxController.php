@@ -219,7 +219,11 @@ class AjaxController extends AbstractAjaxController
     	$controllerHelper = $this->get('mu_comments_module.controller_helper');
     	$profileLink = $controllerHelper->getProfileLink($thisComment->getCreatedBy()->getUid());
     	$avatar = $controllerHelper->getAvatar($thisComment->getCreatedBy()->getUid());
+    	if ($profileLink != '#') {
     	$link = '<a href="' . $profileLink . '" >' . $thisComment->getCreatedBy()->getUname() . '</a>';
+    	} else {
+    	    $link = $thisComment->getCreatedBy()->getUname();
+    	}
     
     	// return response
     	return new JsonResponse([
@@ -284,6 +288,15 @@ class AjaxController extends AbstractAjaxController
     	$message = $request->request->get('message', 0);
     	$parentid = $request->request->get('parentcomment');
     	$mainId = $request->request->get('maincomment');
+    	$mails = $request->request->get('privacy');
+    	$privacy = $request->request->get('privacy', 0);
+    	$privacyLink = $this->getVar('linkToPrivacyPolicy');
+    	if ($privacy == 0 && $privacyLink != '') {
+    		return new JsonResponse([
+    				'id' => 0
+    		]);
+    	}
+    	
     	if ($mainId == 0) {
     		$mainId = $parentid;
     	}
@@ -335,17 +348,22 @@ class AjaxController extends AbstractAjaxController
     	}
     	$comment->setName($name);
     	$comment->setText($text);
+    	if ($mails == 1) {
+    	    $comment->setSendMails(1);
+    	}
+    	if ($privacy == 1) {
+    		$comment->setPrivacyPolicy($privacy);
+    	}
     	if (is_Object($parentEntity)) {
-    	$comment->setComment($parentEntity);
+    	    $comment->setComment($parentEntity);
     	} else {
     		$comment->setComment(NULL);
     	}
     	$comment->setMainId($mainId);
-    	$comment->setSendMails($message);
     	if ($kindOfModeration == 'moderate') {
     		$comment->setWorkflowState('waiting');
     	} else {
-    	$comment->setWorkflowState('approved');
+    	    $comment->setWorkflowState('approved');
     	}
     	$qb = $entityManager->persist($comment);
     	$qb = $entityManager->flush();

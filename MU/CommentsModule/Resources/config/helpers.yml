@@ -54,6 +54,15 @@ services:
             - "@zikula_groups_module.group_repository"
             - "@mu_comments_module.entity_display_helper"
             - "@mu_comments_module.workflow_helper"
+            
+    mu_comments_module.permission_helper:
+        class: MU\CommentsModule\Helper\PermissionHelper
+        arguments:
+            - "@service_container"
+            - "@request_stack"
+            - "@zikula_permissions_module.api.permission"
+            - "@zikula_users_module.current_user"
+            - "@zikula_users_module.user_repository"
     
     mu_comments_module.search_helper:
         class: MU\CommentsModule\Helper\SearchHelper
