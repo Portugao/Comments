@@ -6,7 +6,6 @@
     <div class="container">
         <div class="zikula-bootstrap-tab-container">
             <ul class="nav nav-tabs">
-            {% set activatedObjectTypes = getModVar('MUCommentsModule', 'enabledFinderTypes', []) %}
             {% if 'comment' in activatedObjectTypes %}
                 <li{{ objectType == 'comment' ? ' class="active"' : '' }}><a href="{{ path('mucommentsmodule_external_finder', {objectType: 'comment', editor: editorName}) }}" title="{{ __('Search and select comment') }}">{{ __('Comments') }}</a></li>
             {% endif %}

@@ -20,7 +20,7 @@ application "Comments" targets ZK20  {
         generatePoweredByBacklinksIntoFooterTemplates false
     generateTests false
         skipFiles "Controller/AjaxController.php,\r\nEntity/Repository/CommentRepository.php,\r\nHelper/ControllerHelper.php,\r\nHelper/WorkflowHelper.php,\r\nHookProvider/CommentUiHooksProvider.php,\r\nTwig/TwigExtension.php"
-    markFiles "Resources/config/helpers.yml,\r\nResources/config/hooks.yml,\r\nResources/public/css/style.css,\r\nResources/views/base.html.twig,\r\nResources/views/Comment/edit.html.twig"
+    markFiles "Resources/config/helpers.yml,\r\nResources/config/hooks.yml,\r\nResources/config/twig.yml,\r\nResources/public/css/style.css,\r\nResources/views/base.html.twig,\r\nResources/views/Comment/edit.html.twig"
 
     entities {
         entity "comment" leading {

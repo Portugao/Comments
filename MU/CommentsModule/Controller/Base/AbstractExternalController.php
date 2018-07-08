@@ -12,7 +12,6 @@
 
 namespace MU\CommentsModule\Controller\Base;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -98,7 +97,8 @@ abstract class AbstractExternalController extends AbstractController
         $cssAssetBag->add($assetHelper->resolve('@MUCommentsModule:css/style.css'));
         $cssAssetBag->add([$assetHelper->resolve('@MUCommentsModule:css/custom.css') => 120]);
         
-        $activatedObjectTypes = $this->getVar('enabledFinderTypes', []);
+        $listEntriesHelper = $this->get('mu_comments_module.listentries_helper');
+        $activatedObjectTypes = $listEntriesHelper->extractMultiList($this->getVar('enabledFinderTypes', ''));
         if (!in_array($objectType, $activatedObjectTypes)) {
             if (!count($activatedObjectTypes)) {
                 throw new AccessDeniedException();
@@ -179,6 +179,8 @@ abstract class AbstractExternalController extends AbstractController
         
         $contextArgs = ['controller' => 'external', 'action' => 'display'];
         $templateParameters = $this->get('mu_comments_module.controller_helper')->addTemplateParameters($objectType, $templateParameters, 'controllerAction', $contextArgs);
+        
+        $templateParameters['activatedObjectTypes'] = $activatedObjectTypes;
         
         $templateParameters['pager'] = [
             'numitems' => $objectCount,

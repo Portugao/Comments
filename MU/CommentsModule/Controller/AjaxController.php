@@ -293,7 +293,7 @@ class AjaxController extends AbstractAjaxController
     	$privacyLink = $this->getVar('linkToPrivacyPolicy');
     	if ($privacy == 0 && $privacyLink != '') {
     		return new JsonResponse([
-    				'id' => 0
+    				'id' => -1
     		]);
     	}
     	
