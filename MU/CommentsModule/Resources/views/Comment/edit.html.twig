@@ -39,12 +39,19 @@
 			<div class="hidden">
 			{% endif %}
             {{ form_row(form.privacyPolicy) }}
-            <a href="{{ privacy }}">{{ __('Privacy policy') }}</a>	
+            <div class="form-group">            
+            <label class="col-sm-3 control-label" for="mucommentsmodule_comment_content">You have to accept the </label>
+            <div class="col-sm-9">
+            <div class="checkbox privacy-notice">
+            <a href="{{ privacy }}">{{ __('Privacy policy') }}</a>
+            </div>
+            </div>	
+            </div>
             {% if privacy == '' %}
 			</div>
 			{% endif %}
+			<input type="hidden" id="privacySetting" value="{{ privacy }}" />
         </fieldset>
-        <input type="" id={{ subscriberOwner|e('html_attr') }} />
         
             {% if routeArea != 'admin' %}
             <div class="hidden">
@@ -83,8 +90,10 @@
                 </div>
             </fieldset>
         {% endif %}
-        </div>       
-        
+        </div>
+        {% if routeArea != 'admin' %}     
+        <noscript>
+        {% endif %}
         {# include possible submit actions #}
         <div class="form-group form-buttons">
             <div class="col-sm-offset-3 col-sm-9">
@@ -98,6 +107,9 @@
                 {{ form_widget(form.cancel) }}
             </div>
         </div>
+        {% if routeArea != 'admin' %}
+        </noscript>
+        {% endif %}
         {{ form_end(form) }}
         {% set hookId = mode != 'create' ? comment.id : null %}
         {% set hooks = notifyDisplayHooks(eventName='mucommentsmodule.ui_hooks.comments.form_edit', id=hookId, outputAsArray=true) %}

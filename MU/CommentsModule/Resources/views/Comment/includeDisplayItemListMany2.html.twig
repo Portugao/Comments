@@ -125,11 +125,11 @@
 {# Form for creating a comment #}
     <h2>Create new comment</h2>
     <div class="mucommentsmodule-comment mucommentsmodule-edit">
-     {#{ mucommentsmodule_showEditForm() }#}
-        {{ include(
+     {{ mucommentsmodule_showEditForm() }}
+        {#{ include(
             '@MUCommentsModule/Comment/includeFrontendForm.html.twig',
             {group: 'comment'}
-        ) }}
+        ) }#}
     </div>
 {% endif %}
 </div>
@@ -208,14 +208,19 @@
                                     var out = '<div class="comments-answers"><span class="answer-avatar">' + data.avatar + '</span>' + data.link + ' ' + data.text + '</div>';
                                 } else {
                                     var out = '<div class="comments-feedback alert alert-info">Thank you for your comment. We will check as soon as possible.</div>';
+                                }                            
+                            } else {
+                                if (data.id == -1) {
+                                var out = '<div class="comments-feedback alert alert-info">You have to accept the privacy policy!</div>';
                                 }
-                                $('#commenttext' + commentId).append(out);
-                            } 
+                            }
+                            $('#commenttext' + commentId).append(out);
                             $('.commentimg').hide('slow');
                             if(data.moderate == 'yes') {
                                 $('.comments-feedback').delay(10000).hide('slow');
                             } 
                             $('.this-answer-form input, .this-answer-form input textarea').val('');
+                            $('.this-answer-form > input:checkbox').prop('checked',false);
                         }
                     });
                 }
@@ -233,7 +238,8 @@
                 var text = $(this).find('#mucommentsmodule_comment_text').val();
                 var mail = $(this).find('#mucommentsmodule_comment_sendMails').is(':checked') ? 1 : 0;
                 var privacy = $(this).find('#mucommentsmodule_comment_privacyPolicy').is(':checked') ? 1 : 0;
-                if($('#mucommentsmodule_comment_text').val() != '') {
+                var privacySetting = $(this).find('#privacySetting').val();
+                if($('#mucommentsmodule_comment_text').val() != '' && ((privacy == 0 && privacySetting == '') || (privacy == 1 && privacySetting != ''))) {
                     $('#commentEditForm').parent().append('<img class="commentimg" src="/images/ajax/indicator_circle.gif" />');
                     $.ajax({
                         method: 'POST',
@@ -281,13 +287,19 @@
                         }
                         $('.commentimg').hide('slow');
                         if(data.moderate == 'yes') {
-                            $('.comments-feedback').delay(10000).hide('slow');
+                            $('.z-displayhook h3').get(0).scrollIntoView();
+                            $('.comments-feedback').delay(5000).hide('slow');
                         }
                         $('#commentEditForm input, #commentEditForm textarea').val('');
                         $('#commentEditForm checkbox').prop('checked', false);
                         }
                     });
-                }
+                }  else {
+                var out = '<div class="comments-feedback alert alert-info">You have to accept the privacy policy for commenting!</div>';
+                $('.privacy-notice').append(out);
+
+                $('.comments-feedback').delay(5000).hide('slow');
+              }
               }
            }
         });

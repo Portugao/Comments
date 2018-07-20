@@ -54,6 +54,31 @@ class CommentUiHooksProvider extends AbstractCommentUiHooksProvider
 				$this->currentUser = $currentUser;
 	}
 	
+	/**
+	 * Returns a list of assigned entities for a given hook context.
+	 *
+	 * @param Hook $hook
+	 *
+	 * @return array List of assignments and assigned entities
+	 */
+	protected function selectAssignedEntities(Hook $hook)
+	{
+		list ($assignments, $assignedIds) = $this->selectAssignedIds($hook);
+		if (!count($assignedIds)) {
+			return [[], []];
+		}
+	
+		$entities = $this->entityFactory->getRepository('comment')->selectByIdList($assignedIds);
+		$approvedEntities = [];
+		foreach ($entities as $entity) {
+			if ($entity['workflowState'] == 'approved') {
+				$approvedEntities[] = $entity;
+			}
+		}
+	
+		return [$assignments, $approvedEntities];
+	}
+	
     /**
      * Returns the response for a display hook of a given context.
      *
