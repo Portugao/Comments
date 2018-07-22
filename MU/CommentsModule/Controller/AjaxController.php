@@ -152,7 +152,7 @@ class AjaxController extends AbstractAjaxController
     	$parentEntity = '';
     	$subject = $request->request->get('subject', '');
     	$name = $request->request->get('name', '');
-    	$text = $request->request->get('text');
+    	$text = $request->request->get('text', '');
     	
     	$kindOfModeration = '';
     	
@@ -160,20 +160,85 @@ class AjaxController extends AbstractAjaxController
 	    	$toModeration = $variableApi->get('MUCommentsModule', 'toModeration');
 	    	if ($toModeration != '') {
 	    		$toModeration = explode(',', $toModeration);
+	    		if (is_array($toModeration)) {
 	    		foreach ($toModeration as $moderation) {
-	    			if(strpos($moderation,$subject) !== false || strpos($moderation,$name) !== false || strpos($moderation,$text) !== false) {
+	    			if ($subject != '') {
+	    			if(strpos($moderation,$subject) !== false) {
 	    			    $kindOfModeration = 'moderate';
 	    			    break;
 	    			}
+	    			}
+	    			if ($name != '') {
+	    				if(strpos($moderation,$name) !== false) {
+	    					$kindOfModeration = 'moderate';
+	    					break;
+	    				}
+	    			}
+	    			if ($text != '') {
+	    				if(strpos($moderation,$text) !== false) {
+	    					$kindOfModeration = 'moderate';
+	    					break;
+	    				}
+	    			}
 	    		}
-	    	}
+	    		} else {
+	    			if ($subject != '') {
+	    			if(strpos($toModeration,$subject) !== false) {
+	    				$kindOfModeration = 'moderate';
+	    			}
+	    			}
+	    			if ($name != '') {
+	    				if(strpos($toModeration,$name) !== false) {
+	    					$kindOfModeration = 'moderate';
+	    				}
+	    			}
+	    			if ($text != '') {
+	    				if(strpos($toModeration,$text) !== false) {
+	    					$kindOfModeration = 'moderate';
+	    				}
+	    			}
+	    			}
+	    		}
+	    	
 	    	$toNotSaved = $variableApi->get('MUCommentsModule', 'toNotSaved');
 	    	if ($toNotSaved != '') {
 	    		$toNotSaved = explode(',', $toNotSaved);
+	    		if (is_array($toNotSaved)) {
 	    		foreach ($toNotSaved as $notsaved) {
-	    			if(strpos($notsaved,$subject) !== false || strpos($notsaved,$name) !== false || strpos($notsaved,$text) !== false) {
+	    			if ($subject != '') {
+	    			if(strpos($notsaved,$subject) !== false) {
 	    				$kindOfModeration = 'block';
 	    				break;
+	    			}
+	    			}
+	    			if ($name != '') {
+	    				if(strpos($notsaved,$name) !== false) {
+	    					$kindOfModeration = 'block';
+	    					break;
+	    				}
+	    			}
+	    			if ($text != '') {
+	    				if(strpos($notsaved,$text) !== false) {
+	    					$kindOfModeration = 'block';
+	    					break;
+	    				}
+	    			}
+	    		}
+	    		} else {
+	    			if ($subject != '') {
+	    				if(strpos($toNotSaved,$subject) !== false) {
+	    					$kindOfModeration = 'block';
+	    				}
+	    			}
+	    			if ($name != '') {
+	    				if(strpos($toNotSaved,$name) !== false) {
+	    					$kindOfModeration = 'block';
+	    				}
+	    			}
+	    			if ($text != '') {
+	    				if(strpos($toNotSaved,$text) !== false) {
+	    					$kindOfModeration = 'block';
+	    				}
 	    			}
 	    		}
 	    	}
