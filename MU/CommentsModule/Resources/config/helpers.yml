@@ -4,6 +4,7 @@ services:
         class: MU\CommentsModule\Helper\CollectionFilterHelper
         arguments:
             - "@request_stack"
+            - "@mu_comments_module.permission_helper"
             - "@zikula_users_module.current_user"
             - "@=service('zikula_extensions_module.api.variable').get('MUCommentsModule', 'showOnlyOwnEntries', false)"
     
@@ -83,10 +84,10 @@ services:
             - "@twig"
             - "@twig.loader"
             - "@request_stack"
-            - "@zikula_permissions_module.api.permission"
             - "@zikula_extensions_module.api.variable"
             - "@zikula_core.common.theme.pagevars"
             - "@mu_comments_module.controller_helper"
+            - "@mu_comments_module.permission_helper"
     
     mu_comments_module.workflow_helper:
         class: MU\CommentsModule\Helper\WorkflowHelper
@@ -94,8 +95,8 @@ services:
             - "@translator.default"
             - "@workflow.registry"
             - "@logger"
-            - "@zikula_permissions_module.api.permission"
             - "@zikula_users_module.current_user"
             - "@mu_comments_module.entity_factory"
             - "@mu_comments_module.listentries_helper"
+            - "@mu_comments_module.permission_helper"
             - "@zikula_extensions_module.api.variable"

@@ -14,14 +14,14 @@ namespace MU\CommentsModule\Helper;
 
 use MU\CommentsModule\Helper\Base\AbstractWorkflowHelper;
 
-use Zikula\Core\Doctrine\EntityAccess;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Workflow\Registry;
 use Zikula\Common\Translator\TranslatorInterface;
-use Zikula\PermissionsModule\Api\ApiInterface\PermissionApiInterface;
+use Zikula\Core\Doctrine\EntityAccess;
 use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
 use MU\CommentsModule\Entity\Factory\EntityFactory;
 use MU\CommentsModule\Helper\ListEntriesHelper;
+use MU\CommentsModule\Helper\PermissionHelper;
 use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 
 /**
@@ -40,10 +40,10 @@ class WorkflowHelper extends AbstractWorkflowHelper
 	 * @param TranslatorInterface     $translator        Translator service instance
 	 * @param Registry                $registry          Workflow registry service instance
 	 * @param LoggerInterface         $logger            Logger service instance
-	 * @param PermissionApiInterface  $permissionApi     PermissionApi service instance
 	 * @param CurrentUserApiInterface $currentUserApi    CurrentUserApi service instance
 	 * @param EntityFactory           $entityFactory     EntityFactory service instance
 	 * @param ListEntriesHelper       $listEntriesHelper ListEntriesHelper service instance
+	 * @param PermissionHelper        $permissionHelper  PermissionHelper service instance
 	 * @param VariableApiInterface    $variableApi       VariableApiInterface
 	 *
 	 * @return void
@@ -52,19 +52,19 @@ class WorkflowHelper extends AbstractWorkflowHelper
 			TranslatorInterface $translator,
 			Registry $registry,
 			LoggerInterface $logger,
-			PermissionApiInterface $permissionApi,
 			CurrentUserApiInterface $currentUserApi,
 			EntityFactory $entityFactory,
 			ListEntriesHelper $listEntriesHelper,
+			PermissionHelper $permissionHelper,
 			VariableApiInterface $variableApi
 			) {
 				$this->translator = $translator;
 				$this->workflowRegistry = $registry;
 				$this->logger = $logger;
-				$this->permissionApi = $permissionApi;
 				$this->currentUserApi = $currentUserApi;
 				$this->entityFactory = $entityFactory;
 				$this->listEntriesHelper = $listEntriesHelper;
+				$this->permissionHelper = $permissionHelper;
 				$this->variableApi = $variableApi;
 	}
 	

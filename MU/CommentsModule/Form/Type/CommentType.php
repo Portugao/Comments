@@ -14,10 +14,75 @@ namespace MU\CommentsModule\Form\Type;
 
 use MU\CommentsModule\Form\Type\Base\AbstractCommentType;
 
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Zikula\Common\Translator\TranslatorInterface;
+use MU\CommentsModule\Entity\Factory\EntityFactory;
+use MU\CommentsModule\Helper\CollectionFilterHelper;
+use MU\CommentsModule\Helper\EntityDisplayHelper;
+use MU\CommentsModule\Helper\ListEntriesHelper;
+use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
+
+
 /**
  * Comment editing form type implementation class.
  */
 class CommentType extends AbstractCommentType
 {
-    // feel free to extend the comment editing form type class here
+	
+    /**
+     * @var VariableApiInterface
+     */
+    protected $variableApi;
+    
+    /**
+     * CommentType constructor.
+     *
+     * @param TranslatorInterface $translator    Translator service instance
+     * @param EntityFactory $entityFactory EntityFactory service instance
+     * @param CollectionFilterHelper $collectionFilterHelper CollectionFilterHelper service instance
+     * @param EntityDisplayHelper $entityDisplayHelper EntityDisplayHelper service instance
+     * @param ListEntriesHelper $listHelper ListEntriesHelper service instance
+     * @param VariableApiInterface $variableApi     VariableApi service instance
+     */
+    public function __construct(
+    		TranslatorInterface $translator,
+    		EntityFactory $entityFactory,
+    		CollectionFilterHelper $collectionFilterHelper,
+    		EntityDisplayHelper $entityDisplayHelper,
+    		ListEntriesHelper $listHelper,
+    		VariableApiInterface $variableApi
+    		) {
+    			$this->setTranslator($translator);
+    			$this->entityFactory = $entityFactory;
+    			$this->collectionFilterHelper = $collectionFilterHelper;
+    			$this->entityDisplayHelper = $entityDisplayHelper;
+    			$this->listHelper = $listHelper;
+    			$this->variableApi = $variableApi;
+    }
+	
+	 /**
+     * Adds basic entity fields.
+     *
+     * @param FormBuilderInterface $builder The form builder
+     * @param array                $options The options
+     */
+    public function addEntityFields(FormBuilderInterface $builder, array $options = [])
+    {
+    	$privacy = $this->variableApi->get('MUCommentsModule', 'linkToPrivacyPolicy');
+    	if ($privacy != '') {
+    		$required = true;
+    	} else {
+    		$privacy = false;
+    	}
+    	parent::addEntityFields($builder);
+    	$builder->add('privacyPolicy', CheckboxType::class, [
+    			'label' => $this->__('Privacy policy') . ':',
+    			'attr' => [
+    					'class' => '',
+    					'title' => $this->__('privacy policy ?')
+    			],
+    			'required' => $privacy,
+    	]);
+    }
 }

@@ -44,6 +44,7 @@ services:
             - "@mu_comments_module.collection_filter_helper"
             - "@mu_comments_module.entity_display_helper"
             - "@mu_comments_module.listentries_helper"
+            - "@zikula_extensions_module.api.variable"
         tags: ['form.type']
     
     mu_comments_module.form.type.block.itemlist:
