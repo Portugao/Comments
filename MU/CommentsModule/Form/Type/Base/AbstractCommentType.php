@@ -142,10 +142,10 @@ abstract class AbstractCommentType extends AbstractType
             'label_attr' => [
                 'class' => 'tooltips',
                 'title' => $this->__('Not public.
-                If the mailing feature is enabled, you get mails for the the commented item or your comment.')
+                If the mailing feature is enabled, you get mails for the commented item or your comment.')
             ],
             'help' => $this->__('Not public.
-            If the mailing feature is enabled, you get mails for the the commented item or your comment.'),
+            If the mailing feature is enabled, you get mails for the commented item or your comment.'),
             'empty_data' => '',
             'attr' => [
                 'maxlength' => 255,
