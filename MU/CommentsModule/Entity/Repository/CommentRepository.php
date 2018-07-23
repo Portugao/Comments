@@ -13,6 +13,10 @@
 namespace MU\CommentsModule\Entity\Repository;
 
 use MU\CommentsModule\Entity\Repository\Base\AbstractCommentRepository;
+use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
+use InvalidArgumentException;
 
 /**
  * Repository class used to implement own convenience methods for performing certain DQL queries.
@@ -25,4 +29,37 @@ class CommentRepository extends AbstractCommentRepository
 	 * @var string The default sorting field/expression
 	 */
 	protected $defaultSortingField = 'createdDate';
+	
+	/**
+	 * @var VariableApiInterface
+	 */
+	private $variableApi;
+	
+	/*public function __construct(VariableApiInterface $variableApi) {
+		$this->variableApi = $variableApi;
+	}*/
+	
+	/**
+	 * Adds an array of id filters to given query instance.
+	 *
+	 * @param array        $idList List of identifiers to use to retrieve the object
+	 * @param QueryBuilder $qb     Query builder to be enhanced
+	 *
+	 * @return QueryBuilder Enriched query builder instance
+	 *
+	 * @throws InvalidArgumentException Thrown if invalid parameters are received
+	 */
+	protected function addIdListFilter(array $idList, QueryBuilder $qb)
+	{
+		$qb = parent::addIdListFilter($idList, $qb);
+		
+		//$sortDirection = $this->variableApi->get('MUCommentsModule', 'orderComments');
+		$qb->orderBy('tbl.createdDate', 'desc');
+	
+		return $qb;
+	}
+	
+	public function setVariableApi(VariableApiInterface $variableApi) {
+		$this->variableApi = $variableApi;
+	}
 }

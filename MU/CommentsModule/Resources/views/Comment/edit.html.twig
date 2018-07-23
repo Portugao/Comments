@@ -51,11 +51,11 @@
             {% if privacy == '' %}
 			</div>
 			{% endif %}
-			{#<input type="hidden" id="privacySetting" value="{{ privacy }}" />#}
-			<input type="hidden" id="owner" name="owner" value="{{ owner }}" />
-			<input type="hidden" id="area" name="area" value="{{ area }}" />
-			<input type="hidden" id="object" name="object" value="{{ object }}" />
         </fieldset>
+        <input type="hidden" id="privacySetting" name="privacySetting" value="{{ privacy }}" />
+		<input type="hidden" id="owner" name="owner" value="{{ owner }}" />
+		<input type="hidden" id="area" name="area" value="{{ area }}" />
+		<input type="hidden" id="object" name="object" value="{{ object }}" />
         
             {% if routeArea != 'admin' %}
             <div class="hidden">

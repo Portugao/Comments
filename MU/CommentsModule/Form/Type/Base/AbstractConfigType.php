@@ -127,6 +127,7 @@ abstract class AbstractConfigType extends AbstractType
         }
         $builder->add('levelsOfComments', ChoiceType::class, [
             'label' => $this->__('Levels of comments') . ':',
+        	'help' => $this->__('At the moment only level one is available.'),
             'empty_data' => '',
             'attr' => [
                 'class' => '',

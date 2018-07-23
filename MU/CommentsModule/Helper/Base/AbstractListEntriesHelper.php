@@ -297,9 +297,9 @@ abstract class AbstractListEntriesHelper
             'text'    => $this->__('One'),
             'title'   => '',
             'image'   => '',
-            'default' => false
+            'default' => true
         ];
-        $states[] = [
+        /*$states[] = [
             'value'   => 'two',
             'text'    => $this->__('Two'),
             'title'   => '',
@@ -319,7 +319,7 @@ abstract class AbstractListEntriesHelper
             'title'   => '',
             'image'   => '',
             'default' => false
-        ];
+        ];*/
     
         return $states;
     }

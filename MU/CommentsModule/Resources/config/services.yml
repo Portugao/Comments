@@ -10,3 +10,10 @@ imports:
   - { resource: 'hooks.yml' }
   - { resource: 'twig.yml' }
   - { resource: 'logger.yml' }
+  
+services:
+  MU\CommentsModule\Entity\Repository\CommentRepository:
+        calls:
+            - method: setVariableApi
+              arguments:
+                  - 'variableApi'

@@ -73,7 +73,7 @@ class CommentType extends AbstractCommentType
     	if ($privacy != '') {
     		$required = true;
     	} else {
-    		$privacy = false;
+    		$required = false;
     	}
     	parent::addEntityFields($builder);
     	$builder->add('privacyPolicy', CheckboxType::class, [
@@ -82,7 +82,7 @@ class CommentType extends AbstractCommentType
     					'class' => '',
     					'title' => $this->__('privacy policy ?')
     			],
-    			'required' => $privacy,
+    			'required' => $required,
     	]);
     }
 }
