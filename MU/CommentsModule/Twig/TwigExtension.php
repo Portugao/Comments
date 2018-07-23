@@ -80,11 +80,11 @@ class TwigExtension extends AbstractTwigExtension
     	return $functions;
     }
     
-    public function showEditForm()
+    public function showEditForm($owner, $area, $object)
     {
     	$this->request->attributes->set('_zkModule', 'MUCommentsModule');
     
-    	$ref = new ControllerReference('MUCommentsModule:Comment:edit');
+    	$ref = new ControllerReference('MUCommentsModule:Comment:edit', array('owner' => $owner, 'area' => $area, 'object' => $object));
     
     	return $this->fragmentHandler->render($ref, 'inline', []);
     }

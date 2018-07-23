@@ -125,7 +125,7 @@
 {# Form for creating a comment #}
     <h2>Create new comment</h2>
     <div class="mucommentsmodule-comment mucommentsmodule-edit">
-     {{ mucommentsmodule_showEditForm() }}
+     {{ mucommentsmodule_showEditForm(subscriberOwner|e('html_attr'), subscriberAreaId|e('html_attr'), subscriberObjectId|e('html_attr')) }}
         {#{ include(
             '@MUCommentsModule/Comment/includeFrontendForm.html.twig',
             {group: 'comment'}
