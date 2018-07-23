@@ -45,9 +45,10 @@
 {% set privacy = getModVar('MUComentsModule', 'linkToPrivacyPolicy') %}
 {% if items|default and items|length > 0 %}
 <div class="list-group mucommentsmodule-related-item-list comment">
+<ul class="list-group">
 {% for item in items %}
 {% if item.comment is null %}
-    <div id="comment{{ item.id }}" class="comment-container">
+    <li id="comment{{ item.id }}" class="comment-container list-group-item"">
     <div class="col-md-2">
         <div class="comment-user">
         {% set profileLink = item.createdBy.getUid()|profileLinkByUserId() %}
@@ -108,9 +109,9 @@
     </div>
     <div class="col-md-12">
     </div>
-    </div>
+    </li>
     {% endif %}
-{% endfor %}<br style="clear: both;" />
+{% endfor %}</ul><br style="clear: both;" /><br />
 {% set level = getModVar('MUCommentsModule', 'levelOfComments') %}
 {% if context == 'hookDisplayView' and hasEditPermission and level != 'one' %}
     <noscript>
