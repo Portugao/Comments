@@ -25,6 +25,7 @@
 {% endif %}
 
 {% set pos = getModVar('MUCommentsModule', 'positionOfForm') %}
+{% set orderComments = getModVar('MUCommentsModule', 'orderComments') %}
 {% if context == 'hookDisplayView' and hasEditPermission %}
 
 {% if pos == 'above' %}
@@ -44,8 +45,8 @@
 {% set levels = getModVar('MUCommentsModule', 'levelsOfComments') %}
 {% set privacy = getModVar('MUComentsModule', 'linkToPrivacyPolicy') %}
 {% if items|default and items|length > 0 %}
-<div class="list-group mucommentsmodule-related-item-list comment">
-<ul class="list-group">
+<div class="mucommentsmodule-related-item-list comment">
+<ul id="list-container" class="list-group">
 {% for item in items %}
 {% if item.comment is null %}
     <li id="comment{{ item.id }}" class="comment-container list-group-item"">
@@ -263,7 +264,7 @@
                         success: function(data) {
                         if (data.id > 0) {
                         if (data.moderate == 'no') {
-	                        var out = '<div id="comment' + data.id + '" class="comment-container">';
+	                        var out = '<li id="comment' + data.id + '" class="comment-container list-group-item">';
 	                            out = out + '<div class="col-md-2"><div class="comment-user">';
 	                            out = out + data.link + '<br />';
 	                            out = out + '<span class="comment-avatar">' + data.avatar + '</span></div></div>';
@@ -275,15 +276,17 @@
 	                            out = out + '</div>';
 	                            out = out + '<div id="commenttext' + data.id + '" class="comment-text">' + data.text;
 	                            out = out + '<span class="answer-container hidden"><a title="3" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>';
-	                            out = out + '</div></div><div class="col-md-12"></div></div>';
+	                            out = out + '</div></li><div class="col-md-12"></div></div>';
                             } else {
                                 var out = '<div class="comments-feedback alert alert-info">Thank you for your comment. We will check as soon as possible.</div>';
                             }
-                            {% if pos == 'below' %}
-                            $('#comments-container').prepend(out);
+
+                            {% if orderComments == 'desc' %}
+                                $('#list-container').prepend(out);
                             {% else %}
-                            $('#commentEditForm').append(out);
+                                $('#list-container').append(out);
                             {% endif %}
+
                         }
                         $('.commentimg').hide('slow');
                         if(data.moderate == 'yes') {
