@@ -170,7 +170,13 @@
             var parentid = $(this).data('parentid');
             var subject = $(this).data('subject');
             var text = $(this).data('text');
-            $(this).parents('.comment-content').find('.comment-text').prepend('<form id="' + formCommentId + '" class="this-comment-edit-form"><input id="this-comment-edit-subject" class="form-control" type="text" value="' + subject + '"><textarea id="this-comment-edit-text" name="this-comment-form-text" class="form-control" rows="1" placeholder="' + text + '"></textarea><input type="checkbox" id="answer-form-message"> {{ __('Get message?') }} <input type="checkbox" id="answer-form-privacy" /> {{ __('Accept privacy policy?') }}<input type="hidden" id="parentcomment" name="parentcomment" value="' + commentId + '" /><input type="hidden" id="thisComment" name="thisComment" value="' + commentId + '" /></form>');
+            var message = $(this).data('sendMail');
+            var privacy = '{{ privacy }}';
+            if (privacy != '') {
+                $(this).parents('.comment-content').find('.comment-text').prepend('<form id="' + formCommentId + '" class="this-comment-edit-form"><input id="this-comment-edit-subject" class="form-control" type="text" value="' + subject + '"><textarea id="this-comment-edit-text" name="this-comment-form-text" class="form-control" rows="1" placeholder="' + text + '"></textarea> <input type="checkbox" id="answer-form-privacy" /> {{ __('Accept privacy policy?') }}<input type="hidden" id="parentcomment" name="parentcomment" value="' + commentId + '" /><input type="hidden" id="thisComment" name="thisComment" value="' + commentId + '" /></form>');
+            } else {
+                $(this).parents('.comment-content').find('.comment-text').prepend('<form id="' + formCommentId + '" class="this-comment-edit-form"><input id="this-comment-edit-subject" class="form-control" type="text" value="' + subject + '"><textarea id="this-comment-edit-text" name="this-comment-form-text" class="form-control" rows="1" placeholder="' + text + '"></textarea> <input type="hidden" id="parentcomment" name="parentcomment" value="' + commentId + '" /><input type="hidden" id="thisComment" name="thisComment" value="' + commentId + '" /></form>');
+                }
             $('#this-comment-edit-text').val(text);
         });
         
