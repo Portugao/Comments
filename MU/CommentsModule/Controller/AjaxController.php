@@ -413,7 +413,7 @@ class AjaxController extends AbstractAjaxController
     	}
     	$comment->setName($name);
     	$comment->setText($text);
-    	if ($mails == 1) {
+    	if ($message == 1) {
     	    $comment->setSendMails(1);
     	}
     	if ($privacy == 1) {
