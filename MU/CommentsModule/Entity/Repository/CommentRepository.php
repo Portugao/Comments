@@ -33,7 +33,7 @@ class CommentRepository extends AbstractCommentRepository
 	/**
 	 * @var VariableApiInterface
 	 */
-	private $variableApi;
+	protected $variableApi;
 	
 	/*public function __construct(VariableApiInterface $variableApi) {
 		$this->variableApi = $variableApi;
@@ -53,13 +53,25 @@ class CommentRepository extends AbstractCommentRepository
 	{
 		$qb = parent::addIdListFilter($idList, $qb);
 		
-		//$sortDirection = $this->variableApi->get('MUCommentsModule', 'orderComments');
-		$qb->orderBy('tbl.createdDate', 'desc');
+		$sortDirection = 'desc';
+		//$sortDirection = $this->variableApi->get('MUCommentsModule', 'orderComments', 'desc');
+		$qb->orderBy('tbl.createdDate', $sortDirection);
 	
 		return $qb;
 	}
 	
+	/**
+	 * 
+	 * @param VariableApiInterface $variableApi
+	 */
 	public function setVariableApi(VariableApiInterface $variableApi) {
 		$this->variableApi = $variableApi;
+	}
+	
+	/**
+	 * 
+	 */
+	public function getVariableApi(){
+		return $this->variableApi;
 	}
 }

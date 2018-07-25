@@ -25,6 +25,11 @@ services:
         arguments:
             - "@translator.default"
             - "@mu_comments_module.listentries_helper"
+            
+    mu_comments_module.entity_repository:
+        class: MU\CommentsModule\Entity\Repository
+        calls:
+            - [setVariableApi, ['@zikula_extensions_module.api.variable']]
     
     mu_comments_module.hook_helper:
         class: MU\CommentsModule\Helper\HookHelper
