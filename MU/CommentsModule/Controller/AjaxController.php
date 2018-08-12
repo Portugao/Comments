@@ -326,6 +326,7 @@ class AjaxController extends AbstractAjaxController
     	 
     	$variableApi = $this->get('zikula_extensions_module.api.variable');
     	$spam = $variableApi->get('MUCommentsModule', 'enableInternSpamHandling');
+    	// if spam is enalbled content has to be empty
     	if ($spam == 1) {
     		if ($content != '') {
     			return new JsonResponse($this->__('Wrong input'), JsonResponse::HTTP_FORBIDDEN);

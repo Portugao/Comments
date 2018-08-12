@@ -48,7 +48,7 @@
 <ul id="list-container" class="list-group">
 {% for item in items %}
 {% if item.comment is null %}
-    <li id="comment{{ item.id }}" class="comment-container list-group-item"">
+    <li id="comment{{ item.id }}" class="comment-container list-group-item">
     <div class="col-md-2">
         <div class="comment-user">
         {% set profileLink = item.createdBy.getUid()|profileLinkByUserId() %}
@@ -242,6 +242,7 @@
                 var name = $(this).find('#mucommentsmodule_comment_name').val();
                 var yourMail = $(this).find('#mucommentsmodule_comment_yourMailAddress').val();
                 var text = $(this).find('#mucommentsmodule_comment_text').val();
+                var content = $(this).find('#mucommentsmodule_comment_content').val();
                 var mail = $(this).find('#mucommentsmodule_comment_sendMails').is(':checked') ? 1 : 0;
                 var privacy = $(this).find('#mucommentsmodule_comment_privacyPolicy').is(':checked') ? 1 : 0;
                 var privacySetting = $(this).find('#privacySetting').val();
@@ -260,6 +261,7 @@
                             name: name,
                             yourMail: yourMail,
                             text: text,
+                            content: content,
                             mail: mail,
                             privacy: privacy,
                             parentcomment: 0,
@@ -361,8 +363,7 @@
                             out = out + '</div>';
                             out = out + '</div>';
                             out = out + '<div class="col-md-12"></div></div>';
-                            $(this).parent('.comment-container').html(out);
-                            //$('.comment').prepend(out);
+                            $('.this-comment-edit-form').parent('.comment-container').html(out);
                             $('.commentimg').hide('slow');
                         }
                     });
