@@ -121,7 +121,6 @@ class EditHandler extends AbstractEditHandler {
 			
 			$entityClass = 'MU\\CommentsModule\\Entity\\HookAssignmentEntity';
 			
-			$timestamp = time();
 			$date = date('Y-m-d H:i:s');
 			
 			$assignment = new $entityClass ();

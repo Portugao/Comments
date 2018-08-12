@@ -350,10 +350,9 @@ class AjaxController extends AbstractAjaxController
     	$subject = $request->request->get('subject', '');
     	$name = $request->request->get('name', '');
     	$text = $request->request->get('text');
-    	$message = $request->request->get('message', 0);
     	$parentid = $request->request->get('parentcomment');
     	$mainId = $request->request->get('maincomment');
-    	$mails = $request->request->get('privacy');
+    	$mail = $request->request->get('mail');
     	$privacy = $request->request->get('privacy', 0);
     	$privacyLink = $this->getVar('linkToPrivacyPolicy');
     	if ($privacy == 0 && $privacyLink != '') {
@@ -413,7 +412,7 @@ class AjaxController extends AbstractAjaxController
     	}
     	$comment->setName($name);
     	$comment->setText($text);
-    	if ($message == 1) {
+    	if ($mail == 1) {
     	    $comment->setSendMails(1);
     	}
     	if ($privacy == 1) {
@@ -430,8 +429,9 @@ class AjaxController extends AbstractAjaxController
     	} else {
     	    $comment->setWorkflowState('approved');
     	}
-    	$qb = $entityManager->persist($comment);
-    	$qb = $entityManager->flush();
+    	
+    	$entityManager->persist($comment);
+    	$entityManager->flush();
     	
     	$commentId = $comment->getId();
     
