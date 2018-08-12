@@ -30,7 +30,6 @@
 
 {% if pos == 'above' %}
 {# Form for creating a comment #}
-    <h2>Create new comment</h2>
     <div class="mucommentsmodule-comment mucommentsmodule-edit">
      {{ mucommentsmodule_showEditForm(subscriberOwner|e('html_attr'), subscriberAreaId|e('html_attr'), subscriberObjectId|e('html_attr')) }}
      {#{ include(
@@ -192,7 +191,7 @@
                     mainId = commentId;
                 }
                 if($('#answer-form-text').val() != '') {
-                    $('.this-answer-form').parent().append('<img class="commentimg" src="/images/ajax/large_square_white.gif" />');
+                    $('.this-answer-form').parent().append('<img class="commentimg" src="/modules/MU/CommentsModule/Resources/public/images/ajax-loader.gif"" />');
                     $('.this-answer-form').remove();
                     $.ajax({
                         method: 'POST',
@@ -247,7 +246,7 @@
                 var privacy = $(this).find('#mucommentsmodule_comment_privacyPolicy').is(':checked') ? 1 : 0;
                 var privacySetting = $(this).find('#privacySetting').val();
                 if($('#mucommentsmodule_comment_text').val() != '' && ((privacy == 0 && privacySetting == '') || (privacy == 1 && privacySetting != ''))) {
-                    $('#commentEditForm').parent().append('<img class="commentimg" src="/images/ajax/indicator_circle.gif" />');
+                    $('#commentEditForm').parent().append('<img class="commentimg" src="/modules/MU/CommentsModule/Resources/public/images/ajax-loader.gif" />');
                     $.ajax({
                         method: 'POST',
                         url: '{{ path('mucommentsmodule_ajax_' ~ routeArea ~ 'answer') }}',
@@ -301,6 +300,7 @@
                         }
                         $('#commentEditForm input, #commentEditForm textarea').val('');
                         $('#commentEditForm checkbox').prop('checked', false);
+                        $('#mucommentsmodule_comment_privacyPolicy').val(1);
                         }
                     });
                 }  else {
@@ -322,7 +322,7 @@
                 var commentId = $(this).find('#parentcomment').val();
                 var thisId = $(this).find('#thisComment').val();
                 if($('#this-comment-edit-text').val() != '') {
-                    $('#commentEditForm').parent().append('<img class="commentimg" src="/images/ajax/indicator_circle.gif" />');
+                    $('#commentEditForm').parent().append('<img class="commentimg" src="/modules/MU/CommentsModule/Resources/public/images/ajax-loader.gif" />');
                     $('.this-comment-edit-form').remove();
                     $.ajax({
                         method: 'POST',
