@@ -11,6 +11,7 @@ services:
     mu_comments_module.controller_helper:
         class: MU\CommentsModule\Helper\ControllerHelper
         arguments:
+            - "@translator.default"
             - "@request_stack"
             - "@router"
             - "@form.factory"

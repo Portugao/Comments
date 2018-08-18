@@ -14,15 +14,13 @@ namespace MU\CommentsModule\Helper;
 
 use MU\CommentsModule\Helper\Base\AbstractControllerHelper;
 use Zikula\UsersModule\Collector\ProfileModuleCollector;
-
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
+use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Component\SortableColumns\SortableColumns;
 use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 use MU\CommentsModule\Entity\Factory\EntityFactory;
-use MU\CommentsModule\Helper\CollectionFilterHelper;
-use MU\CommentsModule\Helper\ModelHelper;
 
 /**
  * Helper implementation class for controller layer methods.
@@ -36,6 +34,7 @@ class ControllerHelper extends AbstractControllerHelper
     /**
      * ControllerHelper constructor.
      *
+     * @param TranslatorInterface $translator      Translator service instance
      * @param RequestStack        $requestStack    RequestStack service instance
      * @param Routerinterface     $router          Router service instance
      * @param FormFactoryInterface $formFactory    FormFactory service instance
@@ -46,6 +45,7 @@ class ControllerHelper extends AbstractControllerHelper
      * @param ProfileModuleCollector $collector          ProfileModuleCollector
      */
     public function __construct(
+        TranslatorInterface $translator,
         RequestStack $requestStack,
         RouterInterface $router,
         FormFactoryInterface $formFactory,
@@ -55,7 +55,8 @@ class ControllerHelper extends AbstractControllerHelper
         ModelHelper $modelHelper,
     	ProfileModuleCollector $collector
     ) {
-        $this->request = $requestStack->getCurrentRequest();
+        $this->setTranslator($translator);
+        $this->requestStack = $requestStack;
         $this->router = $router;
         $this->formFactory = $formFactory;
         $this->variableApi = $variableApi;
@@ -96,7 +97,7 @@ class ControllerHelper extends AbstractControllerHelper
      */
     protected function determineDefaultViewSorting($objectType)
     {
-    	$request = $this->request;
+    	$request = $this->requestStack->getCurrentRequest();
     	$repository = $this->entityFactory->getRepository($objectType);
     
     	$sort = $request->query->get('sort', '');
