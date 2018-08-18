@@ -13,8 +13,8 @@
 namespace MU\CommentsModule\Form\Handler\Comment;
 
 use MU\CommentsModule\Form\Handler\Comment\Base\AbstractEditHandler;
-use MU\CommentsModule\Entity\HookAssignmentEntity;
-use Symfony\Component\Validator\Constraints\Date;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use RuntimeException;
 
 /**
  * This handler class handles the page events of editing forms.
@@ -59,12 +59,13 @@ class EditHandler extends AbstractEditHandler {
 			}
 		}
 		
+		$request = $this->requestStack->getCurrentRequest();
 		$entityData = $this->entityRef->toArray ();
-		$owner = $this->request->attributes->get ('owner', '');
+		$owner = $request->attributes->get ('owner', '');
 		$this->templateParameters ['owner'] = $owner;
-		$area = $this->request->attributes->get ('area', '');
+		$area = $request->attributes->get ('area', '');
 		$this->templateParameters ['area'] = $area;
-		$object = $this->request->attributes->get ('object', '');
+		$object = $request->attributes->get ('object', '');
 		$this->templateParameters ['object'] = $object;
 		
 		// assign data to template as array (for additions like standard fields)
@@ -74,13 +75,7 @@ class EditHandler extends AbstractEditHandler {
 	}
 	
 	/**
-	 * This method executes a certain workflow action.
-	 *
-	 * @param array $args
-	 *        	List of arguments from handleCommand method
-	 *        	
-	 * @return boolean Whether everything worked well or not
-	 *        
+	 * @inheritDoc
 	 * @throws RuntimeException Thrown if concurrent editing is recognised or another error occurs
 	 */
 	public function applyAction(array $args = []) {

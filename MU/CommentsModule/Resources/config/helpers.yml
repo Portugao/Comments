@@ -51,7 +51,6 @@ services:
         arguments:
             - "@kernel"
             - "@translator.default"
-            - "@session"
             - "@router"
             - "@request_stack"
             - "@zikula_extensions_module.api.variable"
@@ -74,12 +73,12 @@ services:
         class: MU\CommentsModule\Helper\SearchHelper
         arguments:
             - "@translator.default"
-            - "@zikula_permissions_module.api.permission"
             - "@session"
             - "@request_stack"
             - "@mu_comments_module.entity_factory"
             - "@mu_comments_module.controller_helper"
             - "@mu_comments_module.entity_display_helper"
+            - "@mu_comments_module.permission_helper"
         tags:
             - { name: zikula.searchable_module, bundleName: MUCommentsModule }
     

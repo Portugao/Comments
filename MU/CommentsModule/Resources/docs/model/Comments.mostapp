@@ -19,7 +19,7 @@ application "Comments" targets ZK20  {
         versionAllGeneratedFiles false
         generatePoweredByBacklinksIntoFooterTemplates false
     generateTests false
-        skipFiles "Controller/AjaxController.php,\r\nEntity/Repository/CommentRepository.php,\r\nHelper/ControllerHelper.php,\r\nHelper/WorkflowHelper.php,\r\nHookProvider/CommentUiHooksProvider.php,\r\nTwig/TwigExtension.php"
+        skipFiles "Controller/AjaxController.php,\r\nEntity/Repository/CommentRepository.php,\r\nForm/Type/CommentType.php,\r\nForm/Handler/Comment/EditHandler.php,\r\nHelper/ControllerHelper.php,\r\nHelper/WorkflowHelper.php,\r\nHookProvider/CommentUiHooksProvider.php,\r\nTwig/TwigExtension.php"
     markFiles "Resources/config/helpers.yml,\r\nResources/config/hooks.yml,\r\nResources/config/twig.yml,\r\nResources/public/css/style.css,\r\nResources/views/base.html.twig,\r\nResources/views/Comment/edit.html.twig"
 
     entities {
@@ -40,7 +40,7 @@ application "Comments" targets ZK20  {
                     mandatory false
                 },
                 email "yourMailAddress" {
-                    documentation "Not public.\r\nIf the mailing feature is enabled, you get mails for the the commented item or your comment."
+                    documentation "Not public.\r\nIf the mailing feature is enabled, you get mails for the commented item or your comment."
                     mandatory false
                 },
                 text "text" {
@@ -114,10 +114,10 @@ variables {
                 },
                 list "levelsOfComments" {
                     items {
-                        listItem  "One" ( "one" ),
-                        listItem    "Two" ( "two" ),
-                        listItem    "Three" ( "three" ),
-                        listItem "Four" ( "four" )
+                        default listItem "One" ( "one" ),
+                        listItem     "Two" ( "two" ),
+                        listItem     "Three" ( "three" ),
+                        listItem  "Four" ( "four" )
                     }
                 }
             ,

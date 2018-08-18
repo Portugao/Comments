@@ -1,7 +1,9 @@
 {# purpose of this template: comments index view #}
 {% extends routeArea == 'admin' ? 'MUCommentsModule::adminBase.html.twig' : 'MUCommentsModule::base.html.twig' %}
-{% block title __('comments') %}
+{% block title __('Comments') %}
 {% block admin_page_icon 'home' %}
 {% block content %}
-    <p>{{ __('Welcome to the comment section of the Comments application.') }}</p>
+    <div class="mucommentsmodule-comment mucommentsmodule-index">
+        <p>{{ __('Welcome to the comment section of the Comments application.') }}</p>
+    </div>
 {% endblock %}

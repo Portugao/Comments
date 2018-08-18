@@ -77,7 +77,7 @@
                     </td>
                 {% endif %}
                 <td id="itemActions{{ comment.getKey() }}Start" headers="hItemActionsStart" class="actions nowrap z-w02">
-                    {% set itemActions = knp_menu_get('MUCommentsModule:ItemActionsMenu:menu', [], {entity: comment, area: routeArea, context: 'view'}) %}
+                    {% set itemActions = knp_menu_get('mUCommentsMenuItemActions', [], {entity: comment, area: routeArea, context: 'view'}) %}
                     <div class="dropdown">
                         <a id="itemActions{{ comment.getKey() }}DropDownToggleStart" role="button" data-toggle="dropdown" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> <span class="caret"></span></a>
                         {{ knp_menu_render(itemActions, {template: 'ZikulaMenuModule:Override:bootstrap_fontawesome.html.twig'}) }}
@@ -102,16 +102,16 @@
                 </td>
                 <td headers="hSendMails" class="text-center">
                     {% if comment.sendMails %}
-                        <i class="fa fa-check" title="{{ __('Yes') }}"></i>
+                        <i class="fa fa-check text-success" title="{{ __('Yes') }}"></i>
                     {% else %}
-                        <i class="fa fa-times" title="{{ __('No') }}"></i>
+                        <i class="fa fa-times text-danger" title="{{ __('No') }}"></i>
                     {% endif %}
                 </td>
                 <td headers="hPrivacyPolicy" class="text-center">
                     {% if comment.privacyPolicy %}
-                        <i class="fa fa-check" title="{{ __('Yes') }}"></i>
+                        <i class="fa fa-check text-success" title="{{ __('Yes') }}"></i>
                     {% else %}
-                        <i class="fa fa-times" title="{{ __('No') }}"></i>
+                        <i class="fa fa-times text-danger" title="{{ __('No') }}"></i>
                     {% endif %}
                 </td>
                 <td headers="hComment" class="text-left">

@@ -246,6 +246,10 @@
                 var mail = $(this).find('#mucommentsmodule_comment_sendMails').is(':checked') ? 1 : 0;
                 var privacy = $(this).find('#mucommentsmodule_comment_privacyPolicy').is(':checked') ? 1 : 0;
                 var privacySetting = $(this).find('#privacySetting').val();
+                if(text == '') {
+                    var out = '<div class="comments-text-feedback alert alert-info">Please enter your text!</div>';
+                    $('#mucommentsmodule_comment_text').append(out);
+                }
                 if($('#mucommentsmodule_comment_text').val() != '' && ((privacy == 0 && privacySetting == '') || (privacy == 1 && privacySetting != ''))) {
                     $('#commentEditForm').parent().append('<img class="commentimg" src="/modules/MU/CommentsModule/Resources/public/images/ajax-loader.gif" />');
                     $.ajax({

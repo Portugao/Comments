@@ -5,7 +5,7 @@
 {% block title %}
     {% set templateTitle = comment|mucommentsmodule_formattedTitle|default(__('Comment')) %}
     {{ templateTitle|notifyFilters('mucommentsmodule.filter_hooks.comments.filter')|safeHtml }}{% if routeArea == 'admin' %} <small>({{ comment.workflowState|mucommentsmodule_objectState(false)|lower }})</small>{% endif %}
-    {% set itemActions = knp_menu_get('MUCommentsModule:ItemActionsMenu:menu', [], {entity: comment, area: routeArea, context: 'display'}) %}
+    {% set itemActions = knp_menu_get('mUCommentsMenuItemActions', [], {entity: comment, area: routeArea, context: 'display'}) %}
     <div class="dropdown">
         <a id="itemActions{{ comment.getKey() }}DropDownToggleStart" role="button" data-toggle="dropdown" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> {{ __('Actions') }} <span class="caret"></span></a>
         {{ knp_menu_render(itemActions, {template: 'ZikulaMenuModule:Override:bootstrap_fontawesome.html.twig'}) }}
@@ -46,24 +46,20 @@
             <dt>{{ __('Text') }}</dt>
             <dd>{{ comment.text|safeHtml }}</dd>
         {% endif %}
-        {% if comment.sendMails is not empty %}
-            <dt>{{ __('Send mails') }}</dt>
-            <dd>{% if comment.sendMails %}
-                <i class="fa fa-check" title="{{ __('Yes') }}"></i>
-            {% else %}
-                <i class="fa fa-times" title="{{ __('No') }}"></i>
-            {% endif %}
-            </dd>
+        <dt>{{ __('Send mails') }}</dt>
+        <dd>{% if comment.sendMails %}
+            <i class="fa fa-check text-success" title="{{ __('Yes') }}"></i>
+        {% else %}
+            <i class="fa fa-times text-danger" title="{{ __('No') }}"></i>
         {% endif %}
-        {% if comment.privacyPolicy is not empty %}
-            <dt>{{ __('Privacy policy') }}</dt>
-            <dd>{% if comment.privacyPolicy %}
-                <i class="fa fa-check" title="{{ __('Yes') }}"></i>
-            {% else %}
-                <i class="fa fa-times" title="{{ __('No') }}"></i>
-            {% endif %}
-            </dd>
+        </dd>
+        <dt>{{ __('Privacy policy') }}</dt>
+        <dd>{% if comment.privacyPolicy %}
+            <i class="fa fa-check text-success" title="{{ __('Yes') }}"></i>
+        {% else %}
+            <i class="fa fa-times text-danger" title="{{ __('No') }}"></i>
         {% endif %}
+        </dd>
         {% if comment.comment|default %}
             <dt>{{ __('Comment') }}</dt>
             <dd>
@@ -124,10 +120,12 @@
     {% endif %}
 {% endblock %}
 {% block display_hooks %}
-    {% set hooks = notifyDisplayHooks(eventName='mucommentsmodule.ui_hooks.comments.display_view', id=comment.getKey(), urlObject=currentUrlObject, outputAsArray=true) %}
-    {% if hooks is iterable and hooks|length > 0 %}
-        {% for area, hook in hooks %}
-            <div class="z-displayhook" data-area="{{ area|e('html_attr') }}">{{ hook|raw }}</div>
-        {% endfor %}
+    {% if comment.supportsHookSubscribers %}
+        {% set hooks = notifyDisplayHooks(eventName='mucommentsmodule.ui_hooks.comments.display_view', id=comment.getKey(), urlObject=currentUrlObject, outputAsArray=true) %}
+        {% if hooks is iterable and hooks|length > 0 %}
+            {% for area, hook in hooks %}
+                <div class="z-displayhook" data-area="{{ area|e('html_attr') }}">{{ hook|raw }}</div>
+            {% endfor %}
+        {% endif %}
     {% endif %}
 {% endblock %}
