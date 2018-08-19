@@ -172,9 +172,9 @@
             var message = $(this).data('sendMail');
             var privacy = '{{ privacy }}';
             if (privacy != '') {
-                $(this).parents('.comment-content').find('.comment-text').prepend('<form id="' + formCommentId + '" class="this-comment-edit-form"><input id="this-comment-edit-subject" class="form-control" type="text" value="' + subject + '"><textarea id="this-comment-edit-text" name="this-comment-form-text" class="form-control" rows="1" placeholder="' + text + '"></textarea> <input type="checkbox" id="answer-form-privacy" name="answer-form-privacy" /> {{ __('Accept privacy policy?') }}<input type="hidden" id="parentcomment" name="parentcomment" value="' + commentId + '" /><input type="hidden" id="thisComment" name="thisComment" value="' + commentId + '" /></form>');
+                $(this).parents('.comment-content').find('.comment-text').html('<form id="' + formCommentId + '" class="this-comment-edit-form"><input id="this-comment-edit-subject" class="form-control" type="text" value="' + subject + '"><textarea id="this-comment-edit-text" name="this-comment-form-text" class="form-control" rows="1" placeholder="' + text + '"></textarea> <input type="checkbox" id="answer-form-privacy" name="answer-form-privacy" /> {{ __('Accept privacy policy?') }}<input type="hidden" id="parentcomment" name="parentcomment" value="' + commentId + '" /><input type="hidden" id="thisComment" name="thisComment" value="' + commentId + '" /></form>');
             } else {
-                $(this).parents('.comment-content').find('.comment-text').prepend('<form id="' + formCommentId + '" class="this-comment-edit-form"><input id="this-comment-edit-subject" class="form-control" type="text" value="' + subject + '"><textarea id="this-comment-edit-text" name="this-comment-form-text" class="form-control" rows="1" placeholder="' + text + '"></textarea> <input type="hidden" id="parentcomment" name="parentcomment" value="' + commentId + '" /><input type="hidden" id="thisComment" name="thisComment" value="' + commentId + '" /></form>');
+                $(this).parents('.comment-content').find('.comment-text').html('<form id="' + formCommentId + '" class="this-comment-edit-form"><input id="this-comment-edit-subject" class="form-control" type="text" value="' + subject + '"><textarea id="this-comment-edit-text" name="this-comment-form-text" class="form-control" rows="1" placeholder="' + text + '"></textarea> <input type="hidden" id="parentcomment" name="parentcomment" value="' + commentId + '" /><input type="hidden" id="thisComment" name="thisComment" value="' + commentId + '" /></form>');
                 }
             $('#this-comment-edit-text').val(text);
         });
@@ -329,7 +329,6 @@
                 var thisId = $(this).find('#thisComment').val();
                 if($('#this-comment-edit-text').val() != '') {
                     $('#commentEditForm').parent().append('<img class="commentimg" src="/modules/MU/CommentsModule/Resources/public/images/ajax-loader.gif" />');
-                    $('.this-comment-edit-form').remove();
                     $.ajax({
                         method: 'POST',
                         url: '{{ path('mucommentsmodule_ajax_' ~ routeArea ~ 'edit') }}',
@@ -346,16 +345,7 @@
                             assignedEntity: 'comment'
                         },
                         success: function(data) {
-                        var out = '<div id="comment' + data.id;
-                            out = out + '<div class="col-md-2">';
-                            out = out + '<div class="comment-user">';
-                            out = out + data.link + '<br />';
-                            out = out + '<span class="comment-avatar">' + data.avatar + '</span>';
-                            out = out + '</div>',
-                            out = out + '</div>';
-                            out = out + '<div class="col-md-10">',
-                            out = out + '<div class="comment-content">';
-                            out = out + '<div class="comment-header">';
+                        var out = '<div class="comment-header">';
                             if(data.subject != '') {
                                 out = out + data.subject + ' - ';
                             }   
@@ -365,9 +355,8 @@
                             out = out + '<div id="commenttext' + data.id + '" class="comment-text">' + data.text;
                             out = out + '<span class="answer-container hidden"><a title="3" class="comment-answer btn btn-default btn-xs" href="#"><i class="fa fa-reply" aria-hidden="true"></i></a><span class="answer-form"></span></span>';
                             out = out + '</div>';
-                            out = out + '</div>';
-                            out = out + '<div class="col-md-12"></div></div>';
-                            $('.this-comment-edit-form').parent('.comment-container').html(out);
+                            $('.this-comment-edit-form').parent().parent().html(out);
+
                             $('.commentimg').hide('slow');
                         }
                     });

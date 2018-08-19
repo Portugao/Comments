@@ -277,8 +277,8 @@ class AjaxController extends AbstractAjaxController
     	}
     	
     	if ($kindOfModeration != 'block') {
-    	$qb = $entityManager->persist($thisComment);
-    	$qb = $entityManager->flush();
+    	$entityManager->persist($thisComment);
+    	$entityManager->flush();
     	
     	 
     	$controllerHelper = $this->get('mu_comments_module.controller_helper');
@@ -297,7 +297,7 @@ class AjaxController extends AbstractAjaxController
     			'text' => $thisComment->getText(),
     			'user' => $thisComment->getCreatedBy()->getUname(),
     			'avatar' => $avatar,
-    			'created' => $thisComment->getCreatedDate(),
+    	        'created' => $thisComment->getCreatedDate()->format('d:m:Y, H:i'),
     			'link' => $link
     	]);
     	} else {
@@ -445,8 +445,8 @@ class AjaxController extends AbstractAjaxController
     	$assignment->setAssignedId($commentId);
     	$assignment->setUpdatedDate(new \DateTime()); 
 
-    	$qb = $entityManager->persist($assignment);
-    	$qb = $entityManager->flush();
+    	$entityManager->persist($assignment);
+    	$entityManager->flush();
     	
     	$controllerHelper = $this->get('mu_comments_module.controller_helper');
     	$profileLink = $controllerHelper->getProfileLink($comment->getCreatedBy()->getUid());
