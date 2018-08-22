@@ -82,35 +82,80 @@ class EditHandler extends AbstractEditHandler {
 		// get treated entity reference from persisted member var
 		$entity = $this->entityRef;
 		
+		$kindOfModeration = '';
+
+		$spam = $this->variableApi->get('MUCommentsModule', 'enableInternSpamHandling');
+		// if spam is enalbled content has to be empty
+		if ($spam == 1) {
+		    if ($entity['content'] != '') {
+		        return false;
+		    }
+		    
+		    $toModeration = $this->variableApi->get('MUCommentsModule', 'toModeration');
+		    if ($toModeration != '') {
+		        $toModeration = explode(',', $toModeration);
+		        foreach ($toModeration as $moderation) {
+		            if(strpos($entity['subject'], $moderation) !== false || strpos($entity['name'], $moderation) !== false || strpos($entity['text'], $moderation) !== false) {
+		                $kindOfModeration = 'moderate';
+		                break;
+		            }
+		        }
+		    }
+		    $toNotSaved = $this->variableApi->get('MUCommentsModule', 'toNotSaved');
+		    if ($toNotSaved != '') {
+		        $toNotSaved = explode(',', $toNotSaved);
+		        foreach ($toNotSaved as $notsaved) {
+		            if(strpos($entity['subject'], $notsaved) !== false || strpos($entity['name'], $notsaved) !== false || strpos($entity['text'], $notsaved) !== false) {
+		                $kindOfModeration = 'block';
+		                break;
+		            }
+		        }
+		    }
+		}
+				
 		$action = $args ['commandName'];
 		
+		if ($kindOfModeration != 'block') {
+		    if ($kindOfModeration == 'moderate') {
+		        $entity['workflowState'] = 'waiting';
+		    } else {
+                $entity['workflowState'] = 'approved';
+            }
+
+        } else {
+            //$action = 'delete';
+		}
+		
 		$success = false;
-		$flashBag = $this->request->getSession ()->getFlashBag ();
+		$flashBag = $this->requestStack->getCurrentRequest()
+		->getSession()
+		->getFlashBag();
 		try {
-			// execute the workflow action
-			$success = $this->workflowHelper->executeAction ( $entity, $action );
-		} catch ( \Exception $exception ) {
-			$flashBag->add ( 'error', $this->__f ( 'Sorry, but an error occured during the %action% action. Please apply the changes again!', [ 
-					'%action%' => $action 
-			] ) . ' ' . $exception->getMessage () );
-			$logArgs = [ 
-					'app' => 'MUCommentsModule',
-					'user' => $this->currentUserApi->get ( 'uname' ),
-					'entity' => 'comment',
-					'id' => $entity->getKey (),
-					'errorMessage' => $exception->getMessage () 
-			];
-			$this->logger->error ( '{app}: User {user} tried to edit the {entity} with id {id}, but failed. Error details: {errorMessage}.', $logArgs );
+		    // execute the workflow action
+		    $success = $this->workflowHelper->executeAction($entity, $action);
+		} catch (\Exception $exception) {
+		    $flashBag->add('error', $this->__f('Sorry, but an error occured during the %action% action. Please apply the changes again!', [
+		        '%action%' => $action
+		    ]) . ' ' . $exception->getMessage());
+		    $logArgs = [
+		        'app' => 'MUCommentsModule',
+		        'user' => $this->currentUserApi->get('uname'),
+		        'entity' => 'comment',
+		        'id' => $entity->getKey(),
+		        'errorMessage' => $exception->getMessage()
+		    ];
+		    $this->logger->error('{app}: User {user} tried to edit the {entity} with id {id}, but failed. Error details: {errorMessage}.', $logArgs);
 		}
 		
 		$this->addDefaultMessage ( $args, $success );
+		$request = $this->requestStack->getCurrentRequest();
 		
 		if ($success && $this->templateParameters ['mode'] == 'create') {
 			// store new identifier
 			$this->idValue = $entity->getKey ();
-			$owner = $this->request->request->get('owner', '');
-			$area = $this->request->request->get('area', '');
-			$object = $this->request->request->get('object', '');
+			$owner = $request->request->get('owner', '');
+			$area = $request->request->get('area', '');
+			$object = $request->request->get('object', '');
 			
 			$entityManager = $this->entityFactory->getObjectManager ();
 			

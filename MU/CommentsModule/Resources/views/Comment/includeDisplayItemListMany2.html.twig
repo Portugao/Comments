@@ -7,7 +7,8 @@
         - 'hookDisplayDelete': list of comments assigned using an UI hook (delete template)
 #}
 {% set hasAdminPermission = hasPermission('MUCommentsModule:Comment:', '::', 'ACCESS_ADMIN') %}
-{% set hasEditPermission = hasPermission('MUCommentsModule:Comment:', '::', 'ACCESS_COMMENT') %}
+{% set hasEditPermission = hasPermission('MUCommentsModule:Comment:', '::', 'ACCESS_EDIT') %}
+{% set hasCommentPermission = hasPermission('MUCommentsModule:Comment:', '::', 'ACCESS_COMMENT') %}
 {% if context != 'display' %}
 <h3>{{ __('Comments') }}</h3>
 <div id="comments-container">
@@ -17,25 +18,16 @@
     {{ pageAddAsset('javascript', asset('jquery-ui/jquery-ui.min.js')) }}
     {{ pageAddAsset('javascript', asset('bootstrap-jqueryui/bootstrap-jqueryui.min.js')) }}
     {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.js'), 99) }}
-    {% if context == 'hookDisplayView' and hasEditPermission %}
-        {% set entityNameTranslated = __('comment') %}
-        {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.HookAssignment.js'), 99) }}
-        {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.AutoCompletion.js'), 99) }}
-    {% endif %}
 {% endif %}
 
 {% set pos = getModVar('MUCommentsModule', 'positionOfForm') %}
 {% set orderComments = getModVar('MUCommentsModule', 'orderComments') %}
-{% if context == 'hookDisplayView' and hasEditPermission %}
+{% if context == 'hookDisplayView' and hasCommentPermission %}
 
 {% if pos == 'above' %}
 {# Form for creating a comment #}
     <div class="mucommentsmodule-comment mucommentsmodule-edit">
-     {{ mucommentsmodule_showEditForm(subscriberOwner|e('html_attr'), subscriberAreaId|e('html_attr'), subscriberObjectId|e('html_attr')) }}
-     {#{ include(
-            '@MUCommentsModule/Comment/includeFrontendForm.html.twig',
-            {group: 'comment'}
-        ) }#}
+        {{ mucommentsmodule_showEditForm(subscriberOwner|e('html_attr'), subscriberAreaId|e('html_attr'), subscriberObjectId|e('html_attr')) }}
     </div>
 {% endif %}
 {% else %}
@@ -102,8 +94,7 @@
                 {% endif %}
                 </div>
             {% endfor %}
-        {% endif %}
-        
+        {% endif %}       
     </div>
     </div>  
     </div>
@@ -113,29 +104,24 @@
     {% endif %}
 {% endfor %}</ul><br style="clear: both;" /><br />
 {% set level = getModVar('MUCommentsModule', 'levelOfComments') %}
-{% if context == 'hookDisplayView' and hasEditPermission and level != 'one' %}
+{% if context == 'hookDisplayView' and hasCommentPermission and level != 'one' %}
     <noscript>
         <div class="alert alert-info">{{ __('For answering to comments Javascript enabled is needed. Without you only can create new comments!') }}</div>
     </noscript>
 </div>
 {% endif %}
 {% endif %}
-{% if context == 'hookDisplayView' and hasEditPermission %}
+{% if context == 'hookDisplayView' and hasCommentPermission %}
 {% if pos == 'below' %}
 {# Form for creating a comment #}
-    <h2>Create new comment</h2>
     <div class="mucommentsmodule-comment mucommentsmodule-edit">
-     {{ mucommentsmodule_showEditForm(subscriberOwner|e('html_attr'), subscriberAreaId|e('html_attr'), subscriberObjectId|e('html_attr')) }}
-        {#{ include(
-            '@MUCommentsModule/Comment/includeFrontendForm.html.twig',
-            {group: 'comment'}
-        ) }#}
+        {{ mucommentsmodule_showEditForm(subscriberOwner|e('html_attr'), subscriberAreaId|e('html_attr'), subscriberObjectId|e('html_attr')) }}
     </div>
 {% endif %}
 </div>
 {% endif %}
+<span id="append-comment" class="hidden" data-pos="{{ pos }}" data-order="{{ orderComments }}" /></span>
 {% if context == 'hookDisplayView' and hasEditPermission %}
-
     {% set commentInitScript %}
         <script>
         /* <![CDATA[ */
@@ -246,6 +232,9 @@
                 var mail = $(this).find('#mucommentsmodule_comment_sendMails').is(':checked') ? 1 : 0;
                 var privacy = $(this).find('#mucommentsmodule_comment_privacyPolicy').is(':checked') ? 1 : 0;
                 var privacySetting = $(this).find('#privacySetting').val();
+                
+                var pos = $('#append-comment').data('pos');
+                var order = $('#append-comment').data('order');
                 if(text == '') {
                     var out = '<div class="comments-text-feedback alert alert-info">Please enter your text!</div>';
                     $('#mucommentsmodule_comment_text').append(out);
@@ -292,11 +281,36 @@
                                 var out = '<div class="comments-feedback alert alert-info">Thank you for your comment. We will check as soon as possible.</div>';
                             }
 
-                            {% if orderComments == 'desc' %}
-                                $('#list-container').prepend(out);
-                            {% else %}
-                                $('#list-container').append(out);
-                            {% endif %}
+                            if (order == 'desc') {
+                                if (pos == 'above') {
+                                    if( $('#list-container').length) {
+                                        $('#list-container').prepend(out);
+                                    } else {
+                                        $('#comments-container').prepend(out);
+                                    }
+                                } else {
+                                    if( $('#list-container').length) {
+                                        $('#list-container').prepend(out);
+                                    } else {
+                                        $('#comments-container').prepend(out);
+                                    }                                
+                                }
+                            }
+                            if (order == 'asc') {
+                                if (pos == 'above') {
+                                    if( $('#list-container').length) {
+                                        $('#list-container').prepend(out);
+                                    } else {
+                                        $('#comments-container').prepend(out);
+                                    }
+                                } else {
+                                    if( $('#list-container').length) {
+                                        $('#list-container').prepend(out);
+                                    } else {
+                                        $('#-container').prepend(out);
+                                    }                                
+                                }
+                            }
 
                         }
                         $('.commentimg').hide('slow');

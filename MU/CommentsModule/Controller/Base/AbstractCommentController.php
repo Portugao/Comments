@@ -282,7 +282,7 @@ abstract class AbstractCommentController extends AbstractController
     {
         $objectType = 'comment';
         // permission check
-        $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_EDIT;
+        $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_COMMENT;
         $permissionHelper = $this->get('mu_comments_module.permission_helper');
         if (!$permissionHelper->hasComponentPermission($objectType, $permLevel)) {
             throw new AccessDeniedException();
