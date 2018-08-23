@@ -18,6 +18,11 @@
     {{ pageAddAsset('javascript', asset('jquery-ui/jquery-ui.min.js')) }}
     {{ pageAddAsset('javascript', asset('bootstrap-jqueryui/bootstrap-jqueryui.min.js')) }}
     {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.js'), 99) }}
+    {% if context == 'hookDisplayView' and (hasEditPermission or hasCommentPermission) %}
+        {% set entityNameTranslated = __('comment') %}
+        {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.HookAssignment.js'), 99) }}
+        {{ pageAddAsset('javascript', zasset('@MUCommentsModule:js/MUCommentsModule.AutoCompletion.js'), 99) }}
+    {% endif %}
 {% endif %}
 
 {% set pos = getModVar('MUCommentsModule', 'positionOfForm') %}
@@ -121,7 +126,7 @@
 </div>
 {% endif %}
 <span id="append-comment" class="hidden" data-pos="{{ pos }}" data-order="{{ orderComments }}" /></span>
-{% if context == 'hookDisplayView' and hasEditPermission %}
+{% if context == 'hookDisplayView' and hasCommentPermission %}
     {% set commentInitScript %}
         <script>
         /* <![CDATA[ */
@@ -299,15 +304,15 @@
                             if (order == 'asc') {
                                 if (pos == 'above') {
                                     if( $('#list-container').length) {
-                                        $('#list-container').prepend(out);
+                                        $('#list-container').append(out);
                                     } else {
-                                        $('#comments-container').prepend(out);
+                                        $('#comments-container').append(out);
                                     }
                                 } else {
                                     if( $('#list-container').length) {
-                                        $('#list-container').prepend(out);
+                                        $('#list-container').append(out);
                                     } else {
-                                        $('#-container').prepend(out);
+                                        $('#-container').append(out);
                                     }                                
                                 }
                             }
