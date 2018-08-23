@@ -22,8 +22,14 @@
         <fieldset>
             <legend>{{ __('Content') }}</legend>
             {{ form_row(form.subject) }}
+            {% if currentUser.loggedIn == true %}
+                <div class="hidden">
+            {% endif %}
             {{ form_row(form.name) }}
             {{ form_row(form.yourMailAddress) }}
+            {% if currentUser.loggedIn == true %}
+                </div>
+            {% endif %}
             {{ form_row(form.text) }}
             {% if routeArea != 'admin' %}
             <div class="hidden">
