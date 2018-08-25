@@ -330,7 +330,7 @@ class AjaxController extends AbstractAjaxController
     	 
     	$variableApi = $this->get('zikula_extensions_module.api.variable');
     	$spam = $variableApi->get('MUCommentsModule', 'enableInternSpamHandling');
-    	// if spam is enalbled content has to be empty
+    	// if spam is enabled content has to be empty
     	if ($spam == 1) {
     		if ($content != '') {
     			return new JsonResponse($this->__('Wrong input'), JsonResponse::HTTP_FORBIDDEN);
@@ -384,6 +384,14 @@ class AjaxController extends AbstractAjaxController
     	}
     	
     	$kindOfModeration = '';
+    	
+    	if (!$this->hasPermission('MUCommentsModule::Ajax', '::', ACCESS_COMMENT)) {
+    	    $kindOfModeration = 'block';
+    	}
+    	
+    	if (!$this->hasPermission('MUCommentsModule::Ajax', '::', ACCESS_ADMIN)) {
+    	    $kindOfModeration = 'moderate';
+    	}
     	 
     	if ($spam == 1) {
     		$toModeration = $variableApi->get('MUCommentsModule', 'toModeration');
