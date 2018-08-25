@@ -31,15 +31,6 @@ class CommentRepository extends AbstractCommentRepository
 	protected $defaultSortingField = 'createdDate';
 	
 	/**
-	 * @var VariableApiInterface
-	 */
-	protected $variableApi;
-	
-	/*public function __construct(VariableApiInterface $variableApi) {
-		$this->variableApi = $variableApi;
-	}*/
-	
-	/**
 	 * Adds an array of id filters to given query instance.
 	 *
 	 * @param array        $idList List of identifiers to use to retrieve the object
