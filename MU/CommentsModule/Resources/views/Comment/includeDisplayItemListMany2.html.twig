@@ -48,10 +48,13 @@
     <li id="comment{{ item.id }}" class="comment-container list-group-item">
     <div class="col-md-2">
         <div class="comment-user">
+        {% if item.name == '' %}
         {% set profileLink = item.createdBy.getUid()|profileLinkByUserId() %}
         {{ profileLink|raw }}<br />
         <span class="comment-avatar">{{ userAvatar(item.createdBy.getUid(), {rating: 'g'}) }}</span>
-        {{ item.yourMailAdress }}
+        {% else %}
+        {{ item.name }}
+        {% endif %}
         </div>
     </div>
     <div class="col-md-10">
