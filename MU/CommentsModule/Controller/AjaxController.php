@@ -282,12 +282,16 @@ class AjaxController extends AbstractAjaxController
     	
     	 
     	$controllerHelper = $this->get('mu_comments_module.controller_helper');
+    	if($name == '') {
     	$profileLink = $controllerHelper->getProfileLink($thisComment->getCreatedBy()->getUid());
     	$avatar = $controllerHelper->getAvatar($thisComment->getCreatedBy()->getUid());
     	if ($profileLink != '#') {
     	$link = '<a href="' . $profileLink . '" >' . $thisComment->getCreatedBy()->getUname() . '</a>';
     	} else {
     	    $link = $thisComment->getCreatedBy()->getUname();
+    	}
+    	} else {
+    	    $link = $name;
     	}
     
     	// return response
