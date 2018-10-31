@@ -18,6 +18,7 @@ services:
             - "@zikula_extensions_module.api.variable"
             - "@mu_comments_module.entity_factory"
             - "@mu_comments_module.collection_filter_helper"
+            - "@mu_comments_module.permission_helper"
             - "@mu_comments_module.model_helper"
             - "@zikula_users_module.internal.profile_module_collector"
     

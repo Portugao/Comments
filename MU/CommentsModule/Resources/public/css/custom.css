@@ -1,1 +1,6 @@
 /* this file is intended for custom styles */
+
+.list-group-item {
+	float: left;
+	width: 100%;
+}

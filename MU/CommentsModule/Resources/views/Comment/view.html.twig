@@ -164,7 +164,7 @@
 {% block page_nav_links %}
     <p>
         {% if canBeCreated %}
-            {% if hasPermission('MUCommentsModule:Comment:', '::', 'ACCESS_COMMENT') %}
+            {% if permissionHelper.hasComponentPermission('comment', constant('ACCESS_COMMENT')) %}
                 {% set createTitle = __('Create comment') %}
                 <a href="{{ path('mucommentsmodule_comment_' ~ routeArea ~ 'edit') }}" title="{{ createTitle|e('html_attr') }}"><i class="fa fa-plus"></i> {{ createTitle }}</a>
             {% endif %}

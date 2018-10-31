@@ -25,6 +25,7 @@ use Zikula\Bundle\HookBundle\HookProviderInterface;
 use Zikula\Bundle\HookBundle\ServiceIdTrait;
 use Zikula\Common\Translator\TranslatorInterface;
 use MU\CommentsModule\Entity\Factory\EntityFactory;
+use MU\CommentsModule\Helper\PermissionHelper;
 
 /**
  * Base class for ui hooks provider.
@@ -54,23 +55,31 @@ abstract class AbstractCommentUiHooksProvider implements HookProviderInterface
     protected $templating;
 
     /**
+     * @var PermissionHelper
+     */
+    protected $permissionHelper;
+
+    /**
      * CommentUiHooksProvider constructor.
      *
      * @param TranslatorInterface $translator
      * @param RequestStack        $requestStack
      * @param EntityFactory       $entityFactory
      * @param Twig_Environment    $twig
+     * @param PermissionHelper    $permissionHelper
      */
     public function __construct(
         TranslatorInterface $translator,
         RequestStack $requestStack,
         EntityFactory $entityFactory,
-        Twig_Environment $twig
+        Twig_Environment $twig,
+        PermissionHelper $permissionHelper
     ) {
         $this->translator = $translator;
         $this->requestStack = $requestStack;
         $this->entityFactory = $entityFactory;
         $this->templating = $twig;
+        $this->permissionHelper = $permissionHelper;
     }
 
     /**
@@ -329,6 +338,7 @@ abstract class AbstractCommentUiHooksProvider implements HookProviderInterface
             $url = method_exists($hook, 'getUrl') ? $hook->getUrl() : null;
             $templateParameters['subscriberUrl'] = (null !== $url && is_object($url)) ? $url->serialize() : serialize([]);
         }
+        $parameters['permissionHelper'] = $this->permissionHelper;
 
         $output = $this->templating->render($template, $templateParameters);
 

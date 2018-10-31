@@ -51,7 +51,7 @@ abstract class AbstractItemListType extends AbstractContentType
      */
     public function getTitle()
     {
-        return $this->__('Comments list', 'mucommentsmodule');
+        return $this->translator->__('Comments list', 'mucommentsmodule');
     }
     
     /**
@@ -59,7 +59,7 @@ abstract class AbstractItemListType extends AbstractContentType
      */
     public function getDescription()
     {
-        return $this->__('Display a list of comments objects.', 'mucommentsmodule');
+        return $this->translator->__('Display a list of comments objects.', 'mucommentsmodule');
     }
     
     /**

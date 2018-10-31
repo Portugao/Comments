@@ -41,6 +41,7 @@ class ControllerHelper extends AbstractControllerHelper
      * @param VariableApiInterface $variableApi     VariableApi service instance
      * @param EntityFactory       $entityFactory   EntityFactory service instance
      * @param CollectionFilterHelper $collectionFilterHelper CollectionFilterHelper service instance
+     * @param PermissionHelper    $permissionHelper PermissionHelper service instance
      * @param ModelHelper         $modelHelper     ModelHelper service instance
      * @param ProfileModuleCollector $collector          ProfileModuleCollector
      */
@@ -52,6 +53,7 @@ class ControllerHelper extends AbstractControllerHelper
         VariableApiInterface $variableApi,
         EntityFactory $entityFactory,
         CollectionFilterHelper $collectionFilterHelper,
+        PermissionHelper $permissionHelper,
         ModelHelper $modelHelper,
     	ProfileModuleCollector $collector
     ) {
@@ -62,6 +64,7 @@ class ControllerHelper extends AbstractControllerHelper
         $this->variableApi = $variableApi;
         $this->entityFactory = $entityFactory;
         $this->collectionFilterHelper = $collectionFilterHelper;
+        $this->permissionHelper = $permissionHelper;
         $this->modelHelper = $modelHelper;
         $this->collector = $collector;
     }

@@ -23,11 +23,11 @@
                 <li role="presentation">
                     <a id="vars3Tab" href="#tab3" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a>
                 </li>
-                {% set tabTitle = __('Moderation') %}
+                {% set tabTitle = __('List views') %}
                 <li role="presentation">
                     <a id="vars4Tab" href="#tab4" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a>
                 </li>
-                {% set tabTitle = __('List views') %}
+                {% set tabTitle = __('Moderation') %}
                 <li role="presentation">
                     <a id="vars5Tab" href="#tab5" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a>
                 </li>
@@ -78,16 +78,6 @@
                     </fieldset>
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab4" aria-labelledby="vars4Tab">
-                    {% set tabTitle = __('Moderation') %}
-                    <fieldset>
-                        <legend>{{ tabTitle }}</legend>
-                    
-                        <p class="alert alert-info">{{ __('Here you can assign moderation groups for enhanced workflow actions.')|nl2br }}</p>
-                    
-                        {{ form_row(form.moderationGroupForComments) }}
-                    </fieldset>
-                </div>
-                <div role="tabpanel" class="tab-pane fade" id="tab5" aria-labelledby="vars5Tab">
                     {% set tabTitle = __('List views') %}
                     <fieldset>
                         <legend>{{ tabTitle }}</legend>
@@ -97,6 +87,18 @@
                         {{ form_row(form.commentEntriesPerPage) }}
                         {{ form_row(form.linkOwnCommentsOnAccountPage) }}
                         {{ form_row(form.showOnlyOwnEntries) }}
+                    </fieldset>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="tab5" aria-labelledby="vars5Tab">
+                    {% set tabTitle = __('Moderation') %}
+                    <fieldset>
+                        <legend>{{ tabTitle }}</legend>
+                    
+                        <p class="alert alert-info">{{ __('Here you can define moderation-related settings.')|nl2br }}</p>
+                    
+                        {{ form_row(form.moderationGroupForComments) }}
+                        {{ form_row(form.allowModerationSpecificCreatorForComment) }}
+                        {{ form_row(form.allowModerationSpecificCreationDateForComment) }}
                     </fieldset>
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="tab6" aria-labelledby="vars6Tab">

@@ -41,7 +41,7 @@ abstract class AbstractEditHandler extends EditHandler
             return $result;
         }
     
-        if ($this->templateParameters['mode'] == 'create') {
+        if ('create' == $this->templateParameters['mode']) {
             if (!$this->modelHelper->canBeCreated($this->objectType)) {
                 $this->requestStack->getCurrentRequest()->getSession()->getFlashBag()->add('error', $this->__('Sorry, but you can not create the comment yet as other items are required which must be created before!'));
                 $logArgs = ['app' => 'MUCommentsModule', 'user' => $this->currentUserApi->get('uname'), 'entity' => $this->objectType];
@@ -99,6 +99,8 @@ abstract class AbstractEditHandler extends EditHandler
             'mode' => $this->templateParameters['mode'],
             'actions' => $this->templateParameters['actions'],
             'has_moderate_permission' => $this->permissionHelper->hasEntityPermission($this->entityRef, ACCESS_ADMIN),
+            'allow_moderation_specific_creator' => $this->variableApi->get('MUCommentsModule', 'allowModerationSpecificCreatorFor' . $this->objectTypeCapital, false),
+            'allow_moderation_specific_creation_date' => $this->variableApi->get('MUCommentsModule', 'allowModerationSpecificCreationDateFor' . $this->objectTypeCapital, false),
             'filter_by_ownership' => !$this->permissionHelper->hasEntityPermission($this->entityRef, ACCESS_ADD),
             'inline_usage' => $this->templateParameters['inlineUsage']
         ];
@@ -183,7 +185,7 @@ abstract class AbstractEditHandler extends EditHandler
                 $args['commandName'] = $action['id'];
             }
         }
-        if ($this->templateParameters['mode'] == 'create' && $this->form->has('submitrepeat') && $this->form->get('submitrepeat')->isClicked()) {
+        if ('create' == $this->templateParameters['mode'] && $this->form->has('submitrepeat') && $this->form->get('submitrepeat')->isClicked()) {
             $args['commandName'] = 'submit';
             $this->repeatCreateAction = true;
         }
@@ -203,7 +205,7 @@ abstract class AbstractEditHandler extends EditHandler
         $message = '';
         switch ($args['commandName']) {
             case 'submit':
-                if ($this->templateParameters['mode'] == 'create') {
+                if ('create' == $this->templateParameters['mode']) {
                     $message = $this->__('Done! Comment created.');
                 } else {
                     $message = $this->__('Done! Comment updated.');
@@ -244,7 +246,7 @@ abstract class AbstractEditHandler extends EditHandler
     
         $this->addDefaultMessage($args, $success);
     
-        if ($success && $this->templateParameters['mode'] == 'create') {
+        if ($success && 'create' == $this->templateParameters['mode']) {
             // store new identifier
             $this->idValue = $entity->getKey();
         }

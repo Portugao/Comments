@@ -27,7 +27,7 @@ use MU\CommentsModule\Helper\PermissionHelper;
 use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
 
 /**
- * This is the menu builder implementation class.
+ * Menu builder base class.
  */
 class AbstractMenuBuilder
 {

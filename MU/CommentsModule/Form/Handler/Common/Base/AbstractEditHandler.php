@@ -540,7 +540,7 @@ abstract class AbstractEditHandler
                 $args['commandName'] = $action['id'];
             }
         }
-        if ($this->templateParameters['mode'] == 'create' && $this->form->has('submitrepeat') && $this->form->get('submitrepeat')->isClicked()) {
+        if ('create' == $this->templateParameters['mode'] && $this->form->has('submitrepeat') && $this->form->get('submitrepeat')->isClicked()) {
             $args['commandName'] = 'submit';
             $this->repeatCreateAction = true;
         }
@@ -553,7 +553,7 @@ abstract class AbstractEditHandler
         // get treated entity reference from persisted member var
         $entity = $this->entityRef;
     
-        if ($entity->supportsHookSubscribers() && $action != 'cancel') {
+        if ($entity->supportsHookSubscribers()) {
             // Let any ui hooks perform additional validation actions
             $hookType = $action == 'delete' ? UiHooksCategory::TYPE_VALIDATE_DELETE : UiHooksCategory::TYPE_VALIDATE_EDIT;
             $validationErrors = $this->hookHelper->callValidationHooks($entity, $hookType);
@@ -713,7 +713,7 @@ abstract class AbstractEditHandler
     {
         $roles = [];
         $currentUserId = $this->currentUserApi->isLoggedIn() ? $this->currentUserApi->get('uid') : UsersConstant::USER_ID_ANONYMOUS;
-        $roles['is_creator'] = $this->templateParameters['mode'] == 'create'
+        $roles['is_creator'] = 'create' == $this->templateParameters['mode']
             || (method_exists($this->entityRef, 'getCreatedBy') && $this->entityRef->getCreatedBy()->getUid() == $currentUserId);
     
         $groupApplicationArgs = [

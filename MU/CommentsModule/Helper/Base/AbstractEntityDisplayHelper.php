@@ -25,12 +25,12 @@ abstract class AbstractEntityDisplayHelper
      * @var TranslatorInterface
      */
     protected $translator;
-
+    
     /**
      * @var ListEntriesHelper Helper service for managing list entries
      */
     protected $listEntriesHelper;
-
+    
     /**
      * EntityDisplayHelper constructor.
      *
@@ -44,7 +44,7 @@ abstract class AbstractEntityDisplayHelper
         $this->translator = $translator;
         $this->listEntriesHelper = $listEntriesHelper;
     }
-
+    
     /**
      * Returns the formatted title for a given entity.
      *

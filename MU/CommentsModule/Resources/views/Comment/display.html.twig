@@ -111,7 +111,7 @@
         ) }}
     {% endif %}
     
-    {% set mayManage = hasPermission('MUCommentsModule:Comment:', '::', 'ACCESS_COMMENT') %}
+    {% set mayManage = permissionHelper.hasComponentPermission('comment', constant('ACCESS_COMMENT')) %}
     {% if mayManage %}
         <p class="managelink">
             {% set createTitle = __('Create comment') %}
@@ -120,7 +120,7 @@
     {% endif %}
 {% endblock %}
 {% block display_hooks %}
-    {% if comment.supportsHookSubscribers %}
+    {% if comment.supportsHookSubscribers() %}
         {% set hooks = notifyDisplayHooks(eventName='mucommentsmodule.ui_hooks.comments.display_view', id=comment.getKey(), urlObject=currentUrlObject, outputAsArray=true) %}
         {% if hooks is iterable and hooks|length > 0 %}
             {% for area, hook in hooks %}

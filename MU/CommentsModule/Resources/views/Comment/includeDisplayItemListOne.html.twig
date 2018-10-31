@@ -1,6 +1,6 @@
 {# purpose of this template: inclusion template for display of related comments or hook assignments #}
-{% set hasAdminPermission = hasPermission('MUCommentsModule:Comment:', '::', 'ACCESS_COMMENT') %}
-{% set hasEditPermission = hasPermission('MUCommentsModule:Comment:', '::', 'ACCESS_COMMENT') %}
+{% set hasAdminPermission = permissionHelper.hasComponentPermission('comment', constant('ACCESS_COMMENT')) %}
+{% set hasEditPermission = permissionHelper.hasComponentPermission('comment', constant('ACCESS_COMMENT')) %}
 {% if noLink is not defined %}
     {% set noLink = false %}
 {% endif %}

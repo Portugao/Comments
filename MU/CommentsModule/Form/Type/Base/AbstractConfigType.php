@@ -72,8 +72,8 @@ abstract class AbstractConfigType extends AbstractType
         $this->addGeneralSettingFields($builder, $options);
         $this->addMailingFields($builder, $options);
         $this->addSpamhandlingFields($builder, $options);
-        $this->addModerationFields($builder, $options);
         $this->addListViewsFields($builder, $options);
+        $this->addModerationFields($builder, $options);
         $this->addIntegrationFields($builder, $options);
 
         $this->addSubmitButtons($builder, $options);
@@ -259,36 +259,6 @@ abstract class AbstractConfigType extends AbstractType
     }
 
     /**
-     * Adds fields for moderation fields.
-     *
-     * @param FormBuilderInterface $builder The form builder
-     * @param array                $options The options
-     */
-    public function addModerationFields(FormBuilderInterface $builder, array $options = [])
-    {
-        
-        $builder->add('moderationGroupForComments', EntityType::class, [
-            'label' => $this->__('Moderation group for comments') . ':',
-            'label_attr' => [
-                'class' => 'tooltips',
-                'title' => $this->__('Used to determine moderator user accounts for sending email notifications.')
-            ],
-            'help' => $this->__('Used to determine moderator user accounts for sending email notifications.'),
-            'empty_data' => 2,
-            'attr' => [
-                'maxlength' => 255,
-                'class' => '',
-                'title' => $this->__('Choose the moderation group for comments')
-            ],
-            'required' => true,
-            // Zikula core should provide a form type for this to hide entity details
-            'class' => 'ZikulaGroupsModule:GroupEntity',
-            'choice_label' => 'name',
-            'choice_value' => 'gid'
-        ]);
-    }
-
-    /**
      * Adds fields for list views fields.
      *
      * @param FormBuilderInterface $builder The form builder
@@ -338,6 +308,64 @@ abstract class AbstractConfigType extends AbstractType
             'attr' => [
                 'class' => '',
                 'title' => $this->__('The show only own entries option')
+            ],
+            'required' => false,
+        ]);
+    }
+
+    /**
+     * Adds fields for moderation fields.
+     *
+     * @param FormBuilderInterface $builder The form builder
+     * @param array                $options The options
+     */
+    public function addModerationFields(FormBuilderInterface $builder, array $options = [])
+    {
+        
+        $builder->add('moderationGroupForComments', EntityType::class, [
+            'label' => $this->__('Moderation group for comments') . ':',
+            'label_attr' => [
+                'class' => 'tooltips',
+                'title' => $this->__('Used to determine moderator user accounts for sending email notifications.')
+            ],
+            'help' => $this->__('Used to determine moderator user accounts for sending email notifications.'),
+            'empty_data' => 2,
+            'attr' => [
+                'maxlength' => 255,
+                'class' => '',
+                'title' => $this->__('Choose the moderation group for comments')
+            ],
+            'required' => true,
+            // Zikula core should provide a form type for this to hide entity details
+            'class' => 'ZikulaGroupsModule:GroupEntity',
+            'choice_label' => 'name',
+            'choice_value' => 'gid'
+        ]);
+        
+        $builder->add('allowModerationSpecificCreatorForComment', CheckboxType::class, [
+            'label' => $this->__('Allow moderation specific creator for comment') . ':',
+            'label_attr' => [
+                'class' => 'tooltips',
+                'title' => $this->__('Whether to allow moderators choosing a user which will be set as creator.')
+            ],
+            'help' => $this->__('Whether to allow moderators choosing a user which will be set as creator.'),
+            'attr' => [
+                'class' => '',
+                'title' => $this->__('The allow moderation specific creator for comment option')
+            ],
+            'required' => false,
+        ]);
+        
+        $builder->add('allowModerationSpecificCreationDateForComment', CheckboxType::class, [
+            'label' => $this->__('Allow moderation specific creation date for comment') . ':',
+            'label_attr' => [
+                'class' => 'tooltips',
+                'title' => $this->__('Whether to allow moderators choosing a custom creation date.')
+            ],
+            'help' => $this->__('Whether to allow moderators choosing a custom creation date.'),
+            'attr' => [
+                'class' => '',
+                'title' => $this->__('The allow moderation specific creation date for comment option')
             ],
             'required' => false,
         ]);

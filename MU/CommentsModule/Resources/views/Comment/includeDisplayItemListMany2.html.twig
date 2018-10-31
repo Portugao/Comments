@@ -228,7 +228,7 @@
            }
         });
         
-        $('#commentEditForm').on('keydown', function(e) {
+        $('body').on('keydown','#commentEditForm' , function(e) {
            if (e.which == '13') {
            if(e.shiftKey == 0) {
                 e.preventDefault();
@@ -240,7 +240,6 @@
                 var mail = $(this).find('#mucommentsmodule_comment_sendMails').is(':checked') ? 1 : 0;
                 var privacy = $(this).find('#mucommentsmodule_comment_privacyPolicy').is(':checked') ? 1 : 0;
                 var privacySetting = $(this).find('#privacySetting').val();
-                
                 var pos = $('#append-comment').data('pos');
                 var order = $('#append-comment').data('order');
                 if(text == '') {

@@ -1,5 +1,5 @@
 {# purpose of this template: comments view filter form #}
-{% if hasPermission('MUCommentsModule:Comment:', '::', 'ACCESS_EDIT') %}
+{% if permissionHelper.hasComponentPermission('comment', constant('ACCESS_EDIT')) %}
     {% form_theme quickNavForm with [
         'bootstrap_3_layout.html.twig'
     ] %}

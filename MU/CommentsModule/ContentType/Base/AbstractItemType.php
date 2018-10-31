@@ -46,7 +46,7 @@ abstract class AbstractItemType extends AbstractContentType
      */
     public function getTitle()
     {
-        return $this->__('Comments detail', 'mucommentsmodule');
+        return $this->translator->__('Comments detail', 'mucommentsmodule');
     }
     
     /**
@@ -54,7 +54,7 @@ abstract class AbstractItemType extends AbstractContentType
      */
     public function getDescription()
     {
-        return $this->__('Display or link a single comments object.', 'mucommentsmodule');
+        return $this->translator->__('Display or link a single comments object.', 'mucommentsmodule');
     }
     
     /**
@@ -106,7 +106,7 @@ abstract class AbstractItemType extends AbstractContentType
     public function displayEditing()
     {
         if (null === $this->data['id'] || empty($this->data['id']) || empty($this->data['displayMode'])) {
-            return $this->__('No item selected.', 'mucommentsmodule');
+            return $this->translator->__('No item selected.', 'mucommentsmodule');
         }
     
         return parent::displayEditing();

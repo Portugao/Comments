@@ -15,7 +15,7 @@ namespace MU\CommentsModule\Menu;
 use MU\CommentsModule\Menu\Base\AbstractMenuBuilder;
 
 /**
- * This is the menu builder implementation class.
+ * Menu builder implementation class.
  */
 class MenuBuilder extends AbstractMenuBuilder
 {

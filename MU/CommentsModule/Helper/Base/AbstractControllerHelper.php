@@ -23,6 +23,7 @@ use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 use MU\CommentsModule\Entity\Factory\EntityFactory;
 use MU\CommentsModule\Helper\CollectionFilterHelper;
 use MU\CommentsModule\Helper\ModelHelper;
+use MU\CommentsModule\Helper\PermissionHelper;
 
 /**
  * Helper base class for controller layer methods.
@@ -30,53 +31,59 @@ use MU\CommentsModule\Helper\ModelHelper;
 abstract class AbstractControllerHelper
 {
     use TranslatorTrait;
-
+    
     /**
      * @var RequestStack
      */
     protected $requestStack;
-
+    
     /**
      * @var RouterInterface
      */
     protected $router;
-
+    
     /**
      * @var FormFactoryInterface
      */
     protected $formFactory;
-
+    
     /**
      * @var VariableApiInterface
      */
     protected $variableApi;
-
+    
     /**
      * @var EntityFactory
      */
     protected $entityFactory;
-
+    
     /**
      * @var CollectionFilterHelper
      */
     protected $collectionFilterHelper;
-
+    
+    /**
+     * @var PermissionHelper
+     */
+    protected $permissionHelper;
+    
     /**
      * @var ModelHelper
      */
     protected $modelHelper;
-
+    
     /**
      * ControllerHelper constructor.
      *
-     * @param TranslatorInterface $translator      Translator service instance
-     * @param RequestStack        $requestStack    RequestStack service instance
-     * @param Routerinterface     $router          Router service instance
-     * @param FormFactoryInterface $formFactory    FormFactory service instance
+     * @param TranslatorInterface $translator       Translator service instance
+     * @param RequestStack        $requestStack     RequestStack service instance
+     * @param Routerinterface     $router           Router service instance
+     * @param FormFactoryInterface $formFactory     FormFactory service instance
      * @param VariableApiInterface $variableApi     VariableApi service instance
-     * @param EntityFactory       $entityFactory   EntityFactory service instance
+     * @param EntityFactory       $entityFactory    EntityFactory service instance
      * @param CollectionFilterHelper $collectionFilterHelper CollectionFilterHelper service instance
-     * @param ModelHelper         $modelHelper     ModelHelper service instance
+     * @param PermissionHelper    $permissionHelper PermissionHelper service instance
+     * @param ModelHelper         $modelHelper      ModelHelper service instance
      */
     public function __construct(
         TranslatorInterface $translator,
@@ -86,6 +93,7 @@ abstract class AbstractControllerHelper
         VariableApiInterface $variableApi,
         EntityFactory $entityFactory,
         CollectionFilterHelper $collectionFilterHelper,
+        PermissionHelper $permissionHelper,
         ModelHelper $modelHelper
     ) {
         $this->setTranslator($translator);
@@ -95,9 +103,10 @@ abstract class AbstractControllerHelper
         $this->variableApi = $variableApi;
         $this->entityFactory = $entityFactory;
         $this->collectionFilterHelper = $collectionFilterHelper;
+        $this->permissionHelper = $permissionHelper;
         $this->modelHelper = $modelHelper;
     }
-
+    
     /**
      * Sets the translator.
      *
@@ -107,7 +116,7 @@ abstract class AbstractControllerHelper
     {
         $this->translator = $translator;
     }
-
+    
     /**
      * Returns an array of all allowed object types in MUCommentsModule.
      *
@@ -127,7 +136,7 @@ abstract class AbstractControllerHelper
     
         return $allowedObjectTypes;
     }
-
+    
     /**
      * Returns the default object type in MUCommentsModule.
      *
@@ -144,7 +153,7 @@ abstract class AbstractControllerHelper
     
         return 'comment';
     }
-
+    
     /**
      * Processes the parameters for a view action.
      * This includes handling pagination, quick navigation forms and other aspects.
@@ -200,7 +209,7 @@ abstract class AbstractControllerHelper
                     $sort = $fieldValue;
                 } elseif ($fieldName == 'sortdir' && !empty($fieldValue)) {
                     $sortdir = $fieldValue;
-                } elseif (false === stripos($fieldName, 'thumbRuntimeOptions') && false === stripos($fieldName, 'featureActivationHelper')) {
+                } elseif (false === stripos($fieldName, 'thumbRuntimeOptions') && false === stripos($fieldName, 'featureActivationHelper') && false === stripos($fieldName, 'permissionHelper')) {
                     // set filter as query argument, fetched inside repository
                     $request->query->set($fieldName, $fieldValue);
                 }
@@ -295,7 +304,7 @@ abstract class AbstractControllerHelper
     
         return [$sort, $sortdir];
     }
-
+    
     /**
      * Processes the parameters for a display action.
      *
@@ -359,7 +368,7 @@ abstract class AbstractControllerHelper
     
         return $this->addTemplateParameters($objectType, $templateParameters, 'controllerAction', $contextArgs);
     }
-
+    
     /**
      * Processes the parameters for an edit action.
      *
@@ -377,7 +386,7 @@ abstract class AbstractControllerHelper
     
         return $this->addTemplateParameters($objectType, $templateParameters, 'controllerAction', $contextArgs);
     }
-
+    
     /**
      * Processes the parameters for a delete action.
      *
@@ -396,7 +405,7 @@ abstract class AbstractControllerHelper
     
         return $this->addTemplateParameters($objectType, $templateParameters, 'controllerAction', $contextArgs);
     }
-
+    
     /**
      * Returns an array of additional template variables which are specific to the object type.
      *
@@ -423,6 +432,7 @@ abstract class AbstractControllerHelper
                 $parameters = array_merge($parameters, $this->collectionFilterHelper->getViewQuickNavParameters($objectType, $context, $args));
             }
         }
+        $parameters['permissionHelper'] = $this->permissionHelper;
     
         return $parameters;
     }

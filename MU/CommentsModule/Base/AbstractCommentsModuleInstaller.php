@@ -52,10 +52,12 @@ abstract class AbstractCommentsModuleInstaller extends AbstractExtensionInstalle
         $this->setVar('toModeration', '');
         $this->setVar('toNotSaved', '');
         $this->setVar('sendMails', false);
-        $this->setVar('moderationGroupForComments', 2);
         $this->setVar('commentEntriesPerPage', 10);
         $this->setVar('linkOwnCommentsOnAccountPage', true);
         $this->setVar('showOnlyOwnEntries', false);
+        $this->setVar('moderationGroupForComments', 2);
+        $this->setVar('allowModerationSpecificCreatorForComment', false);
+        $this->setVar('allowModerationSpecificCreationDateForComment', false);
         $this->setVar('enabledFinderTypes', 'comment');
     
         // initialisation successful

@@ -108,14 +108,6 @@ abstract class AbstractAppSettings
     protected $toNotSaved = '';
     
     /**
-     * Used to determine moderator user accounts for sending email notifications.
-     *
-     * @Assert\NotBlank()
-     * @var integer $moderationGroupForComments
-     */
-    protected $moderationGroupForComments = 2;
-    
-    /**
      * The amount of comments shown per page
      *
      * @Assert\Type(type="integer")
@@ -143,6 +135,32 @@ abstract class AbstractAppSettings
      * @var boolean $showOnlyOwnEntries
      */
     protected $showOnlyOwnEntries = false;
+    
+    /**
+     * Used to determine moderator user accounts for sending email notifications.
+     *
+     * @Assert\NotBlank()
+     * @var integer $moderationGroupForComments
+     */
+    protected $moderationGroupForComments = 2;
+    
+    /**
+     * Whether to allow moderators choosing a user which will be set as creator.
+     *
+     * @Assert\NotNull()
+     * @Assert\Type(type="bool")
+     * @var boolean $allowModerationSpecificCreatorForComment
+     */
+    protected $allowModerationSpecificCreatorForComment = false;
+    
+    /**
+     * Whether to allow moderators choosing a custom creation date.
+     *
+     * @Assert\NotNull()
+     * @Assert\Type(type="bool")
+     * @var boolean $allowModerationSpecificCreationDateForComment
+     */
+    protected $allowModerationSpecificCreationDateForComment = false;
     
     /**
      * Which sections are supported in the Finder component (used by Scribite plug-ins).
@@ -387,30 +405,6 @@ abstract class AbstractAppSettings
     }
     
     /**
-     * Returns the moderation group for comments.
-     *
-     * @return integer
-     */
-    public function getModerationGroupForComments()
-    {
-        return $this->moderationGroupForComments;
-    }
-    
-    /**
-     * Sets the moderation group for comments.
-     *
-     * @param integer $moderationGroupForComments
-     *
-     * @return void
-     */
-    public function setModerationGroupForComments($moderationGroupForComments)
-    {
-        if ($this->moderationGroupForComments !== $moderationGroupForComments) {
-            $this->moderationGroupForComments = $moderationGroupForComments;
-        }
-    }
-    
-    /**
      * Returns the comment entries per page.
      *
      * @return integer
@@ -483,6 +477,78 @@ abstract class AbstractAppSettings
     }
     
     /**
+     * Returns the moderation group for comments.
+     *
+     * @return integer
+     */
+    public function getModerationGroupForComments()
+    {
+        return $this->moderationGroupForComments;
+    }
+    
+    /**
+     * Sets the moderation group for comments.
+     *
+     * @param integer $moderationGroupForComments
+     *
+     * @return void
+     */
+    public function setModerationGroupForComments($moderationGroupForComments)
+    {
+        if ($this->moderationGroupForComments !== $moderationGroupForComments) {
+            $this->moderationGroupForComments = $moderationGroupForComments;
+        }
+    }
+    
+    /**
+     * Returns the allow moderation specific creator for comment.
+     *
+     * @return boolean
+     */
+    public function getAllowModerationSpecificCreatorForComment()
+    {
+        return $this->allowModerationSpecificCreatorForComment;
+    }
+    
+    /**
+     * Sets the allow moderation specific creator for comment.
+     *
+     * @param boolean $allowModerationSpecificCreatorForComment
+     *
+     * @return void
+     */
+    public function setAllowModerationSpecificCreatorForComment($allowModerationSpecificCreatorForComment)
+    {
+        if (boolval($this->allowModerationSpecificCreatorForComment) !== boolval($allowModerationSpecificCreatorForComment)) {
+            $this->allowModerationSpecificCreatorForComment = boolval($allowModerationSpecificCreatorForComment);
+        }
+    }
+    
+    /**
+     * Returns the allow moderation specific creation date for comment.
+     *
+     * @return boolean
+     */
+    public function getAllowModerationSpecificCreationDateForComment()
+    {
+        return $this->allowModerationSpecificCreationDateForComment;
+    }
+    
+    /**
+     * Sets the allow moderation specific creation date for comment.
+     *
+     * @param boolean $allowModerationSpecificCreationDateForComment
+     *
+     * @return void
+     */
+    public function setAllowModerationSpecificCreationDateForComment($allowModerationSpecificCreationDateForComment)
+    {
+        if (boolval($this->allowModerationSpecificCreationDateForComment) !== boolval($allowModerationSpecificCreationDateForComment)) {
+            $this->allowModerationSpecificCreationDateForComment = boolval($allowModerationSpecificCreationDateForComment);
+        }
+    }
+    
+    /**
      * Returns the enabled finder types.
      *
      * @return string
@@ -541,9 +607,6 @@ abstract class AbstractAppSettings
         if (isset($moduleVars['toNotSaved'])) {
             $this->setToNotSaved($moduleVars['toNotSaved']);
         }
-        if (isset($moduleVars['moderationGroupForComments'])) {
-            $this->setModerationGroupForComments($moduleVars['moderationGroupForComments']);
-        }
         if (isset($moduleVars['commentEntriesPerPage'])) {
             $this->setCommentEntriesPerPage($moduleVars['commentEntriesPerPage']);
         }
@@ -552,6 +615,15 @@ abstract class AbstractAppSettings
         }
         if (isset($moduleVars['showOnlyOwnEntries'])) {
             $this->setShowOnlyOwnEntries($moduleVars['showOnlyOwnEntries']);
+        }
+        if (isset($moduleVars['moderationGroupForComments'])) {
+            $this->setModerationGroupForComments($moduleVars['moderationGroupForComments']);
+        }
+        if (isset($moduleVars['allowModerationSpecificCreatorForComment'])) {
+            $this->setAllowModerationSpecificCreatorForComment($moduleVars['allowModerationSpecificCreatorForComment']);
+        }
+        if (isset($moduleVars['allowModerationSpecificCreationDateForComment'])) {
+            $this->setAllowModerationSpecificCreationDateForComment($moduleVars['allowModerationSpecificCreationDateForComment']);
         }
         if (isset($moduleVars['enabledFinderTypes'])) {
             $this->setEnabledFinderTypes($moduleVars['enabledFinderTypes']);
@@ -586,10 +658,12 @@ abstract class AbstractAppSettings
         $this->variableApi->set('MUCommentsModule', 'enableInternSpamHandling', $this->getEnableInternSpamHandling());
         $this->variableApi->set('MUCommentsModule', 'toModeration', $this->getToModeration());
         $this->variableApi->set('MUCommentsModule', 'toNotSaved', $this->getToNotSaved());
-        $this->variableApi->set('MUCommentsModule', 'moderationGroupForComments', $this->getModerationGroupForComments());
         $this->variableApi->set('MUCommentsModule', 'commentEntriesPerPage', $this->getCommentEntriesPerPage());
         $this->variableApi->set('MUCommentsModule', 'linkOwnCommentsOnAccountPage', $this->getLinkOwnCommentsOnAccountPage());
         $this->variableApi->set('MUCommentsModule', 'showOnlyOwnEntries', $this->getShowOnlyOwnEntries());
+        $this->variableApi->set('MUCommentsModule', 'moderationGroupForComments', $this->getModerationGroupForComments());
+        $this->variableApi->set('MUCommentsModule', 'allowModerationSpecificCreatorForComment', $this->getAllowModerationSpecificCreatorForComment());
+        $this->variableApi->set('MUCommentsModule', 'allowModerationSpecificCreationDateForComment', $this->getAllowModerationSpecificCreationDateForComment());
         $this->variableApi->set('MUCommentsModule', 'enabledFinderTypes', $this->getEnabledFinderTypes());
     }
 }
